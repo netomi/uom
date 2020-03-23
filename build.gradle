@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'org.netomi.bat'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.12'
+}
