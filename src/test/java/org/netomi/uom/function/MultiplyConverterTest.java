@@ -15,12 +15,15 @@
  */
 package org.netomi.uom.function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.util.BigFraction;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 
 /**
  * Unit tests for the {@code MultiplyConverter} class.
@@ -39,55 +42,57 @@ public class MultiplyConverterTest {
         assertEquals(UnitConverters.identity(), converter2);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void invalidMultiplier() {
-        UnitConverter converter = new MultiplyConverter(0.0);
-        fail("expected IllegalArgumentException");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            UnitConverter converter = new MultiplyConverter(0.0);
+        });
     }
 
     @Test
     public void getter() {
         MultiplyConverter converter = new MultiplyConverter(10.0);
 
-        assertEquals(10.0, converter.getMultiplier(), 1e-6);
-        assertTrue(BigDecimal.TEN.compareTo(converter.getDecimalMultiplier()) == 0);
+        assertEquals(10.0, converter.getMultiplier().doubleValue(), 1e-6);
+        assertTrue(BigFraction.of(10).compareTo(converter.getMultiplier()) == 0);
 
         converter = new MultiplyConverter(100.0);
 
-        assertEquals(100.0, converter.getMultiplier(), 1e-6);
-        assertTrue(new BigDecimal("100.0").compareTo(converter.getDecimalMultiplier()) == 0);
+        assertEquals(100.0, converter.getMultiplier().doubleValue(), 1e-6);
+        assertTrue(BigFraction.of(100).compareTo(converter.getMultiplier()) == 0);
     }
 
     @Test
     public void negate() {
         MultiplyConverter converter = new MultiplyConverter(10.0);
 
-        assertEquals(10.0, converter.getMultiplier(), 1e-6);
+        assertEquals(10.0, converter.getMultiplier().doubleValue(), 1e-6);
 
         converter = converter.inverse();
 
-        assertEquals(1.0 / 10.0, converter.getMultiplier(), 1e-6);
+        assertEquals(1.0 / 10.0, converter.getMultiplier().doubleValue(), 1e-6);
+        assertEquals(BigFraction.of(1, 10).doubleValue(), converter.getMultiplier().doubleValue(), 1e-6);
         assertEquals(1.0, converter.convert(10.0), 1e-6);
     }
 
     @Test
-    public void concatenate() {
+    public void andThen() {
         MultiplyConverter converter = new MultiplyConverter(10.0);
 
-        UnitConverter unitConverter = converter.concatenate(new MultiplyConverter(2.0));
+        UnitConverter unitConverter = converter.andThen(new MultiplyConverter(2.0));
 
         assertTrue(unitConverter instanceof MultiplyConverter);
-        assertEquals(20.0, ((MultiplyConverter) unitConverter).getMultiplier(), 1e-6);
+        assertEquals(20.0, ((MultiplyConverter) unitConverter).getMultiplier().doubleValue(), 1e-6);
 
         MultiplyConverter first = new MultiplyConverter(10.0);
-        UnitConverter concatenate = first.concatenate(new MultiplyConverter(1.0 / 10.0));
+        UnitConverter concatenate = first.andThen(new MultiplyConverter(1, 10));
 
         assertTrue(concatenate == UnitConverters.identity());
         assertEquals(1.0, concatenate.convert(1.0), 1e-6);
 
         MultiplyConverter left  = new MultiplyConverter(10.0);
         MultiplyConverter right = new MultiplyConverter(2.0);
-        concatenate = left.concatenate(right);
+        concatenate = left.andThen(right);
 
         double val1 = right.convert(left.convert(1.0));
         double val2 = concatenate.convert(1.0);

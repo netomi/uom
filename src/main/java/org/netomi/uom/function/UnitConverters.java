@@ -16,6 +16,7 @@
 package org.netomi.uom.function;
 
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.util.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -29,8 +30,12 @@ public class UnitConverters {
 
     private static final UnitConverter IDENTITY = new IdentityConverter();
 
+    // hide constructor of a pure utility class.
     private UnitConverters() {}
 
+    /**
+     * Returns an identity converter.
+     */
     public static UnitConverter identity() {
         return IDENTITY;
     }
@@ -44,65 +49,36 @@ public class UnitConverters {
     }
 
     public static UnitConverter multiply(double multiplicand) {
-        return multiply(BigDecimal.valueOf(multiplicand));
+        return multiply(BigFraction.from(multiplicand));
     }
 
     public static UnitConverter multiply(BigDecimal multiplicand) {
-        return BigDecimal.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
+        return multiply(BigFraction.from(multiplicand));
     }
 
-    public static UnitConverter multiply(long dividend, long divisor) {
-        return dividend == divisor ? identity() : new RationalConverter(dividend, divisor);
+    public static UnitConverter multiply(long numerator, long denominator) {
+        return numerator == denominator ? identity() : multiply(BigFraction.of(numerator, denominator));
     }
 
-    public static UnitConverter concatenate(UnitConverter left, UnitConverter right) {
-        if (left.isIdentity()) {
-            return right;
-        } else if (right.isIdentity()) {
-            return left;
+    static UnitConverter multiply(BigFraction multiplicand) {
+        return BigFraction.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
+    }
+
+    public static UnitConverter compose(UnitConverter before, UnitConverter after) {
+        if (before.isIdentity()) {
+            return after;
+        } else if (after.isIdentity()) {
+            return before;
         }
 
-        return new PairConverter(left, right);
+        return new ComposeConverter(before, after);
     }
-
-    // helper methods
-
-//    long gcd(long n1, long n2) {
-//        if (n1 == 0) {
-//            return n2;
-//        }
-//
-//        if (n2 == 0) {
-//            return n1;
-//        }
-//
-//        long n;
-//        for (n = 0; ((n1 | n2) & 1) == 0; n++) {
-//            n1 >>= 1;
-//            n2 >>= 1;
-//        }
-//
-//        while ((n1 & 1) == 0) {
-//            n1 >>= 1;
-//        }
-//
-//        do {
-//            while ((n2 & 1) == 0) {
-//                n2 >>= 1;
-//            }
-//
-//            if (n1 > n2) {
-//                long temp = n1;
-//                n1 = n2;
-//                n2 = temp;
-//            }
-//            n2 = (n2 - n1);
-//        } while (n2 != 0);
-//        return n1 << n;
-//    }
 
     // Inner helper classes
 
+    /**
+     * An identity converter that just returns the value passed as argument.
+     */
     private static class IdentityConverter implements UnitConverter {
 
         @Override
@@ -111,7 +87,12 @@ public class UnitConverters {
         }
 
         @Override
-        public UnitConverter concatenate(UnitConverter that) {
+        public UnitConverter compose(UnitConverter before) {
+            return before;
+        }
+
+        @Override
+        public UnitConverter andThen(UnitConverter that) {
             return that;
         }
 
@@ -136,38 +117,38 @@ public class UnitConverters {
         }
     }
 
-    private static class PairConverter implements UnitConverter {
-        private final UnitConverter left;
-        private final UnitConverter right;
+    private static class ComposeConverter implements UnitConverter {
+        private final UnitConverter before;
+        private final UnitConverter after;
 
-        PairConverter(UnitConverter left, UnitConverter right) {
-            this.left  = left;
-            this.right = right;
+        ComposeConverter(UnitConverter before, UnitConverter after) {
+            this.before = before;
+            this.after  = after;
         }
 
         @Override
         public boolean isIdentity() {
-            return left.isIdentity() && right.isIdentity();
+            return before.isIdentity() && after.isIdentity();
         }
 
         @Override
         public UnitConverter inverse() {
-            return new PairConverter(right.inverse(), left.inverse());
+            return new ComposeConverter(after.inverse(), before.inverse());
         }
 
         @Override
         public double convert(double value) {
-            return right.convert(left.convert(value));
+            return after.convert(before.convert(value));
         }
 
         @Override
         public BigDecimal convert(BigDecimal value, MathContext context) {
-            return left.convert(right.convert(value, context), context);
+            return after.convert(before.convert(value, context), context);
         }
 
         @Override
         public String toString() {
-            return String.format("PairConverter[left=%s, right=%s]", left, right);
+            return String.format("ComposeConverter[before=%s, after=%s]", before, after);
         }
     }
 }

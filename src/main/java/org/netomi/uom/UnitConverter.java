@@ -76,17 +76,30 @@ public interface UnitConverter {
     BigDecimal convert(BigDecimal value, MathContext context);
 
     /**
-     * Returns a {@code UnitConverter} that concatenates this
-     * converter with another one.
+     * Returns a composed {@code UnitConverter} that first applies the @{code before}
+     * converter to its input, and then applies this converter to the result.
      *
-     * The resulting converter first uses the right converter
-     * and applies the result on the left converter such that:
-     * {@code right.convert(left.convert(value))}.
+     * The returned converter produces the same output as calling
+     * {@code this.convert(before.convert(value))}.
      *
-     * @param that the converter to concatente with this converter.
-     * @return the concatenation of this converter with the other converter.
+     * @param before the converter to apply before this converter is applied.
+     * @return a composed converter that first applies the before converter and then applies this converter.
      */
-    default UnitConverter concatenate(UnitConverter that) {
-        return UnitConverters.concatenate(this, that);
+    default UnitConverter compose(UnitConverter before) {
+        return UnitConverters.compose(before, this);
+    }
+
+    /**
+     * Returns a composed {@code UnitConverter} that first applies this converter
+     * to its input, and then applies the after converter to the result.
+     *
+     * The returned converter produces the same output as calling
+     * {@code after.convert(this.convert(value))}.
+     *
+     * @param after the converter to apply after this converter is applied.
+     * @return a composed converter that first applies this converter and then applies the after converter.
+     */
+    default UnitConverter andThen(UnitConverter after) {
+        return UnitConverters.compose(this, after);
     }
 }

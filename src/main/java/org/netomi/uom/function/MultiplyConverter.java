@@ -16,77 +16,87 @@
 package org.netomi.uom.function;
 
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.util.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
  * A {@code UnitConverter} implementation that converts values by multiplying
- * them with a constant factor.
+ * them with a constant factor represented as decimal fraction.
+ * <p>
+ * The rationale behind this design is to
  *
  * @author Thomas Neidhart
  */
 public class MultiplyConverter implements UnitConverter {
 
-    // the constant multiplier factor as decimal value.
-    private final BigDecimal decimalMultiplier;
-    // the multiplier factor with double precision, cached.
-    private final double     doubleMultiplier;
+    // the multiplier represented as decimal fraction.
+    private final BigFraction multiplier;
+    // the multiplier as double value, for caching reasons.
+    private final double      multiplierAsDouble;
 
-    public MultiplyConverter(double multiplier) {
-        this(BigDecimal.valueOf(multiplier));
+    public MultiplyConverter(double value) {
+        this(BigFraction.from(value));
     }
 
-    public MultiplyConverter(BigDecimal multiplier) {
-        if (BigDecimal.ZERO.compareTo(multiplier) == 0) {
-            throw new IllegalArgumentException("a multiplier of 0 is not supported.");
+    public MultiplyConverter(long numerator, long denominator) {
+        this(BigFraction.of(numerator, denominator));
+    }
+
+    MultiplyConverter(BigFraction multiplier) {
+        if (BigFraction.ZERO.compareTo(multiplier) == 0) {
+            throw new IllegalArgumentException("zero multiplier not allowed.");
         }
 
-        this.decimalMultiplier = multiplier;
-        this.doubleMultiplier  = decimalMultiplier.doubleValue();
+        this.multiplier         = multiplier;
+        this.multiplierAsDouble = multiplier.doubleValue();
     }
 
     /**
-     * Returns the multiplier as decimal value.
+     * Returns the multiplier as decimal fraction.
      */
-    public BigDecimal getDecimalMultiplier() {
-        return decimalMultiplier;
-    }
-
-    /**
-     * Returns the multiplier with double precision.
-     */
-    public double getMultiplier() {
-        return doubleMultiplier;
+    public BigFraction getMultiplier() {
+        return multiplier;
     }
 
     @Override
     public MultiplyConverter inverse() {
-        return new MultiplyConverter(BigDecimal.ONE.divide(decimalMultiplier, MathContext.DECIMAL128));
+        return new MultiplyConverter(multiplier.reciprocal());
     }
 
     @Override
-    public UnitConverter concatenate(UnitConverter that) {
+    public UnitConverter compose(UnitConverter that) {
         if (that instanceof MultiplyConverter) {
-            BigDecimal multiplicand = decimalMultiplier.multiply(((MultiplyConverter) that).decimalMultiplier, MathContext.DECIMAL128);
+            BigFraction multiplicand = multiplier.multiply(((MultiplyConverter) that).multiplier);
             return UnitConverters.multiply(multiplicand);
         }
 
-        return UnitConverter.super.concatenate(that);
+        return UnitConverter.super.compose(that);
+    }
+
+    @Override
+    public UnitConverter andThen(UnitConverter that) {
+        if (that instanceof MultiplyConverter) {
+            BigFraction multiplicand = multiplier.multiply(((MultiplyConverter) that).multiplier);
+            return UnitConverters.multiply(multiplicand);
+        }
+
+        return UnitConverter.super.andThen(that);
     }
 
     @Override
     public double convert(double value) {
-        return value * doubleMultiplier;
+        return value * multiplierAsDouble;
     }
 
     @Override
     public BigDecimal convert(BigDecimal value, MathContext context) {
-        return value.multiply(decimalMultiplier, context);
+        return value.multiply(multiplier.bigDecimalValue(context), context);
     }
 
     @Override
     public String toString() {
-        return String.format("MultiplyConverter[multiplier=%s]", decimalMultiplier.toPlainString());
+        return String.format("MultiplyConverter[multiplier='%s']", multiplier.toString());
     }
 }

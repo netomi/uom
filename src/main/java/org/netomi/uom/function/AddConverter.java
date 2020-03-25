@@ -29,61 +29,64 @@ import java.math.MathContext;
 class AddConverter implements UnitConverter {
 
     // the decimal offset to use for conversion.
-    private final BigDecimal decimalOffset;
+    private final BigDecimal offset;
     // the offset in double precision, cached.
-    private final double     doubleOffset;
+    private final double     offsetAsDouble;
 
     public AddConverter(BigDecimal offset) {
-        this.decimalOffset = offset;
-        this.doubleOffset  = offset.doubleValue();
+        this.offset          = offset;
+        this.offsetAsDouble  = offset.doubleValue();
     }
 
     public AddConverter(double offset) {
-        this.decimalOffset = BigDecimal.valueOf(offset);
-        this.doubleOffset  = offset;
+        this.offset          = BigDecimal.valueOf(offset);
+        this.offsetAsDouble  = offset;
     }
 
     /**
      * Returns the offset as decimal value.
      */
-    public BigDecimal getDecimalOffset() {
-        return decimalOffset;
-    }
-
-    /**
-     * Returns the offset with double precision.
-     */
-    public double getOffset() {
-        return doubleOffset;
+    public BigDecimal getOffset() {
+        return offset;
     }
 
     @Override
     public AddConverter inverse() {
-        return new AddConverter(decimalOffset.negate(MathContext.DECIMAL128));
+        return new AddConverter(offset.negate());
     }
 
     @Override
-    public UnitConverter concatenate(UnitConverter that) {
+    public UnitConverter compose(UnitConverter that) {
         if (that instanceof AddConverter) {
-            BigDecimal offset = decimalOffset.add(((AddConverter) that).decimalOffset, MathContext.DECIMAL128);
-            return UnitConverters.shift(offset);
+            BigDecimal newOffset = offset.add(((AddConverter) that).offset);
+            return UnitConverters.shift(newOffset);
         }
 
-        return UnitConverter.super.concatenate(that);
+        return UnitConverter.super.compose(that);
+    }
+
+    @Override
+    public UnitConverter andThen(UnitConverter that) {
+        if (that instanceof AddConverter) {
+            BigDecimal newOffset = offset.add(((AddConverter) that).offset);
+            return UnitConverters.shift(newOffset);
+        }
+
+        return UnitConverter.super.andThen(that);
     }
 
     @Override
     public double convert(double value) {
-        return value + doubleOffset;
+        return value + offsetAsDouble;
     }
 
     @Override
     public BigDecimal convert(BigDecimal value, MathContext context) {
-        return value.add(decimalOffset, context);
+        return value.add(offset, context);
     }
 
     @Override
     public String toString() {
-        return String.format("AddConverter[offset=%s]", decimalOffset.toPlainString());
+        return String.format("AddConverter[offset='%s']", offset.toPlainString());
     }
 }

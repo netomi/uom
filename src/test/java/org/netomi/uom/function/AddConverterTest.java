@@ -15,13 +15,13 @@
  */
 package org.netomi.uom.function;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
 
 import java.math.BigDecimal;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Unit tests for the {@code AddConverter} class.
@@ -44,45 +44,45 @@ public class AddConverterTest {
     public void getter() {
         AddConverter converter = new AddConverter(10.0);
 
-        assertEquals(10.0, converter.getOffset(), 1e-6);
-        assertTrue(BigDecimal.TEN.compareTo(converter.getDecimalOffset()) == 0);
+        assertEquals(10.0, converter.getOffset().doubleValue(), 1e-6);
+        assertTrue(BigDecimal.TEN.compareTo(converter.getOffset()) == 0);
 
         converter = new AddConverter(100.0);
 
-        assertEquals(100.0, converter.getOffset(), 1e-6);
-        assertTrue(new BigDecimal("100.0").compareTo(converter.getDecimalOffset()) == 0);
+        assertEquals(100.0, converter.getOffset().doubleValue(), 1e-6);
+        assertTrue(new BigDecimal("100.0").compareTo(converter.getOffset()) == 0);
     }
 
     @Test
     public void negate() {
         AddConverter converter = new AddConverter(10.0);
 
-        assertEquals(10.0, converter.getOffset(), 1e-6);
+        assertEquals(10.0, converter.getOffset().doubleValue(), 1e-6);
 
         converter = converter.inverse();
 
-        assertEquals(-10.0, converter.getOffset(), 1e-6);
+        assertEquals(-10.0, converter.getOffset().doubleValue(), 1e-6);
         assertEquals(-10.0, converter.convert(0), 1e-6);
     }
 
     @Test
-    public void concatenate() {
+    public void andThen() {
         AddConverter converter = new AddConverter(10.0);
 
-        UnitConverter unitConverter = converter.concatenate(new AddConverter(20.0));
+        UnitConverter unitConverter = converter.andThen(new AddConverter(20.0));
 
         assertTrue(unitConverter instanceof AddConverter);
-        assertEquals(30.0, ((AddConverter) unitConverter).getOffset(), 1e-6);
+        assertEquals(30.0, ((AddConverter) unitConverter).getOffset().doubleValue(), 1e-6);
 
         AddConverter first = new AddConverter(10.0);
-        UnitConverter concatenate = first.concatenate(new AddConverter(-10.0));
+        UnitConverter concatenate = first.andThen(new AddConverter(-10.0));
 
         assertTrue(concatenate == UnitConverters.identity());
         assertEquals(1.0, concatenate.convert(1.0), 1e-6);
 
         AddConverter left  = new AddConverter(10.0);
         AddConverter right = new AddConverter(20.0);
-        concatenate = left.concatenate(right);
+        concatenate = left.andThen(right);
 
         double val1 = right.convert(left.convert(1.0));
         double val2 = concatenate.convert(1.0);
