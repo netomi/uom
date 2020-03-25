@@ -29,7 +29,7 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-public class MultiplyConverter implements UnitConverter {
+class MultiplyConverter implements UnitConverter {
 
     // the multiplier represented as decimal fraction.
     private final BigFraction multiplier;
