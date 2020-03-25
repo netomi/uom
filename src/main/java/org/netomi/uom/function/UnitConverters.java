@@ -16,6 +16,7 @@
 package org.netomi.uom.function;
 
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.util.ArithmeticUtils;
 import org.netomi.uom.util.BigFraction;
 
 import java.math.BigDecimal;
@@ -58,6 +59,20 @@ public class UnitConverters {
 
     public static UnitConverter multiply(long numerator, long denominator) {
         return numerator == denominator ? identity() : multiply(BigFraction.of(numerator, denominator));
+    }
+
+    public static UnitConverter pow(int base, int exponent) {
+        if (exponent == 0) {
+            return identity();
+        }
+
+        if (exponent > 0) {
+            int value = ArithmeticUtils.pow(base, exponent);
+            return multiply(value, 1);
+        } else {
+            int value = ArithmeticUtils.pow(base, -exponent);
+            return multiply(1, value);
+        }
     }
 
     static UnitConverter multiply(BigFraction multiplicand) {
