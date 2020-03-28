@@ -23,6 +23,9 @@ import java.math.MathContext;
 /**
  * {@code UnitConverter} implementation that converts values by applying
  * the provided {@link UnitConverter} n times.
+ * <p>
+ * This class should not be used directly, instead use
+ * {@code UnitConverters#pow} to create an instance of this class.
  *
  * @author Thomas Neidhart
  */
@@ -32,6 +35,10 @@ class PowConverter implements UnitConverter {
     private final int           exponent;
 
     PowConverter(UnitConverter unitConverter, int exponent) {
+        if (exponent < 0) {
+            throw new IllegalArgumentException("exponent must be non-negative.");
+        }
+
         this.unitConverter = unitConverter;
         this.exponent      = exponent;
     }

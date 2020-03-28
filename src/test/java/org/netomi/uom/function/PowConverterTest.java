@@ -73,6 +73,23 @@ public class PowConverterTest {
     }
 
     @Test
+    public void negativeExponent() {
+        AddConverter addConverter = new AddConverter(10.0);
+
+        PowConverter converter = (PowConverter) UnitConverters.pow(addConverter, -1);
+
+        assertEquals(addConverter.inverse(), converter.getUnitConverter());
+
+        // Ensure that the delegate converter got inverted.
+        assertEquals(-10.0, converter.convert(0), 1e-6);
+
+        converter = (PowConverter) UnitConverters.pow(addConverter, -2);
+
+        // Ensure that the delegate converter got inverted.
+        assertEquals(-20.0, converter.convert(0), 1e-6);
+    }
+
+    @Test
     public void andThen() {
         AddConverter addConverter = new AddConverter(10.0);
 

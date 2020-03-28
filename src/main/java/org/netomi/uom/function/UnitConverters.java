@@ -77,7 +77,8 @@ public class UnitConverters {
     public static UnitConverter pow(UnitConverter converter, int n) {
         return converter.isIdentity() ? converter :
                n == 1                 ? converter :
-                                        new PowConverter(converter, n);
+               n > 1                  ? new PowConverter(converter, n) :
+                                        new PowConverter(converter.inverse(), -n);
     }
 
     public static UnitConverter root(UnitConverter converter, int n) {
