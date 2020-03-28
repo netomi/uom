@@ -241,19 +241,17 @@ public class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         for (Element e : elements) {
             Map<? extends Unit<?>, Fraction> currentMap = e.unit.getBaseUnits();
 
-            int pow = e.fraction.getNumerator();
+            int pow  = e.fraction.getNumerator();
             int root = e.fraction.getDenominator();
 
             for (Map.Entry<? extends Unit<?>, Fraction> entry : currentMap.entrySet()) {
                 Unit<?> unit = entry.getKey();
 
-                UnaryOperator<Fraction> op = pow > 0 ? f -> f : Fraction::negate;
-                Fraction value = baseUnitMap.get(unit);
-
+                Fraction value    = baseUnitMap.get(unit);
                 Fraction newValue = entry.getValue().multiply(pow).multiply(Fraction.of(1, root));
 
                 if (value == null) {
-                    value = op.apply(newValue);
+                    value = newValue;
                 } else {
                     value = value.add(newValue);
                 }
