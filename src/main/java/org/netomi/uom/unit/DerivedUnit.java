@@ -203,26 +203,35 @@ public class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public UnitConverter getSystemConverter() {
-        UnitConverter converter = UnitConverters.identity();
+        UnitConverter systemConverter = UnitConverters.identity();
         for (Element e : elements) {
-            UnitConverter cvtr = e.unit.getSystemConverter();
+            UnitConverter converter = e.unit.getSystemConverter();
             int pow  = e.fraction.getNumerator();
             int root = e.fraction.getDenominator();
 
             if (pow < 0) {
-                pow = -pow;
-                cvtr = cvtr.inverse();
+                pow       = -pow;
+                converter = converter.inverse();
             }
-
-            cvtr = UnitConverters.pow(cvtr, pow);
 
             if (root > 1) {
-                cvtr = UnitConverters.root(cvtr, root);
-            }
+                converter = UnitConverters.pow(converter, pow);
 
-            converter = converter.andThen(cvtr);
+                if (root > 1) {
+                    converter = UnitConverters.root(converter, root);
+                }
+
+                systemConverter = systemConverter.andThen(converter);
+            } else {
+                // if we do not have a root component, unroll the power
+                // operation to be able to reduce the resulting
+                // unit converter.
+                for (int j = 0; j < pow; j++) {
+                    systemConverter = systemConverter.andThen(converter);
+                }
+            }
         }
-        return converter;
+        return systemConverter;
     }
 
     @Override
