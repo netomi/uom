@@ -16,6 +16,8 @@
  */
 package org.netomi.uom.math;
 
+// Note: this class has been extracted from the Apache Commons Math library.
+
 /**
  * Operators that can be implemented in a more performant way
  * using the language constructs.

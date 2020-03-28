@@ -1,11 +1,12 @@
 /*
- * Copyright (c) 2020 Thomas Neidhart
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ *      http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,7 +17,7 @@
 package org.netomi.uom.math;
 
 /*
- * Note: this class has been extracted from the Apache Commons Math library.
+ * Note: this class has been extracted from the Apache Commons Numbers library.
  */
 
 import java.math.BigDecimal;
@@ -346,6 +347,12 @@ public final class ArithmeticUtils {
         return BigInteger.ONE.equals(bigDecimal.unscaledValue());
     }
 
+    /**
+     * Returns the square root of a {@link BigDecimal} number.
+     *
+     * This code has been extracted from JDK 11 as this method was
+     * only added in JDK 9.
+     */
     public static BigDecimal sqrt(BigDecimal bigDecimal, MathContext mc) {
         int signum = bigDecimal.signum();
         if (signum != 1) {
