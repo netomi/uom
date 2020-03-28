@@ -31,21 +31,20 @@ class SquareRootConverter implements UnitConverter {
 
     SquareRootConverter(UnitConverter unitConverter, int root) {
         if (root != 2) {
-            throw new IllegalArgumentException("invalid root");
+            throw new IllegalArgumentException(String.format("unsupported root %d, only square roots are supported", root));
         }
 
         this.unitConverter = unitConverter;
 
         // Get the multiplier from the delegate converter
-        // and calculate its root for caching reasons.
+        // and calculate its root as double for caching reasons.
         double multiplier = unitConverter.convert(1);
         multiplierRooted = Math.sqrt(multiplier);
     }
 
     @Override
     public UnitConverter inverse() {
-        // TODO: what is the inverse of a root converter?
-        return this;
+        return new SquareRootConverter(unitConverter.inverse(), 2);
     }
 
     @Override

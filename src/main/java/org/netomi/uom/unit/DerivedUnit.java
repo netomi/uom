@@ -36,12 +36,7 @@ public class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             Element[] elems = ((DerivedUnit<?>) unit).elements;
             for (int i = 0; i < elems.length; i++) {
                 Fraction f = elems[i].fraction;
-
-                f = f.multiply(Fraction.of(1, n));
-                elementList.add(new Element(elems[i].unit, f));
-
-//                int gcd = gcd(Math.abs(elems[i].pow), elems[i].root * n);
-//                unitElems[i] = new Element(elems[i].unit, elems[i].pow / gcd, elems[i].root * n / gcd);
+                elementList.add(new Element(elems[i].unit, f.multiply(Fraction.of(1, n))));
             }
         } else {
             elementList.add(new Element(unit, Fraction.of(1, n)));
@@ -211,19 +206,21 @@ public class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         UnitConverter converter = UnitConverters.identity();
         for (Element e : elements) {
             UnitConverter cvtr = e.unit.getSystemConverter();
-            int pow = e.fraction.getNumerator();
-            if (pow < 0) { // Negative power.
+            int pow  = e.fraction.getNumerator();
+            int root = e.fraction.getDenominator();
+
+            if (pow < 0) {
                 pow = -pow;
                 cvtr = cvtr.inverse();
             }
 
-            int root = e.fraction.getDenominator();
+            cvtr = UnitConverters.pow(cvtr, pow);
 
-            converter = converter.andThen(UnitConverters.pow(cvtr, pow));
-
-            if (root == 2) {
-                converter = converter.andThen(UnitConverters.root(cvtr, root));
+            if (root > 1) {
+                cvtr = UnitConverters.root(cvtr, root);
             }
+
+            converter = converter.andThen(cvtr);
         }
         return converter;
     }

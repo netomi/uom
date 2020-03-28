@@ -51,7 +51,7 @@ class PowConverter implements UnitConverter {
     public BigDecimal convert(BigDecimal value, MathContext context) {
         BigDecimal result = value;
         for (int i = 0; i < pow; i++) {
-            result = result.multiply(unitConverter.convert(result), context);
+            result = unitConverter.convert(result, context);
         }
         return result;
     }

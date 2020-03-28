@@ -81,7 +81,7 @@ public class UnitConverters {
     }
 
     public static UnitConverter root(UnitConverter converter, int n) {
-        return new SquareRootConverter(converter, n);
+        return converter.isIdentity() ? converter : new SquareRootConverter(converter, n);
     }
 
     static UnitConverter multiply(BigFraction multiplicand) {
