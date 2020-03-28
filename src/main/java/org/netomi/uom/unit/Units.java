@@ -73,14 +73,21 @@ public class Units {
         public Unit<Speed>           METER_PER_SECOND = addUnit(METRE.divide(SECOND).asType(Speed.class).withSymbolAndName("m/s", "METER PER SECOND"), Speed.class);
         public Unit<Force>           NEWTON   = KILOGRAM.multiply(METRE).divide(SECOND.pow(2)).withSymbolAndName("N", "NEWTON").asType(Force.class);
 
+        public Unit<Energy>          JOULE     = NEWTON.multiply(METRE).asType(Energy.class).withSymbolAndName("J", "JOULE");
         public Unit<ElectricCharge>  COULOMB   = AMPERE.multiply(SECOND).asType(ElectricCharge.class).withSymbolAndName("C", "COULOMB");
 
+        public Unit<ElectricPotential> VOLT =  JOULE.divide(COULOMB).asType(ElectricPotential.class).withSymbolAndName("V", "VOLT");
+
         // Constants expressed in SI units.
-        public final Unit<Speed> C = METER_PER_SECOND.multiply(299792458, 1);
+        public final Unit<Speed> C                = METER_PER_SECOND.multiply(299792458, 1);
+        public final Unit<?>     COULOMB_CONSTANT = VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND)).multiply(8.987551787368176E9);
     }
 
     public static class CGS {
         private CGS() {}
+
+        //double COULOMB_CONSTANT = 8.987551787368176E9;
+        //public Unit<Dimensionless> COULOMB_CONSTANT = Units.ONE.multiply(new BigDecimal("8.987551787368176E9"));
 
         public Unit<Length> CENTIMETRE = MetricPrefix.CENTI(SI.METRE);
         public Unit<Mass>   GRAM       = SI.KILOGRAM.multiply(1, 1000).withSymbolAndName("g", "GRAM");
@@ -88,8 +95,8 @@ public class Units {
 
         public Unit<Force>  DYN = GRAM.multiply(CENTIMETRE).divide(SECOND.pow(2)).asType(Force.class).withSymbolAndName("dyn", "DYNE");
 
-        public Unit<ElectricCharge> STATCOULOMB = SI.COULOMB.divide(SI.C).multiply(1, 10).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
-        //public static Unit<ElectricCharge> STATCOULOMB = DYN.root(2).multiply(CENTIMETRE).asType(ElectricCharge.class);
+        //public Unit<ElectricCharge> STATCOULOMB = SI.COULOMB.divide(SI.C).multiply(1, 10).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
+        public Unit<ElectricCharge> STATCOULOMB = DYN.root(2).multiply(CENTIMETRE).divide(Units.SI.COULOMB_CONSTANT.root(2)).asType(ElectricCharge.class);
 
     }
 

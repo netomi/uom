@@ -25,6 +25,10 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
 
     @Override
     public UnitConverter getConverterTo(Unit<Q> unit) {
+        if (!isCompatible(unit)) {
+            throw new IllegalArgumentException("invalid unit");
+        }
+
         UnitConverter thisConverter = getSystemConverter();
         UnitConverter thatConverter = unit.getSystemConverter().inverse();
 
