@@ -40,10 +40,28 @@ public class UnitConverters {
         return IdentityConverter.INSTANCE;
     }
 
+    /**
+     * Returns a {@link UnitConverter} that applies a shift by a constant factor.
+     * <p>
+     * If an offset of {@code 0} is supplied, {@link #identity()} is returned.
+     * <p>
+     * Note: prefer using {@link #shift(BigDecimal)}
+     *
+     * @param offset the constant factor by which the value will be shifted.
+     * @return a {@link UnitConverter} applying a constant shift operation.
+     */
     public static UnitConverter shift(double offset) {
         return shift(BigDecimal.valueOf(offset));
     }
 
+    /**
+     * Returns a {@link UnitConverter} that applies a shift by a constant factor.
+     * <p>
+     * If an offset of {@code 0} is supplied, {@link #identity()} is returned.
+     *
+     * @param offset the constant factor by which the value will be shifted.
+     * @return a {@link UnitConverter} applying a constant shift operation.
+     */
     public static UnitConverter shift(BigDecimal offset) {
         return BigDecimal.ZERO.compareTo(offset) == 0 ? identity() : new AddConverter(offset);
     }
@@ -60,6 +78,10 @@ public class UnitConverters {
         return numerator == denominator ? identity() : multiply(BigFraction.of(numerator, denominator));
     }
 
+    static UnitConverter multiply(BigFraction multiplicand) {
+        return BigFraction.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
+    }
+
     public static UnitConverter pow(int base, int exponent) {
         if (exponent == 0) {
             return identity();
@@ -74,19 +96,15 @@ public class UnitConverters {
         }
     }
 
-    public static UnitConverter pow(UnitConverter converter, int n) {
+    public static UnitConverter pow(UnitConverter converter, int exponent) {
         return converter.isIdentity() ? converter :
-               n == 1                 ? converter :
-               n > 1                  ? new PowConverter(converter, n) :
-                                        new PowConverter(converter.inverse(), -n);
+               exponent == 1          ? converter :
+               exponent > 1           ? new PowConverter(converter, exponent) :
+                                        new PowConverter(converter.inverse(), -exponent);
     }
 
     public static UnitConverter root(UnitConverter converter, int n) {
         return converter.isIdentity() ? converter : new SquareRootConverter(converter, n);
-    }
-
-    static UnitConverter multiply(BigFraction multiplicand) {
-        return BigFraction.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
     }
 
     public static UnitConverter compose(UnitConverter before, UnitConverter after) {
@@ -143,6 +161,9 @@ public class UnitConverters {
         }
     }
 
+    /**
+     * A converter that composes 2 {@link UnitConverter} instances.
+     */
     private static class ComposeConverter implements UnitConverter {
         private final UnitConverter before;
         private final UnitConverter after;

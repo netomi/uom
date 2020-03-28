@@ -29,17 +29,27 @@ class SquareRootConverter implements UnitConverter {
     private final UnitConverter unitConverter;
     private final double        multiplierRooted;
 
-    SquareRootConverter(UnitConverter unitConverter, int root) {
-        if (root != 2) {
-            throw new IllegalArgumentException(String.format("unsupported root %d, only square roots are supported", root));
+    SquareRootConverter(UnitConverter unitConverter, int n) {
+        if (n != 2) {
+            throw new IllegalArgumentException(String.format("unsupported nth root '%d', only square roots are supported", n));
         }
 
         this.unitConverter = unitConverter;
 
-        // Get the multiplier from the delegate converter
+        // get the multiplier from the delegate converter
         // and calculate its root as double for caching reasons.
+        // do not cache the BigDecimal value as the MathContext
+        // is not known in advance.
         double multiplier = unitConverter.convert(1);
         multiplierRooted = Math.sqrt(multiplier);
+    }
+
+    public UnitConverter getUnitConverter() {
+        return unitConverter;
+    }
+
+    public int getN() {
+        return 2;
     }
 
     @Override
