@@ -96,7 +96,7 @@ public class Units {
         public Unit<Force>  DYN = GRAM.multiply(CENTIMETRE).divide(SECOND.pow(2)).asType(Force.class).withSymbolAndName("dyn", "DYNE");
 
         //public Unit<ElectricCharge> STATCOULOMB = SI.COULOMB.divide(SI.C).multiply(1, 10).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
-        public Unit<ElectricCharge> STATCOULOMB = DYN.root(2).multiply(CENTIMETRE).divide(Units.SI.COULOMB_CONSTANT.root(2)).asType(ElectricCharge.class);
+        public Unit<ElectricCharge> STATCOULOMB = DYN.root(2).multiply(CENTIMETRE).divide(Units.SI.COULOMB_CONSTANT.root(2)).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
 
     }
 
