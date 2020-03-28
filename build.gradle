@@ -8,6 +8,15 @@ version '1.0-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+sourceSets {
+    main {
+        java {
+            //srcDirs = ['source', 'source-gen']
+            exclude 'org/netomi/uom/format/**'
+        }
+    }
+}
+
 test {
     useJUnitPlatform()
     testLogging {
@@ -22,5 +31,6 @@ repositories {
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'lib')
 
+    implementation('javax.measure:unit-api:2.0')
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
 }

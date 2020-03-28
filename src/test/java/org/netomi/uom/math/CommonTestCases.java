@@ -14,18 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.util;
+package org.netomi.uom.math;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 /**
- * A collection of test cases that can be applied both to {@link BigFraction},
- * e.g. for operations and expected results that involve numerators and denominators
- * in the {@code int} range.
+ * A collection of test cases that can be applied both to {@link Fraction}
+ * and {@link BigFraction}, e.g. for operations and expected results that
+ * involve numerators and denominators in the {@code int} range.
  */
-final class FractionTestCases {
+final class CommonTestCases {
 
     /**
      * See {@link #numDenConstructorTestCases()}
@@ -84,7 +84,7 @@ final class FractionTestCases {
         subtractFractionTestCasesList = collectSubtractFractionTestCases();
     }
 
-    private FractionTestCases() {}
+    private CommonTestCases() {}
 
     /**
      * Defines test cases as described in

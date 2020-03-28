@@ -18,9 +18,7 @@ package org.netomi.uom.function;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
-import org.netomi.uom.util.BigFraction;
-
-import java.math.BigDecimal;
+import org.netomi.uom.math.BigFraction;
 
 import static org.junit.jupiter.api.Assertions.*;
 

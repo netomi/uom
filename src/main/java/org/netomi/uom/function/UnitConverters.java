@@ -16,11 +16,12 @@
 package org.netomi.uom.function;
 
 import org.netomi.uom.UnitConverter;
-import org.netomi.uom.util.ArithmeticUtils;
-import org.netomi.uom.util.BigFraction;
+import org.netomi.uom.math.ArithmeticUtils;
+import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
 
 /**
  * Utility class to access various unit converter implementations.
@@ -29,8 +30,6 @@ import java.math.MathContext;
  */
 public class UnitConverters {
 
-    private static final UnitConverter IDENTITY = new IdentityConverter();
-
     // hide constructor of a pure utility class.
     private UnitConverters() {}
 
@@ -38,7 +37,7 @@ public class UnitConverters {
      * Returns an identity converter.
      */
     public static UnitConverter identity() {
-        return IDENTITY;
+        return IdentityConverter.INSTANCE;
     }
 
     public static UnitConverter shift(double offset) {
@@ -75,6 +74,16 @@ public class UnitConverters {
         }
     }
 
+    public static UnitConverter pow(UnitConverter converter, int n) {
+        return converter.isIdentity() ? converter :
+               n == 1                 ? converter :
+                                        new PowConverter(converter, n);
+    }
+
+    public static UnitConverter root(UnitConverter converter, int n) {
+        return new SquareRootConverter(converter, n);
+    }
+
     static UnitConverter multiply(BigFraction multiplicand) {
         return BigFraction.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
     }
@@ -94,7 +103,8 @@ public class UnitConverters {
     /**
      * An identity converter that just returns the value passed as argument.
      */
-    private static class IdentityConverter implements UnitConverter {
+    private enum IdentityConverter implements UnitConverter {
+        INSTANCE;
 
         @Override
         public boolean isIdentity() {
@@ -113,7 +123,7 @@ public class UnitConverters {
 
         @Override
         public UnitConverter inverse() {
-            return IDENTITY;
+            return INSTANCE;
         }
 
         @Override
@@ -128,7 +138,7 @@ public class UnitConverters {
 
         @Override
         public String toString() {
-            return "IdentityConverter";
+            return "(identity x)";
         }
     }
 
@@ -162,8 +172,22 @@ public class UnitConverters {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ComposeConverter that = (ComposeConverter) o;
+            return Objects.equals(before, that.before) &&
+                   Objects.equals(after, that.after);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(before, after);
+        }
+
+        @Override
         public String toString() {
-            return String.format("ComposeConverter[before=%s, after=%s]", before, after);
+            return String.format("(compose %s %s)", after, before);
         }
     }
 }

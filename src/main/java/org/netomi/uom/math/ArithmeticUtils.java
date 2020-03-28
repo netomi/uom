@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (c) 2020 Thomas Neidhart
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.util;
+package org.netomi.uom.math;
 
 /*
  * Note: this class has been extracted from the Apache Commons Math library.
  */
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
+import java.math.RoundingMode;
 import java.text.MessageFormat;
 
 /**
  * Some useful, arithmetics related, additions to the built-in functions in {@link Math}.
  */
 public final class ArithmeticUtils {
+
+    private static final BigDecimal ONE_HALF = BigDecimal.valueOf(5L, 1);
 
     /** Overflow gcd exception message for 2^63. */
     private static final String OVERFLOW_GCD_MESSAGE_2_POWER_63 = "overflow: gcd({0}, {1}) is 2^63";
@@ -336,6 +340,90 @@ public final class ArithmeticUtils {
         }
 
         return result;
+    }
+
+    private static boolean isPowerOfTen(BigDecimal bigDecimal) {
+        return BigInteger.ONE.equals(bigDecimal.unscaledValue());
+    }
+
+    public static BigDecimal sqrt(BigDecimal bigDecimal, MathContext mc) {
+        int signum = bigDecimal.signum();
+        if (signum != 1) {
+            switch(signum) {
+                case -1:
+                    throw new ArithmeticException("Attempted square root of negative BigDecimal");
+                case 0:
+                    return BigDecimal.valueOf(0L, bigDecimal.scale() / 2);
+                default:
+                    throw new AssertionError("Bad value from signum");
+            }
+        } else {
+            int preferredScale = bigDecimal.scale() / 2;
+            BigDecimal zeroWithFinalPreferredScale = BigDecimal.valueOf(0L, preferredScale);
+            BigDecimal stripped = bigDecimal.stripTrailingZeros();
+            int strippedScale = stripped.scale();
+            if (isPowerOfTen(stripped) && strippedScale % 2 == 0) {
+                BigDecimal result = BigDecimal.valueOf(1L, strippedScale / 2);
+                if (result.scale() != preferredScale) {
+                    result = result.add(zeroWithFinalPreferredScale, mc);
+                }
+
+                return result;
+            } else {
+                int scaleAdjust;
+                int scale = stripped.scale() - stripped.precision() + 1;
+                if (scale % 2 == 0) {
+                    scaleAdjust = scale;
+                } else {
+                    scaleAdjust = scale - 1;
+                }
+
+                BigDecimal working = stripped.scaleByPowerOfTen(scaleAdjust);
+
+                //assert ONE_TENTH.compareTo(working) <= 0 && working.compareTo(TEN) < 0;
+
+                BigDecimal guess = new BigDecimal(Math.sqrt(working.doubleValue()));
+                int guessPrecision = 15;
+                int originalPrecision = mc.getPrecision();
+                int targetPrecision;
+                if (originalPrecision == 0) {
+                    targetPrecision = stripped.precision() / 2 + 1;
+                } else {
+                    targetPrecision = originalPrecision;
+                }
+
+                BigDecimal approx = guess;
+                int workingPrecision = working.precision();
+
+                do {
+                    int tmpPrecision = Math.max(Math.max(guessPrecision, targetPrecision + 2), workingPrecision);
+                    MathContext mcTmp = new MathContext(tmpPrecision, RoundingMode.HALF_EVEN);
+                    approx = ONE_HALF.multiply(approx.add(working.divide(approx, mcTmp), mcTmp));
+                    guessPrecision *= 2;
+                } while(guessPrecision < targetPrecision + 2);
+
+                RoundingMode targetRm = mc.getRoundingMode();
+                BigDecimal result;
+                if (targetRm != RoundingMode.UNNECESSARY && originalPrecision != 0) {
+                    result = approx.scaleByPowerOfTen(-scaleAdjust / 2).round(mc);
+                } else {
+                    RoundingMode tmpRm = targetRm == RoundingMode.UNNECESSARY ? RoundingMode.DOWN : targetRm;
+                    MathContext mcTmp = new MathContext(targetPrecision, tmpRm);
+                    result = approx.scaleByPowerOfTen(-scaleAdjust / 2).round(mcTmp);
+                    if (bigDecimal.subtract(result.multiply(result)).compareTo(BigDecimal.ZERO) != 0) {
+                        throw new ArithmeticException("Computed square root not exact.");
+                    }
+                }
+
+                if (result.scale() != preferredScale) {
+                    result = result.stripTrailingZeros().add(zeroWithFinalPreferredScale, new MathContext(originalPrecision, RoundingMode.UNNECESSARY));
+                }
+
+                //assert this.squareRootResultAssertions(result, mc);
+
+                return result;
+            }
+        }
     }
 
     /**

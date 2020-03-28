@@ -1,12 +1,11 @@
 /*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements.  See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License.  You may obtain a copy of the License at
+ * Copyright (c) 2020 Thomas Neidhart
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.util;
+package org.netomi.uom.math;
 
 /*
  * Note: this class has been extracted from the Apache Commons Math library.
@@ -34,6 +33,7 @@ import java.text.MessageFormat;
 public final class BigFraction
     extends Number
     implements Comparable<BigFraction>,
+               NativeOperators<BigFraction>,
                Serializable {
     /** A fraction representing "0". */
     public static final BigFraction ZERO = of(0);
@@ -459,6 +459,7 @@ public final class BigFraction
      *            the {@link BigFraction} to add, must not be <code>null</code>.
      * @return a {@link BigFraction} instance with the resulting values.
      */
+    @Override
     public BigFraction add(final BigFraction fraction) {
         if (fraction.numerator.signum() == 0) {
             return this;
@@ -640,6 +641,7 @@ public final class BigFraction
      * @return a {@link BigFraction} instance with the resulting values.
      * @throws ArithmeticException if the fraction to divide by is zero
      */
+    @Override
     public BigFraction divide(final BigFraction fraction) {
         if (fraction.numerator.signum() == 0) {
             throw new FractionException(FractionException.ERROR_ZERO_DENOMINATOR);
@@ -1038,6 +1040,7 @@ public final class BigFraction
      *            the {@code int} to multiply by.
      * @return a {@link BigFraction} instance with the resulting values.
      */
+    @Override
     public BigFraction multiply(final int i) {
         if (i == 0 || numerator.signum() == 0) {
             return ZERO;
@@ -1073,6 +1076,7 @@ public final class BigFraction
      * @param fraction Fraction to multiply by, must not be {@code null}.
      * @return a {@link BigFraction} instance with the resulting values.
      */
+    @Override
     public BigFraction multiply(final BigFraction fraction) {
         if (numerator.signum() == 0 ||
             fraction.numerator.signum() == 0) {
@@ -1110,6 +1114,7 @@ public final class BigFraction
      *
      * @return the negation of this fraction.
      */
+    @Override
     public BigFraction negate() {
         return new BigFraction(numerator.negate(), denominator);
     }
@@ -1125,6 +1130,7 @@ public final class BigFraction
      *            raised.
      * @return \(\mathit{this}^{\mathit{exponent}}\).
      */
+    @Override
     public BigFraction pow(final int exponent) {
         if (exponent == 0) {
             return ONE;
@@ -1214,6 +1220,7 @@ public final class BigFraction
      *
      * @return the reciprocal fraction.
      */
+    @Override
     public BigFraction reciprocal() {
         return new BigFraction(denominator, numerator);
     }
@@ -1273,6 +1280,7 @@ public final class BigFraction
      * @param fraction {@link BigFraction} to subtract, must not be {@code null}.
      * @return a {@link BigFraction} instance with the resulting values
      */
+    @Override
     public BigFraction subtract(final BigFraction fraction) {
         if (fraction.numerator.signum() == 0) {
             return this;
@@ -1316,11 +1324,13 @@ public final class BigFraction
     }
 
     /** {@inheritDoc} */
+    @Override
     public BigFraction zero() {
         return ZERO;
     }
 
     /** {@inheritDoc} */
+    @Override
     public BigFraction one() {
         return ONE;
     }
@@ -1345,35 +1355,6 @@ public final class BigFraction
                     s.substring(0, slashLoc).trim());
             final BigInteger denom = new BigInteger(s.substring(slashLoc + 1).trim());
             return of(num, denom);
-        }
-    }
-
-    /**
-     * Private exception class with constants for frequently used messages.
-     */
-    private static class FractionException extends ArithmeticException {
-
-        /** Error message for overflow during conversion. */
-        static final String ERROR_CONVERSION_OVERFLOW = "Overflow trying to convert {0} to fraction ({1}/{2})";
-        /** Error message when iterative conversion fails. */
-        static final String ERROR_CONVERSION = "Unable to convert {0} to fraction after {1} iterations";
-        /** Error message for overflow by negation. */
-        static final String ERROR_NEGATION_OVERFLOW = "Overflow in fraction {0}/{1}, cannot negate";
-        /** Error message for zero-valued denominator. */
-        static final String ERROR_ZERO_DENOMINATOR = "Denominator must be different from 0";
-
-        /** Serializable version identifier. */
-        private static final long serialVersionUID = 201701191744L;
-
-        /**
-         * Create an exception where the message is constructed by applying
-         * the {@code format()} method from {@code java.text.MessageFormat}.
-         *
-         * @param message  the exception message with replaceable parameters
-         * @param formatArguments the arguments for formatting the message
-         */
-        FractionException(String message, Object... formatArguments) {
-            super(MessageFormat.format(message, formatArguments));
         }
     }
 }

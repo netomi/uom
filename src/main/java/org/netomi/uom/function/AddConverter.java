@@ -19,6 +19,7 @@ import org.netomi.uom.UnitConverter;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
 
 /**
  * A {@code UnitConverter} implementation that converts values by adding a constant
@@ -33,14 +34,14 @@ class AddConverter implements UnitConverter {
     // the offset in double precision, cached.
     private final double     offsetAsDouble;
 
-    public AddConverter(BigDecimal offset) {
-        this.offset          = offset;
+    public AddConverter(BigDecimal value) {
+        this.offset          = value;
         this.offsetAsDouble  = offset.doubleValue();
     }
 
-    public AddConverter(double offset) {
-        this.offset          = BigDecimal.valueOf(offset);
-        this.offsetAsDouble  = offset;
+    public AddConverter(double value) {
+        this.offset          = BigDecimal.valueOf(value);
+        this.offsetAsDouble  = offset.doubleValue();
     }
 
     /**
@@ -86,7 +87,20 @@ class AddConverter implements UnitConverter {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AddConverter that = (AddConverter) o;
+        return Objects.equals(offset, that.offset);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(offset);
+    }
+
+    @Override
     public String toString() {
-        return String.format("AddConverter[offset='%s']", offset.toPlainString());
+        return String.format("(+ x '%s')", offset.toString());
     }
 }

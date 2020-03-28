@@ -16,16 +16,15 @@
 package org.netomi.uom.function;
 
 import org.netomi.uom.UnitConverter;
-import org.netomi.uom.util.BigFraction;
+import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
 
 /**
  * A {@code UnitConverter} implementation that converts values by multiplying
  * them with a constant factor represented as decimal fraction.
- * <p>
- * The rationale behind this design is to
  *
  * @author Thomas Neidhart
  */
@@ -96,7 +95,20 @@ class MultiplyConverter implements UnitConverter {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        MultiplyConverter that = (MultiplyConverter) o;
+        return Objects.equals(multiplier, that.multiplier);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(multiplier);
+    }
+
+    @Override
     public String toString() {
-        return String.format("MultiplyConverter[multiplier='%s']", multiplier.toString());
+        return String.format("(* x '%s')", multiplier);
     }
 }
