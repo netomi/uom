@@ -21,27 +21,38 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
+ * {@code UnitConverter} implementation that converts values by applying
+ * the provided {@link UnitConverter} n times.
+ *
  * @author Thomas Neidhart
  */
 class PowConverter implements UnitConverter {
 
     private final UnitConverter unitConverter;
-    private final int           pow;
+    private final int           exponent;
 
-    PowConverter(UnitConverter unitConverter, int pow) {
+    PowConverter(UnitConverter unitConverter, int exponent) {
         this.unitConverter = unitConverter;
-        this.pow           = pow;
+        this.exponent      = exponent;
+    }
+
+    public UnitConverter getUnitConverter() {
+        return unitConverter;
+    }
+
+    public int getExponent() {
+        return exponent;
     }
 
     @Override
-    public UnitConverter inverse() {
-        return new PowConverter(unitConverter.inverse(), pow);
+    public PowConverter inverse() {
+        return new PowConverter(unitConverter.inverse(), exponent);
     }
 
     @Override
     public double convert(double value) {
         double result = value;
-        for (int i = 0; i < pow; i++) {
+        for (int i = 0; i < exponent; i++) {
             result = unitConverter.convert(result);
         }
         return result;
@@ -50,7 +61,7 @@ class PowConverter implements UnitConverter {
     @Override
     public BigDecimal convert(BigDecimal value, MathContext context) {
         BigDecimal result = value;
-        for (int i = 0; i < pow; i++) {
+        for (int i = 0; i < exponent; i++) {
             result = unitConverter.convert(result, context);
         }
         return result;
@@ -58,6 +69,6 @@ class PowConverter implements UnitConverter {
 
     @Override
     public String toString() {
-        return String.format("(pow '%s' %d))", unitConverter, pow);
+        return String.format("(pow '%s' %d))", unitConverter, exponent);
     }
 }

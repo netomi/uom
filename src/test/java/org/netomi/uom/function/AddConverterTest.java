@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * Unit tests for the {@code AddConverter} class.
+ * Unit tests for the {@link AddConverter} class.
  */
 public class AddConverterTest {
 

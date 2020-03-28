@@ -43,7 +43,8 @@ class SquareRootConverter implements UnitConverter {
     }
 
     @Override
-    public UnitConverter inverse() {
+    public SquareRootConverter inverse() {
+        // Use a fixed root of 2 as only this is supported.
         return new SquareRootConverter(unitConverter.inverse(), 2);
     }
 

@@ -22,9 +22,8 @@ import org.netomi.uom.math.BigFraction;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 /**
- * Unit tests for the {@code MultiplyConverter} class.
+ * Unit tests for the {@link MultiplyConverter} class.
  */
 public class MultiplyConverterTest {
 
