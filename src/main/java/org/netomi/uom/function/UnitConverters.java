@@ -99,12 +99,16 @@ public class UnitConverters {
     public static UnitConverter pow(UnitConverter converter, int exponent) {
         return converter.isIdentity() ? converter :
                exponent == 1          ? converter :
+               exponent == 0          ? new MultiplyConverter(1, 1) :
                exponent > 1           ? new PowConverter(converter, exponent) :
                                         new PowConverter(converter.inverse(), -exponent);
     }
 
     public static UnitConverter root(UnitConverter converter, int n) {
-        return converter.isIdentity() ? converter : new SquareRootConverter(converter, n);
+        return converter.isIdentity() ? converter :
+               n == 1                 ? converter :
+               n == 0                 ? new ConstantConverter(BigFraction.ONE) :
+                                        new RootConverter(converter, n);
     }
 
     public static UnitConverter compose(UnitConverter before, UnitConverter after) {
@@ -131,6 +135,11 @@ public class UnitConverters {
         }
 
         @Override
+        public boolean isLinear() {
+            return true;
+        }
+
+        @Override
         public UnitConverter compose(UnitConverter before) {
             return before;
         }
@@ -139,6 +148,7 @@ public class UnitConverters {
         public UnitConverter andThen(UnitConverter that) {
             return that;
         }
+
 
         @Override
         public UnitConverter inverse() {
@@ -162,6 +172,61 @@ public class UnitConverters {
     }
 
     /**
+     * A converter that returns a constant value.
+     * Not really needed but added for completeness (used for root(x, 0)).
+     */
+    private static class ConstantConverter implements UnitConverter {
+        private final BigFraction constant;
+        private final double      constantAsDouble;
+
+        ConstantConverter(BigFraction value) {
+            this.constant         = value;
+            this.constantAsDouble = value.doubleValue();
+        }
+
+        @Override
+        public boolean isIdentity() {
+            return false;
+        }
+
+        @Override
+        public boolean isLinear() {
+            return false;
+        }
+
+        @Override
+        public UnitConverter compose(UnitConverter before) {
+            return before;
+        }
+
+        @Override
+        public UnitConverter andThen(UnitConverter that) {
+            return that;
+        }
+
+
+        @Override
+        public UnitConverter inverse() {
+            return new ConstantConverter(constant.reciprocal());
+        }
+
+        @Override
+        public double convert(double value) {
+            return constantAsDouble;
+        }
+
+        @Override
+        public BigDecimal convert(BigDecimal value, MathContext context) {
+            return constant.bigDecimalValue(context);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("(constant %s)", constant.toString());
+        }
+    }
+
+    /**
      * A converter that composes 2 {@link UnitConverter} instances.
      */
     private static class ComposeConverter implements UnitConverter {
@@ -176,6 +241,11 @@ public class UnitConverters {
         @Override
         public boolean isIdentity() {
             return before.isIdentity() && after.isIdentity();
+        }
+
+        @Override
+        public boolean isLinear() {
+            return before.isLinear() && after.isLinear();
         }
 
         @Override

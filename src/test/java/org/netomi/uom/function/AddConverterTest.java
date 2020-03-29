@@ -20,8 +20,7 @@ import org.netomi.uom.UnitConverter;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for the {@link AddConverter} class.
@@ -51,6 +50,16 @@ public class AddConverterTest {
 
         assertEquals(100.0, converter.getOffset().doubleValue(), 1e-6);
         assertTrue(new BigDecimal("100.0").compareTo(converter.getOffset()) == 0);
+
+        assertFalse(converter.isLinear());
+    }
+
+    @Test
+    public void convert() {
+        AddConverter converter = new AddConverter(100);
+
+        assertEquals(200.0, converter.convert(100.0), 1e-6);
+        assertEquals(BigDecimal.ONE.add(converter.getOffset()).doubleValue(), converter.convert(BigDecimal.ONE).doubleValue(), 1e-6);
     }
 
     @Test

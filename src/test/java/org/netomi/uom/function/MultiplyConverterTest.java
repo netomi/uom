@@ -20,6 +20,8 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
 import org.netomi.uom.math.BigFraction;
 
+import java.math.BigDecimal;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -57,6 +59,17 @@ public class MultiplyConverterTest {
 
         assertEquals(100.0, converter.getMultiplier().doubleValue(), 1e-6);
         assertTrue(BigFraction.of(100).compareTo(converter.getMultiplier()) == 0);
+
+        assertTrue(converter.isLinear());
+    }
+
+    @Test
+    public void convert() {
+        MultiplyConverter converter = new MultiplyConverter(10, 1);
+
+        assertEquals(200.0, converter.convert(20), 1e-6);
+        assertEquals(BigDecimal.valueOf(20).multiply(converter.getMultiplier().bigDecimalValue()).doubleValue(),
+                     converter.convert(BigDecimal.valueOf(20)).doubleValue(), 1e-6);
     }
 
     @Test

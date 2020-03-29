@@ -29,7 +29,7 @@ import java.math.MathContext;
 public interface UnitConverter {
 
     /**
-     * Returns whether the given {@code UnitConverter} instance performs
+     * Returns whether the given {@link UnitConverter} instance performs
      * an identity conversion.
      *
      * @return {@code true} if this is an identity conversion, {@code false} otherwise.
@@ -39,7 +39,16 @@ public interface UnitConverter {
     }
 
     /**
-     * Returns a {@code UnitConverter} instance that is the inverse of this
+     * Returns whether this {@link UnitConverter} instance is linear.
+     * <p>
+     * Non-linear converters cannot be concatenated with root operations.
+     *
+     * @return {@code true} if this converter is linear, false otherwise.
+     */
+    boolean isLinear();
+
+    /**
+     * Returns a {@link UnitConverter} instance that is the inverse of this
      * instance, such that {@code x == inverse().convert(convert(x))} holds true.
      *
      * @return an inverse converter of this instance
@@ -67,16 +76,16 @@ public interface UnitConverter {
 
     /**
      * Converts the given decimal value with using the
-     * specified {@code MathContext}.
+     * specified {@link MathContext}.
      *
      * @param value    the decimal value to convert.
-     * @param context  the {@code MathContext} to use.
+     * @param context  the {@link MathContext} to use.
      * @return the converted value.
      */
     BigDecimal convert(BigDecimal value, MathContext context);
 
     /**
-     * Returns a composed {@code UnitConverter} that first applies the @{code before}
+     * Returns a composed {@link UnitConverter} that first applies the @{code before}
      * converter to its input, and then applies this converter to the result.
      *
      * The returned converter produces the same output as calling
@@ -90,7 +99,7 @@ public interface UnitConverter {
     }
 
     /**
-     * Returns a composed {@code UnitConverter} that first applies this converter
+     * Returns a composed {@link UnitConverter} that first applies this converter
      * to its input, and then applies the after converter to the result.
      *
      * The returned converter produces the same output as calling

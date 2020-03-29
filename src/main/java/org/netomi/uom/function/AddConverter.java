@@ -52,6 +52,11 @@ class AddConverter implements UnitConverter {
     }
 
     @Override
+    public boolean isLinear() {
+        return false;
+    }
+
+    @Override
     public AddConverter inverse() {
         return new AddConverter(offset.negate());
     }

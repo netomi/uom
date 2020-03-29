@@ -52,6 +52,11 @@ class PowConverter implements UnitConverter {
     }
 
     @Override
+    public boolean isLinear() {
+        return unitConverter.isLinear();
+    }
+
+    @Override
     public PowConverter inverse() {
         return new PowConverter(unitConverter.inverse(), exponent);
     }

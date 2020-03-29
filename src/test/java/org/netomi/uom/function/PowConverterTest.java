@@ -56,13 +56,23 @@ public class PowConverterTest {
 
         assertEquals(100, converter.getExponent());
         assertEquals(UnitConverters.identity(), converter.getUnitConverter());
+
+        assertTrue(converter.isLinear());
+    }
+
+    @Test
+    public void convert() {
+        PowConverter converter = new PowConverter(new MultiplyConverter(10, 1), 2);
+
+        assertEquals(1000.0, converter.convert(10), 1e-6);
+        assertEquals(BigDecimal.valueOf(10).multiply(BigDecimal.TEN.pow(2)).doubleValue(),
+                     converter.convert(BigDecimal.TEN).doubleValue(), 1e-6);
     }
 
     @Test
     public void negate() {
         AddConverter addConverter = new AddConverter(10.0);
-
-        PowConverter converter = new PowConverter(addConverter, 1);
+        PowConverter converter    = new PowConverter(addConverter, 1);
 
         assertEquals(addConverter, converter.getUnitConverter());
 
@@ -87,17 +97,17 @@ public class PowConverterTest {
 
         // Ensure that the delegate converter got inverted.
         assertEquals(-20.0, converter.convert(0), 1e-6);
+        assertEquals(addConverter.inverse(), converter.getUnitConverter());
     }
 
     @Test
     public void andThen() {
         AddConverter addConverter = new AddConverter(10.0);
-
-        PowConverter converter = new PowConverter(addConverter, 2);
+        PowConverter converter    = new PowConverter(addConverter, 2);
 
         UnitConverter unitConverter = converter.andThen(new AddConverter(20.0));
 
-        // x = 2 * 10 + 20
+        // x = (x + 10 + 10) + 20
         assertEquals(40.0, unitConverter.convert(0), 1e-6);
     }
 }

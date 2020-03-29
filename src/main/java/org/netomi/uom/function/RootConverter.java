@@ -22,16 +22,28 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
+ * {@code UnitConverter} implementation that converts values by applying
+ * the nth root of the provided {@link UnitConverter}.
+ * <p>
+ * This class should not be used directly, instead use
+ * {@code UnitConverters#root} to create an instance of this class. Only square
+ * roots are supported atm, special cases like n = 0 are handled by the
+ * factory method.
+ *
  * @author Thomas Neidhart
  */
-class SquareRootConverter implements UnitConverter {
+class RootConverter implements UnitConverter {
 
     private final UnitConverter unitConverter;
     private final double        multiplierRooted;
 
-    SquareRootConverter(UnitConverter unitConverter, int n) {
+    RootConverter(UnitConverter unitConverter, int n) {
         if (n != 2) {
             throw new IllegalArgumentException(String.format("unsupported nth root '%d', only square roots are supported", n));
+        }
+
+        if (!unitConverter.isLinear()) {
+            throw new IllegalArgumentException("performing root operation on non-linear converters not supported");
         }
 
         this.unitConverter = unitConverter;
@@ -53,9 +65,14 @@ class SquareRootConverter implements UnitConverter {
     }
 
     @Override
-    public SquareRootConverter inverse() {
+    public boolean isLinear() {
+        return unitConverter.isLinear();
+    }
+
+    @Override
+    public RootConverter inverse() {
         // Use a fixed root of 2 as only this is supported.
-        return new SquareRootConverter(unitConverter.inverse(), 2);
+        return new RootConverter(unitConverter.inverse(), 2);
     }
 
     @Override

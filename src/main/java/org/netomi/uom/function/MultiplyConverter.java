@@ -60,6 +60,11 @@ class MultiplyConverter implements UnitConverter {
     }
 
     @Override
+    public boolean isLinear() {
+        return true;
+    }
+
+    @Override
     public MultiplyConverter inverse() {
         return new MultiplyConverter(multiplier.reciprocal());
     }

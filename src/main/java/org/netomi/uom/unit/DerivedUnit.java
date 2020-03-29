@@ -216,10 +216,7 @@ public class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
             if (root > 1) {
                 converter = UnitConverters.pow(converter, pow);
-
-                if (root > 1) {
-                    converter = UnitConverters.root(converter, root);
-                }
+                converter = UnitConverters.root(converter, root);
 
                 systemConverter = systemConverter.andThen(converter);
             } else {
