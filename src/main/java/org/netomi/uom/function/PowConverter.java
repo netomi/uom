@@ -36,7 +36,7 @@ class PowConverter implements UnitConverter {
 
     PowConverter(UnitConverter unitConverter, int exponent) {
         if (exponent < 0) {
-            throw new IllegalArgumentException("exponent must be non-negative.");
+            throw new IllegalArgumentException("Exponent must be non-negative.");
         }
 
         this.unitConverter = unitConverter;
@@ -81,6 +81,6 @@ class PowConverter implements UnitConverter {
 
     @Override
     public String toString() {
-        return String.format("(pow '%s' %d))", unitConverter, exponent);
+        return String.format("(pow %d '%s')", exponent, unitConverter);
     }
 }

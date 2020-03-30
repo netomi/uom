@@ -39,11 +39,12 @@ class RootConverter implements UnitConverter {
 
     RootConverter(UnitConverter unitConverter, int n) {
         if (n != 2) {
-            throw new IllegalArgumentException(String.format("unsupported nth root '%d', only square roots are supported", n));
+            throw new IllegalArgumentException(String.format("Unsupported nth root '%d', only n=2 is allowed.", n));
         }
 
         if (!unitConverter.isLinear()) {
-            throw new IllegalArgumentException("performing root operation on non-linear converters not supported");
+            throw new IllegalArgumentException(String.format("Root converter applied to non-linear converter: '%s'",
+                                                             unitConverter));
         }
 
         this.unitConverter = unitConverter;
@@ -89,6 +90,6 @@ class RootConverter implements UnitConverter {
 
     @Override
     public String toString() {
-        return String.format("(* x (sqrt '%s'))", unitConverter);
+        return String.format("(sqrt '%s')", unitConverter);
     }
 }

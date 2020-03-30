@@ -45,7 +45,7 @@ class MultiplyConverter implements UnitConverter {
 
     MultiplyConverter(BigFraction multiplier) {
         if (BigFraction.ZERO.compareTo(multiplier) == 0) {
-            throw new IllegalArgumentException("zero multiplier not allowed.");
+            throw new IllegalArgumentException("Multiplier must be different from 0.");
         }
 
         this.multiplier         = multiplier;
