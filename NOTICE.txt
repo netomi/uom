@@ -3,9 +3,3 @@ Copyright 2020 Thomas Neidhart
 
 This product includes software developed at
 The Apache Software Foundation (http://www.apache.org/).
-
-This product includes code from the Units of Measurement API
-library located at: https://github.com/unitsofmeasurement/unit-api
-
-Units of Measurement API
-Copyright (c) 2014-2020, Jean-Marie Dautelle, Werner Keil, Otavio Santana.
