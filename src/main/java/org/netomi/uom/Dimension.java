@@ -85,8 +85,9 @@ public interface Dimension {
      * <code>root(X<sup>n</sup>, m) = X<sup>n/m</sup></code>
      * for each base dimension X contained in this dimension.
      *
-     * @param n the exponent for the root operation.
+     * @param n the exponent for the root operation (must be a positive integer).
      * @return a new dimension representing the nth root of this dimension.
+     * @throws IllegalArgumentException if n is not a positive integer.
      */
     Dimension root(int n);
 

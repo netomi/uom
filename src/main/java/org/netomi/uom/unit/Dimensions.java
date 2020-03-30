@@ -21,6 +21,7 @@ import org.netomi.uom.util.StringUtil;
 
 import java.text.MessageFormat;
 import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
 /**
@@ -145,6 +146,12 @@ public class Dimensions {
             return new EnumDimension(dimension);
         }
 
+        static Dimension of(EnumMap<Base, Fraction> map) {
+            return map.isEmpty() ?
+                    Dimensions.NONE :
+                    new EnumDimension(map);
+        }
+
         private EnumDimension() {
             dimensionMap = new EnumMap<>(Base.class);
         }
@@ -158,7 +165,7 @@ public class Dimensions {
             dimensionMap = new EnumMap<>(other.dimensionMap);
         }
 
-        private EnumDimension(EnumMap<Base, Fraction> map) {
+        private EnumDimension(Map<Base, Fraction> map) {
             dimensionMap = map;
         }
 
@@ -181,7 +188,7 @@ public class Dimensions {
             }
 
             EnumDimension other = (EnumDimension) multiplicand;
-            return new EnumDimension(combine(this.dimensionMap, other.dimensionMap, fraction -> fraction));
+            return of(combine(this.dimensionMap, other.dimensionMap, fraction -> fraction, Fraction::add));
         }
 
         @Override
@@ -194,21 +201,22 @@ public class Dimensions {
             }
 
             EnumDimension other = (EnumDimension) divisor;
-            return new EnumDimension(combine(this.dimensionMap, other.dimensionMap, Fraction::negate));
+            return of(combine(this.dimensionMap, other.dimensionMap, Fraction::negate, Fraction::subtract));
         }
 
-        private EnumMap<Base, Fraction> combine(Map<Base, Fraction>     first,
-                                                Map<Base, Fraction>     second,
-                                                UnaryOperator<Fraction> operator) {
+        private EnumMap<Base, Fraction> combine(Map<Base, Fraction>      first,
+                                                Map<Base, Fraction>      second,
+                                                UnaryOperator<Fraction>  absentOperator,
+                                                BinaryOperator<Fraction> presentOperator) {
             EnumMap<Base, Fraction> newMap = new EnumMap<>(first);
 
             for (Map.Entry<Base, Fraction> entry : second.entrySet()) {
                 Fraction value = newMap.get(entry.getKey());
 
                 if (value == null) {
-                    value = operator.apply(entry.getValue());
+                    value = absentOperator.apply(entry.getValue());
                 } else {
-                    value = value.add(entry.getValue());
+                    value = presentOperator.apply(value, entry.getValue());
                 }
 
                 if (Fraction.ZERO.compareTo(value) == 0) {
@@ -224,6 +232,10 @@ public class Dimensions {
         @Override
         public Dimension pow(int n) {
             if (n == 1) {
+                return this;
+            }
+
+            if (this == NONE) {
                 return this;
             }
 
@@ -245,6 +257,10 @@ public class Dimensions {
             }
 
             if (n == 1) {
+                return this;
+            }
+
+            if (this == NONE) {
                 return this;
             }
 
