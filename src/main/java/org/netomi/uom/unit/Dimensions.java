@@ -18,43 +18,83 @@ package org.netomi.uom.unit;
 
 import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
+import org.netomi.uom.util.StringUtil;
 
 import java.util.*;
 import java.util.function.UnaryOperator;
 
+/**
+ * A utility class to access the supported set of {@link Dimension} instances.
+ * <p>
+ * {@link org.netomi.uom.SystemOfUnits} implementations may use a distinct subset of
+ * these dimensions, but may not define their own set of dimensions. If a new dimension
+ * is needed, this class should be extended accordingly.
+ *
+ * @author Thomas Neidhart
+ */
 public class Dimensions {
 
-    private static final Set<Dimension> baseDimensions = new HashSet<>();
+    private static final Map<Base, Dimension> baseDimensions = new EnumMap(Base.class);
 
+    // Hide utility class constructor.
     private Dimensions() {}
 
-    private static Dimension addDimension(Dimension dimension) {
-        baseDimensions.add(dimension);
+    private static Dimension addDimension(Base baseDimension) {
+        Dimension dimension = EnumDimension.of(baseDimension);
+        baseDimensions.put(baseDimension, dimension);
         return dimension;
     }
 
-    /**
-     * Returns an unmodifiable {@link Set} containing all supported base dimensions.
-     */
-    public static Set<Dimension> getBaseDimensions() {
-        return Collections.unmodifiableSet(baseDimensions);
+    private static Dimension getDimension(Base baseDimension) {
+        return baseDimensions.get(baseDimension);
     }
 
-    public static final Dimension NONE = EnumDimension.NONE;
+    /**
+     * Returns an unmodifiable {@link Collection} containing all supported base dimensions.
+     */
+    public static Collection<Dimension> getBaseDimensions() {
+        return Collections.unmodifiableCollection(baseDimensions.values());
+    }
 
-    public static final Dimension LENGTH = addDimension(EnumDimension.of(Base.LENGTH));
+    /**
+     * A {@link Dimension} to represent dimensionless quantities / units.
+     */
+    public static final Dimension NONE = EnumDimension.none();
 
-    public static final Dimension TIME = addDimension(EnumDimension.of(Base.TIME));
+    /**
+     * The {@link Dimension} to represent quantities of type length.
+     */
+    public static final Dimension LENGTH = addDimension(Base.LENGTH);
 
-    public static final Dimension TEMPERATURE = addDimension(EnumDimension.of(Base.TEMPERATURE));
+    /**
+     * The {@link Dimension} to represent quantities of type time.
+     */
+    public static final Dimension TIME = addDimension(Base.TIME);
 
-    public static final Dimension ELECTRIC_CURRENT = addDimension(EnumDimension.of(Base.ELECTRIC_CURRENT));
+    /**
+     * The {@link Dimension} to represent quantities of type temperature.
+     */
+    public static final Dimension TEMPERATURE = addDimension(Base.TEMPERATURE);
 
-    public static final Dimension MASS = addDimension(EnumDimension.of(Base.MASS));
+    /**
+     * The {@link Dimension} to represent quantities of type electric current.
+     */
+    public static final Dimension ELECTRIC_CURRENT = addDimension(Base.ELECTRIC_CURRENT);
 
-    public static final Dimension AMOUNT_OF_SUBSTANCE = addDimension(EnumDimension.of(Base.AMOUNT_OF_SUBSTANCE));
+    /**
+     * The {@link Dimension} to represent quantities of type mass.
+     */
+    public static final Dimension MASS = addDimension(Base.MASS);
 
-    public static final Dimension LUMINOUS_INTENSITY = addDimension(EnumDimension.of(Base.LUMINOUS_INTENSITY));
+    /**
+     * The {@link Dimension} to represent quantities of type amount of substance.
+     */
+    public static final Dimension AMOUNT_OF_SUBSTANCE = addDimension(Base.AMOUNT_OF_SUBSTANCE);
+
+    /**
+     * The {@link Dimension} to represent quantities of type luminous intensity.
+     */
+    public static final Dimension LUMINOUS_INTENSITY = addDimension(Base.LUMINOUS_INTENSITY);
 
     private enum Base {
 
@@ -77,27 +117,42 @@ public class Dimensions {
         }
     }
 
+    /**
+     * An immutable implementation of a {@link Dimension} using an {@link EnumMap} to
+     * keep track the base dimensions and their corresponding exponent which comprises
+     * this dimension.
+     * <p>
+     * A dimension is represented in the form:
+     *
+     * <pre>
+     *     dim Q = L<sup>a</sup>M<sup>b</sup>T<sup>c</sup>I<sup>d</sup>Θ<sup>e</sup>N<sup>f</sup>J<sup>g</sup>
+     * </pre>
+     *
+     * whereas each exponent is represented as a fraction.
+     */
     private static class EnumDimension implements Dimension {
 
-        private static final EnumDimension NONE = new EnumDimension();
-
         private final Map<Base, Fraction> dimensionMap;
+
+        static Dimension none() {
+            return new EnumDimension();
+        }
 
         static Dimension of(Base dimension) {
             return new EnumDimension(dimension);
         }
 
-        EnumDimension() {
+        private EnumDimension() {
             dimensionMap = new EnumMap<>(Base.class);
         }
 
-        EnumDimension(Base dimension) {
+        private EnumDimension(Base dimension) {
             this();
             dimensionMap.put(dimension, Fraction.ONE);
         }
 
         private EnumDimension(EnumDimension other) {
-            dimensionMap = new EnumMap<Base, Fraction>(other.dimensionMap);
+            dimensionMap = new EnumMap<>(other.dimensionMap);
         }
 
         private EnumDimension(EnumMap<Base, Fraction> map) {
@@ -186,7 +241,13 @@ public class Dimensions {
 
         @Override
         public Map<Dimension, Fraction> getBaseDimensions() {
-            return null;
+            Map<Dimension, Fraction> baseDimensionMap = new HashMap<>();
+
+            for (Map.Entry<Base, Fraction> entry : dimensionMap.entrySet()) {
+                baseDimensionMap.put(getDimension(entry.getKey()), entry.getValue());
+            }
+
+            return baseDimensionMap;
         }
 
         @Override
@@ -210,12 +271,7 @@ public class Dimensions {
                 sb.append(entry.getKey().symbol);
                 Fraction fraction = entry.getValue();
                 if (Fraction.ONE.compareTo(fraction) != 0) {
-                    sb.append('^');
-                    sb.append(fraction.getNumerator());
-                    if (fraction.getDenominator() != 1) {
-                        sb.append('/');
-                        sb.append(fraction.getDenominator());
-                    }
+                    StringUtil.appendUnicodeString(fraction, sb);
                 }
             }
 
