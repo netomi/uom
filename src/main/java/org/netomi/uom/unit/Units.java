@@ -15,7 +15,6 @@
  */
 package org.netomi.uom.unit;
 
-import org.netomi.uom.Prefix;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.SystemOfUnits;
 import org.netomi.uom.Unit;
@@ -27,7 +26,10 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class Units {
+/**
+ * @author Thomas Neidhart
+ */
+public final class Units {
 
     private static ConcurrentHashMap<Class<? extends Quantity<?>>, Set<Unit<?>>> unitsPerQuantity = new ConcurrentHashMap<>();
 

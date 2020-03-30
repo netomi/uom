@@ -17,7 +17,12 @@ package org.netomi.uom.unit;
 
 import org.netomi.uom.*;
 
-public class Prefixes {
+/**
+ * A utility class to provide access to different {@link Prefix} implementations.
+ *
+ * @author Thomas Neidhart
+ */
+public final class Prefixes {
 
     // Hide utility class.
     private Prefixes() {}

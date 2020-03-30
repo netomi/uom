@@ -22,8 +22,15 @@ import org.netomi.uom.math.Fraction;
 import java.math.BigDecimal;
 import java.util.Map;
 
-
-public class UnitBuilder<Q extends Quantity<Q>> {
+/**
+ * A builder class to construct new {@link Unit} instances from existing
+ * units without as efficient as possible.
+ *
+ * @param <Q> the quantity type
+ *
+ * @author Thomas Neidhart
+ */
+public final class UnitBuilder<Q extends Quantity<Q>> {
 
     private Unit<Q> delegateUnit;
 

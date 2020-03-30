@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.unit;
 
 import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.StringUtil;
 
+import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
@@ -34,7 +34,7 @@ import java.util.function.UnaryOperator;
  */
 public class Dimensions {
 
-    private static final Map<Base, Dimension> baseDimensions = new EnumMap(Base.class);
+    private static final Map<Base, Dimension> baseDimensions = new EnumMap<>(Base.class);
 
     // Hide utility class constructor.
     private Dimensions() {}
@@ -96,6 +96,9 @@ public class Dimensions {
      */
     public static final Dimension LUMINOUS_INTENSITY = addDimension(Base.LUMINOUS_INTENSITY);
 
+    /**
+     * An enum containing supported base dimensions.
+     */
     private enum Base {
 
         LENGTH('L'),
@@ -165,8 +168,16 @@ public class Dimensions {
 
         @Override
         public Dimension multiply(Dimension multiplicand) {
+            Objects.requireNonNull(multiplicand);
+
             if (!(multiplicand instanceof EnumDimension)) {
-                throw new IllegalArgumentException("incompatible dimension");
+                throw new UnsupportedDimensionException(UnsupportedDimensionException.ERROR_UNSUPPORTED_DIMENSION,
+                                                        multiplicand.getClass());
+            }
+
+            // Optimization: NONE * anything = anything
+            if (this == NONE) {
+                return multiplicand;
             }
 
             EnumDimension other = (EnumDimension) multiplicand;
@@ -175,15 +186,20 @@ public class Dimensions {
 
         @Override
         public Dimension divide(Dimension divisor) {
+            Objects.requireNonNull(divisor);
+
             if (!(divisor instanceof EnumDimension)) {
-                throw new IllegalArgumentException("incompatible dimension");
+                throw new UnsupportedDimensionException(UnsupportedDimensionException.ERROR_UNSUPPORTED_DIMENSION,
+                                                        divisor.getClass());
             }
 
             EnumDimension other = (EnumDimension) divisor;
             return new EnumDimension(combine(this.dimensionMap, other.dimensionMap, Fraction::negate));
         }
 
-        private EnumMap<Base, Fraction> combine(Map<Base, Fraction> first, Map<Base, Fraction> second, UnaryOperator<Fraction> operator) {
+        private EnumMap<Base, Fraction> combine(Map<Base, Fraction>     first,
+                                                Map<Base, Fraction>     second,
+                                                UnaryOperator<Fraction> operator) {
             EnumMap<Base, Fraction> newMap = new EnumMap<>(first);
 
             for (Map.Entry<Base, Fraction> entry : second.entrySet()) {
@@ -224,6 +240,10 @@ public class Dimensions {
 
         @Override
         public Dimension root(int n) {
+            if (n <= 0) {
+                throw new IllegalArgumentException("N must be a positive integer.");
+            }
+
             if (n == 1) {
                 return this;
             }
@@ -259,6 +279,7 @@ public class Dimensions {
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
+
             EnumDimension that = (EnumDimension) o;
             return Objects.equals(dimensionMap, that.dimensionMap);
         }
@@ -277,5 +298,26 @@ public class Dimensions {
 
             return sb.toString();
         }
+    }
+
+    private static class UnsupportedDimensionException extends RuntimeException {
+
+        /** Error message for overflow during conversion. */
+        public static final String ERROR_UNSUPPORTED_DIMENSION = "Dimension of type '{0}' not supported.";
+
+        /** Serializable version identifier. */
+        private static final long serialVersionUID = 20200320L;
+
+        /**
+         * Create an exception where the message is constructed by applying
+         * the {@code format()} method from {@code java.text.MessageFormat}.
+         *
+         * @param message         the exception message with replaceable parameters.
+         * @param formatArguments the arguments for formatting the message.
+         */
+        private UnsupportedDimensionException(String message, Object... formatArguments) {
+            super(MessageFormat.format(message, formatArguments));
+        }
+
     }
 }

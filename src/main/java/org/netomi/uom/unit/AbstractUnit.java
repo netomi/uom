@@ -21,12 +21,16 @@ import org.netomi.uom.function.UnitConverters;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+/**
+ * @param <Q> the quantity type
+ * @author Thomas Neidhart
+ */
 abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
 
     @Override
     public UnitConverter getConverterTo(Unit<Q> unit) {
         if (!isCompatible(unit)) {
-            throw new IllegalArgumentException("invalid unit");
+            throw new IncommensurableException(IncommensurableException.ERROR_UNIT_DIMENSION_MISMATCH, this, unit);
         }
 
         UnitConverter thisConverter = getSystemConverter();
@@ -107,18 +111,19 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
 
     @Override
     public boolean isCompatible(Unit<?> that) {
-        // two units are compatible if their dimensions
-        // are equal.
-
+        // Two units are compatible if their dimensions are equal.
         Dimension thisDimension = this.getDimension();
         Dimension thatDimension = that.getDimension();
-        if (thisDimension.equals(thatDimension)) {
-            return true;
-        }
 
+        return thisDimension.equals(thatDimension);
+    }
+
+    @Override
+    public boolean isSystemUnit() {
         return false;
     }
 
+    @Override
     public <T extends Quantity<T>> Unit<T> asType(Class<T> clazz) {
         return (Unit<T>) this;
     }
@@ -141,6 +146,7 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AbstractUnit)) return false;
+
         AbstractUnit<?> otherUnit = (AbstractUnit<?>) o;
         return Objects.equals(getDimension(), otherUnit.getDimension()) &&
                Objects.equals(getSystemConverter(), otherUnit.getSystemConverter());

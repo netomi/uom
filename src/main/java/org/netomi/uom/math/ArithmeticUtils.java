@@ -111,8 +111,7 @@ public final class ArithmeticUtils {
             negatedGcd = a << shift;
         }
         if (negatedGcd == Integer.MIN_VALUE) {
-            throw new NumbersArithmeticException("overflow: gcd({0}, {1}) is 2^31",
-                                              p, q);
+            throw new NumbersArithmeticException("overflow: gcd({0}, {1}) is 2^31", p, q);
         } else {
             return -negatedGcd;
         }

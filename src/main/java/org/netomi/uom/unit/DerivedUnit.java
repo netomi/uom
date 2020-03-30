@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.unit;
 
 import org.netomi.uom.*;
@@ -23,7 +22,12 @@ import org.netomi.uom.math.Fraction;
 import java.util.*;
 import java.util.function.UnaryOperator;
 
-public class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
+/**
+ * @param <Q> the quantity type
+ *
+ * @author Thomas Neidhart
+ */
+class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     private final Element[] elements;
     private final String    symbol;

@@ -26,7 +26,14 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 
-public class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q> {
+/**
+ * Represents a base unit in a given {@link org.netomi.uom.SystemOfUnits}.
+ *
+ * @param <Q> the quantity type of this unit
+ *
+ * @author Thomas Neidhart
+ */
+class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q> {
 
     private final String    symbol;
     private final String    name;
