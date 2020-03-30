@@ -15,8 +15,9 @@
  */
 package org.netomi.uom.unit;
 
-import org.netomi.uom.MetricPrefix;
+import org.netomi.uom.Prefix;
 import org.netomi.uom.Quantity;
+import org.netomi.uom.SystemOfUnits;
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.*;
 
@@ -26,12 +27,19 @@ import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-import static org.netomi.uom.function.UnitConverters.multiply;
-import static org.netomi.uom.function.UnitConverters.shift;
-
 public class Units {
 
     private static ConcurrentHashMap<Class<? extends Quantity<?>>, Set<Unit<?>>> unitsPerQuantity = new ConcurrentHashMap<>();
+
+    // Some globally unique units / constants.
+    public static final Unit<Dimensionless> ONE = new DerivedUnit<>();
+    public static final Unit<Dimensionless> PI  = ONE.multiply(StrictMath.PI);
+
+    // System of Units.
+    public static final SI       SI       = new Units.SI();
+    public static final CGS      CGS      = new Units.CGS();
+    public static final Imperial Imperial = new Units.Imperial();
+    public static final Other    Other    = new Units.Other();
 
     private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<Q> unit, Class<Q> quantityClass) {
         Set<Unit<?>> knownUnits = unitsPerQuantity.get(quantityClass);
@@ -56,12 +64,20 @@ public class Units {
         }
     }
 
-    public static Unit<Dimensionless> ONE = new DerivedUnit<>();
+    public static <Q extends Quantity<Q>> UnitBuilder<Q> buildFrom(Unit<Q> unit) {
+        return new UnitBuilder(unit);
+    }
 
-    public static final Unit<Dimensionless> PI = ONE.multiply(StrictMath.PI);
-
-    public static class SI {
+    /**
+     * The SI system of units.
+     */
+    public static class SI implements SystemOfUnits {
         private SI() {}
+
+        @Override
+        public Type getType() {
+            return Type.SI;
+        }
 
         // Base units of the International System of Units (SI).
         public Unit<Length>          METRE    = addUnit(new BaseUnit<>("m", "METER", Dimensions.LENGTH), Length.class);
@@ -70,72 +86,92 @@ public class Units {
         public Unit<Temperature>     KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN", Dimensions.TEMPERATURE), Temperature.class);
         public Unit<ElectricCurrent> AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE", Dimensions.ELECTRIC_CURRENT), ElectricCurrent.class);
 
-        public Unit<Speed>           METER_PER_SECOND = addUnit(METRE.divide(SECOND).asType(Speed.class).withSymbolAndName("m/s", "METER PER SECOND"), Speed.class);
-        public Unit<Force>           NEWTON   = KILOGRAM.multiply(METRE).divide(SECOND.pow(2)).withSymbolAndName("N", "NEWTON").asType(Force.class);
+        public Unit<Speed>           M_PER_S = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
 
-        public Unit<Energy>          JOULE     = NEWTON.multiply(METRE).asType(Energy.class).withSymbolAndName("J", "JOULE");
-        public Unit<ElectricCharge>  COULOMB   = AMPERE.multiply(SECOND).asType(ElectricCharge.class).withSymbolAndName("C", "COULOMB");
+        public Unit<Force>           NEWTON   = buildFrom(KILOGRAM.multiply(METRE).divide(SECOND.pow(2))).withSymbol("N").withName("NEWTON").forQuantity(Force.class).build();
 
-        public Unit<ElectricPotential> VOLT =  JOULE.divide(COULOMB).asType(ElectricPotential.class).withSymbolAndName("V", "VOLT");
+        public Unit<Energy>            JOULE     = buildFrom(NEWTON.multiply(METRE)) .withSymbol("J").withName("JOULE")  .forQuantity(Energy.class)           .build();
+        public Unit<ElectricCharge>    COULOMB   = buildFrom(AMPERE.multiply(SECOND)).withSymbol("C").withName("COULOMB").forQuantity(ElectricCharge.class)   .build();
+        public Unit<ElectricPotential> VOLT      = buildFrom(JOULE.divide(COULOMB)).withSymbol("V").withName("VOLT")     .forQuantity(ElectricPotential.class).build();
 
         // Constants expressed in SI units.
-        public final Unit<Speed> C                = METER_PER_SECOND.multiply(299792458, 1);
-        public final Unit<?>     COULOMB_CONSTANT = VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND)).multiply(8.987551787368176E9);
+        public final Unit<Speed> C                = buildFrom(M_PER_S).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
+        public final Unit<?>     COULOMB_CONSTANT = buildFrom(VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND))).multipliedBy(8.987551787368176E9).withName("COULOMB CONSTANT").build();
     }
 
-    public static class CGS {
+    /**
+     * The CGS system of units.
+     */
+    public static class CGS implements SystemOfUnits {
         private CGS() {}
 
-        //double COULOMB_CONSTANT = 8.987551787368176E9;
-        //public Unit<Dimensionless> COULOMB_CONSTANT = Units.ONE.multiply(new BigDecimal("8.987551787368176E9"));
+        @Override
+        public Type getType() {
+            return Type.CGS;
+        }
 
-        public Unit<Length> CENTIMETRE = MetricPrefix.CENTI(SI.METRE);
-        public Unit<Mass>   GRAM       = SI.KILOGRAM.multiply(1, 1000).withSymbolAndName("g", "GRAM");
+        public Unit<Length> CENTIMETRE = buildFrom(SI.METRE)   .multipliedBy(1, 100) .withSymbol("cm").withName("CENTIMETER").build();
+        public Unit<Mass>   GRAM       = buildFrom(SI.KILOGRAM).multipliedBy(1, 1000).withSymbol("g") .withName("GRAM")      .build();
         public Unit<Time>   SECOND     = Units.SI.SECOND;
 
-        public Unit<Force>  DYN = GRAM.multiply(CENTIMETRE).divide(SECOND.pow(2)).asType(Force.class).withSymbolAndName("dyn", "DYNE");
+        public Unit<Force>  DYN = buildFrom(GRAM.multiply(CENTIMETRE).divide(SECOND.pow(2))).withSymbol("dyn").withName("DYNE").forQuantity(Force.class).build();
 
         //public Unit<ElectricCharge> STATCOULOMB = SI.COULOMB.divide(SI.C).multiply(1, 10).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
-        public Unit<ElectricCharge> STATCOULOMB = DYN.root(2).multiply(CENTIMETRE).divide(Units.SI.COULOMB_CONSTANT.root(2)).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
-
+        public Unit<ElectricCharge> STATCOULOMB = buildFrom(DYN.root(2).multiply(CENTIMETRE).divide(Units.SI.COULOMB_CONSTANT.root(2))).withSymbol("statC").withName("STATCOULOMB").forQuantity(ElectricCharge.class).build();
     }
 
-    public static class Imperial {
+    /**
+     * The IMPERIAL system of units.
+     */
+    public static class Imperial implements SystemOfUnits {
         private Imperial() {}
 
-        public Unit<Length> YARD  = SI.METRE.multiply(new BigDecimal("0.9144")).withSymbolAndName("yd", "YARD");
-        public Unit<Length> FOOT  = YARD.multiply(1, 3).withSymbolAndName("ft", "FOOT");
-        public Unit<Length> INCH  = FOOT.multiply(1, 12).withSymbolAndName("in", "INCH");
-        public Unit<Length> THOU  = INCH.multiply(1, 1000).withSymbolAndName("th", "THOU");
+        @Override
+        public Type getType() {
+            return Type.IMPERIAL;
+        }
 
-        public Unit<Length> CHAIN   = YARD.multiply(22, 1).withSymbolAndName("ch", "CHAIN");
-        public Unit<Length> FURLONG = CHAIN.multiply(10, 1).withSymbolAndName("fur", "FURLONG");
-        public Unit<Length> MILE    = FURLONG.multiply(8, 1).withSymbolAndName("mi", "MILE");
-        public Unit<Length> LEAGUE  = MILE.multiply(3, 1).withSymbolAndName("lea", "LEAGUE");
+        // length units
+        public Unit<Length> YARD  = buildFrom(SI.METRE).multipliedBy(new BigDecimal("0.9144")).withSymbol("yd").withName("YARD").build();
+        public Unit<Length> FOOT  = buildFrom(YARD)    .multipliedBy(1, 3)                    .withSymbol("ft").withName("FOOT").build();
+        public Unit<Length> INCH  = buildFrom(FOOT)    .multipliedBy(1, 12)                   .withSymbol("in").withName("INCH").build();
+        public Unit<Length> THOU  = buildFrom(INCH)    .multipliedBy(1, 1000)                 .withSymbol("th").withName("THOU").build();
 
-        public Unit<Length> NM     = SI.METRE.multiply(1852, 1).withSymbolAndName("nm", "NAUTICAL MILE");
-        public Unit<Length> CABLE  = NM.multiply(1, 10).withSymbolAndName("cable", "CABLE");
-        public Unit<Length> FATHOM = CABLE.multiply(1, 100).withSymbolAndName("ftm", "FATHOM");
+        public Unit<Length> CHAIN   = buildFrom(YARD)   .multipliedBy(22, 1).withSymbol("ch") .withName("CHAIN")  .build();
+        public Unit<Length> FURLONG = buildFrom(CHAIN)  .multipliedBy(10, 1).withSymbol("fur").withName("FURLONG").build();
+        public Unit<Length> MILE    = buildFrom(FURLONG).multipliedBy(8, 1) .withSymbol("mi") .withName("MILE")   .build();
+        public Unit<Length> LEAGUE  = buildFrom(MILE)   .multipliedBy(3, 1) .withSymbol("lea").withName("LEAGUE") .build();
 
-        public Unit<Mass> POUND = SI.KILOGRAM.multiply(new BigDecimal("0.45359237")).withSymbolAndName("pd", "POUND");
-        public Unit<Mass> GRAIN = POUND.multiply(7000, 1).withSymbolAndName("gr", "GRAIN");
+        // length units for nautical purposes
+        public Unit<Length> NM     = buildFrom(SI.METRE).multipliedBy(1852, 1).withSymbol("nm")   .withName("NAUTICAL MILE").build();
+        public Unit<Length> CABLE  = buildFrom(NM)      .multipliedBy(1, 10)  .withSymbol("cable").withName("CABLE")        .build();
+        public Unit<Length> FATHOM = buildFrom(CABLE)   .multipliedBy(1, 100) .withSymbol("ftm")  .withName("FATHOM")       .build();
+
+        // mass units
+        public Unit<Mass> POUND = buildFrom(SI.KILOGRAM).multipliedBy(new BigDecimal("0.45359237")).withSymbol("pd").withName("POUND").build();
+        public Unit<Mass> GRAIN = buildFrom(POUND)      .multipliedBy(7000, 1)                     .withSymbol("gr").withName("GRAIN").build();
     }
 
-    public static class Other {
+    /**
+     * Any other units not directly linked to a specific system of units.
+     */
+    public static class Other implements SystemOfUnits {
         private Other() {}
 
-        public Unit<Time>  MINUTE = SI.SECOND.multiply(60, 1).withSymbolAndName("m", "MINUTE");
-        public Unit<Time>  HOUR   = MINUTE.multiply(60, 1).withSymbolAndName("h", "HOUR");
+        @Override
+        public Type getType() {
+            return Type.NONE;
+        }
 
-        public Unit<Speed> KMH = addUnit(SI.METRE.withPrefix(MetricPrefix.KILO).divide(HOUR).asType(Speed.class).withSymbolAndName("km/h", "KM PER HOUR"), Speed.class);
+        // time units
+        public Unit<Time>  MINUTE = buildFrom(SI.SECOND).multipliedBy(60, 1).withSymbol("m").withName("MINUTE").build();
+        public Unit<Time>  HOUR   = buildFrom(MINUTE)   .multipliedBy(60, 1).withSymbol("h").withName("HOUR")  .build();
 
-        public Unit<Temperature> CELSIUS    = SI.KELVIN.shift(273.15).withSymbolAndName("°C", "CELSIUS");
-        public Unit<Temperature> FAHRENHEIT = SI.KELVIN.transform(shift(459.67).andThen(multiply(5, 9))).withSymbolAndName("°F", "FAHRENHEIT");
+        // speed units
+        public Unit<Speed> KMH = buildFrom(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR)).withSymbol("km/h").withName("KM PER HOUR").forQuantity(Speed.class).build();
+
+        // temperature units
+        public Unit<Temperature> CELSIUS    = buildFrom(SI.KELVIN).shiftedBy(273.15)                   .withSymbol("°C").withName("CELSIUS")   .build();
+        public Unit<Temperature> FAHRENHEIT = buildFrom(SI.KELVIN).shiftedBy(459.67).multipliedBy(5, 9).withSymbol("°F").withName("FAHRENHEIT").build();
     }
-
-    public static SI       SI       = new Units.SI();
-    public static CGS      CGS      = new Units.CGS();
-    public static Imperial Imperial = new Units.Imperial();
-    public static Other    Other    = new Units.Other();
-
 }

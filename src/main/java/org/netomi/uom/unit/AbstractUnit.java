@@ -57,7 +57,7 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
 
     @Override
     public Unit<Q> transform(UnitConverter converter) {
-        return new TransformedUnit<>(this, converter);
+        return Units.buildFrom(this).transformedBy(converter).build();
     }
 
     @Override
@@ -124,12 +124,17 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
     }
 
     @Override
-    public Unit<Q> withSymbolAndName(String symbol, String name) {
-        return new NamedUnit<>(symbol, name, this);
+    public Unit<Q> withSymbol(String symbol) {
+        return Units.buildFrom(this).withSymbol(symbol).build();
+    }
+
+    @Override
+    public Unit<Q> withName(String name) {
+        return Units.buildFrom(this).withName(name).build();
     }
 
     public Unit<Q> withPrefix(Prefix prefix) {
-        return new PrefixedUnit<>(prefix, this);
+        return Units.buildFrom(this).withPrefix(prefix).build();
     }
 
     @Override

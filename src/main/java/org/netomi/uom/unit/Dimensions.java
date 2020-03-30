@@ -24,13 +24,20 @@ import java.util.function.UnaryOperator;
 
 public class Dimensions {
 
-    private static final List<Dimension> baseDimensions = new ArrayList<>();
+    private static final Set<Dimension> baseDimensions = new HashSet<>();
 
     private Dimensions() {}
 
     private static Dimension addDimension(Dimension dimension) {
         baseDimensions.add(dimension);
         return dimension;
+    }
+
+    /**
+     * Returns an unmodifiable {@link Set} containing all supported base dimensions.
+     */
+    public static Set<Dimension> getBaseDimensions() {
+        return Collections.unmodifiableSet(baseDimensions);
     }
 
     public static final Dimension NONE = EnumDimension.NONE;
@@ -215,9 +222,4 @@ public class Dimensions {
             return sb.toString();
         }
     }
-
-    public static List<Dimension> getBaseDimensions() {
-        return Collections.unmodifiableList(baseDimensions);
-    }
-
 }

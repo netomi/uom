@@ -13,30 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.unit;
+package org.netomi.uom;
 
-import org.netomi.uom.Quantity;
-import org.netomi.uom.Unit;
-
-class NamedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
-
-    private final String  symbol;
-    private final String  name;
-
-    public NamedUnit(String symbol, String name, Unit<Q> delegateUnit) {
-        super(delegateUnit);
-
-        this.symbol       = symbol;
-        this.name         = name;
+public interface SystemOfUnits {
+    enum Type {
+        SI,
+        CGS,
+        IMPERIAL,
+        NONE
     }
 
-    @Override
-    public String getSymbol() {
-        return symbol;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
+    Type getType();
 }

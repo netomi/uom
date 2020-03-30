@@ -62,7 +62,9 @@ public interface Unit<Q extends Quantity<Q>> {
 
     <T extends Quantity<T>> Unit<T> asType(Class<T> clazz);
 
-    Unit<Q> withSymbolAndName(String symbol, String name);
+    Unit<Q> withSymbol(String symbol);
+
+    Unit<Q> withName(String name);
 
     Unit<Q> withPrefix(Prefix prefix);
 }
