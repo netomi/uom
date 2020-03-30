@@ -90,6 +90,6 @@ class RootConverter implements UnitConverter {
 
     @Override
     public String toString() {
-        return String.format("(sqrt '%s')", unitConverter);
+        return String.format("(root %d '%s')", getN(), unitConverter);
     }
 }

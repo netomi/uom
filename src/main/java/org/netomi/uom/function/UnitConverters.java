@@ -222,7 +222,7 @@ public class UnitConverters {
 
         @Override
         public String toString() {
-            return String.format("(constant %s)", constant.toString());
+            return String.format("(constant '%s')", constant.toString());
         }
     }
 
@@ -279,7 +279,7 @@ public class UnitConverters {
 
         @Override
         public String toString() {
-            return String.format("(compose %s %s)", after, before);
+            return String.format("(compose '%s' '%s')", after, before);
         }
     }
 }
