@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'jacoco'
+    id 'com.github.kt3k.coveralls' version '2.8.4'
 }
 
 group 'org.netomi.uom'
@@ -24,15 +25,10 @@ test {
     }
 }
 
-jacoco {
-    // toolVersion = "0.8.5"
-}
-
 jacocoTestReport {
     reports {
-        xml.enabled true
-        csv.enabled false
-        // html.destination file("${buildDir}/jacocoHtml")
+        xml.enabled  = true
+        html.enabled = true
     }
 }
 
