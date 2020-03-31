@@ -16,6 +16,7 @@
 package org.netomi.uom;
 
 import org.netomi.uom.math.Fraction;
+import org.netomi.uom.unit.Dimension;
 
 import java.math.BigDecimal;
 import java.util.Map;

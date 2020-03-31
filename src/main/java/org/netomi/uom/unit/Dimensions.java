@@ -15,11 +15,9 @@
  */
 package org.netomi.uom.unit;
 
-import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.StringUtil;
 
-import java.text.MessageFormat;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
@@ -37,16 +35,57 @@ public class Dimensions {
 
     private static final Map<Base, Dimension> baseDimensions = new EnumMap<>(Base.class);
 
+    /**
+     * A {@link Dimension} to represent dimensionless quantities / units.
+     */
+    public static final Dimension NONE = EnumDimension.empty();
+
+    /**
+     * The {@link Dimension} to represent quantities of type length.
+     */
+    public static final Dimension LENGTH = addBaseDimension(Base.LENGTH);
+
+    /**
+     * The {@link Dimension} to represent quantities of type time.
+     */
+    public static final Dimension TIME = addBaseDimension(Base.TIME);
+
+    /**
+     * The {@link Dimension} to represent quantities of type temperature.
+     */
+    public static final Dimension TEMPERATURE = addBaseDimension(Base.TEMPERATURE);
+
+    /**
+     * The {@link Dimension} to represent quantities of type electric current.
+     */
+    public static final Dimension ELECTRIC_CURRENT = addBaseDimension(Base.ELECTRIC_CURRENT);
+
+    /**
+     * The {@link Dimension} to represent quantities of type mass.
+     */
+    public static final Dimension MASS = addBaseDimension(Base.MASS);
+
+    /**
+     * The {@link Dimension} to represent quantities of type amount of substance.
+     */
+    public static final Dimension AMOUNT_OF_SUBSTANCE = addBaseDimension(Base.AMOUNT_OF_SUBSTANCE);
+
+    /**
+     * The {@link Dimension} to represent quantities of type luminous intensity.
+     */
+    public static final Dimension LUMINOUS_INTENSITY = addBaseDimension(Base.LUMINOUS_INTENSITY);
+
+
     // Hide utility class constructor.
     private Dimensions() {}
 
-    private static Dimension addDimension(Base baseDimension) {
+    private static Dimension addBaseDimension(Base baseDimension) {
         Dimension dimension = EnumDimension.of(baseDimension);
         baseDimensions.put(baseDimension, dimension);
         return dimension;
     }
 
-    private static Dimension getDimension(Base baseDimension) {
+    static Dimension getBaseDimension(Base baseDimension) {
         return baseDimensions.get(baseDimension);
     }
 
@@ -58,50 +97,9 @@ public class Dimensions {
     }
 
     /**
-     * A {@link Dimension} to represent dimensionless quantities / units.
-     */
-    public static final Dimension NONE = EnumDimension.none();
-
-    /**
-     * The {@link Dimension} to represent quantities of type length.
-     */
-    public static final Dimension LENGTH = addDimension(Base.LENGTH);
-
-    /**
-     * The {@link Dimension} to represent quantities of type time.
-     */
-    public static final Dimension TIME = addDimension(Base.TIME);
-
-    /**
-     * The {@link Dimension} to represent quantities of type temperature.
-     */
-    public static final Dimension TEMPERATURE = addDimension(Base.TEMPERATURE);
-
-    /**
-     * The {@link Dimension} to represent quantities of type electric current.
-     */
-    public static final Dimension ELECTRIC_CURRENT = addDimension(Base.ELECTRIC_CURRENT);
-
-    /**
-     * The {@link Dimension} to represent quantities of type mass.
-     */
-    public static final Dimension MASS = addDimension(Base.MASS);
-
-    /**
-     * The {@link Dimension} to represent quantities of type amount of substance.
-     */
-    public static final Dimension AMOUNT_OF_SUBSTANCE = addDimension(Base.AMOUNT_OF_SUBSTANCE);
-
-    /**
-     * The {@link Dimension} to represent quantities of type luminous intensity.
-     */
-    public static final Dimension LUMINOUS_INTENSITY = addDimension(Base.LUMINOUS_INTENSITY);
-
-    /**
      * An enum containing supported base dimensions.
      */
     private enum Base {
-
         LENGTH('L'),
         MASS('M'),
         TIME('T'),
@@ -121,29 +119,16 @@ public class Dimensions {
         }
     }
 
-    /**
-     * An immutable implementation of a {@link Dimension} using an {@link EnumMap} to
-     * keep track the base dimensions and their corresponding exponent which comprises
-     * this dimension.
-     * <p>
-     * A dimension is represented in the form:
-     *
-     * <pre>
-     *     dim Q = L<sup>a</sup>M<sup>b</sup>T<sup>c</sup>I<sup>d</sup>Θ<sup>e</sup>N<sup>f</sup>J<sup>g</sup>
-     * </pre>
-     *
-     * whereas each exponent is represented as a fraction.
-     */
-    private static class EnumDimension implements Dimension {
+    private static class EnumDimension extends Dimension {
 
-        private final Map<Base, Fraction> dimensionMap;
+        private final EnumMap<Base, Fraction> dimensionMap;
 
-        static Dimension none() {
-            return new EnumDimension();
+        static Dimension empty() {
+            return new EnumDimension(new EnumMap<>(Base.class));
         }
 
-        static Dimension of(Base dimension) {
-            return new EnumDimension(dimension);
+        static Dimension of(Base baseDimension) {
+            return new EnumDimension(baseDimension);
         }
 
         static Dimension of(EnumMap<Base, Fraction> map) {
@@ -152,21 +137,17 @@ public class Dimensions {
                     new EnumDimension(map);
         }
 
-        private EnumDimension() {
+        EnumDimension(EnumDimension other) {
+            this(other.dimensionMap);
+        }
+
+        EnumDimension(Base baseDimension) {
             dimensionMap = new EnumMap<>(Base.class);
+            dimensionMap.put(baseDimension, Fraction.ONE);
         }
 
-        private EnumDimension(Base dimension) {
-            this();
-            dimensionMap.put(dimension, Fraction.ONE);
-        }
-
-        private EnumDimension(EnumDimension other) {
-            dimensionMap = new EnumMap<>(other.dimensionMap);
-        }
-
-        private EnumDimension(Map<Base, Fraction> map) {
-            dimensionMap = map;
+        EnumDimension(Map<Base, Fraction> map) {
+            dimensionMap = new EnumMap<>(map);
         }
 
         private EnumDimension copy() {
@@ -177,37 +158,30 @@ public class Dimensions {
         public Dimension multiply(Dimension multiplicand) {
             Objects.requireNonNull(multiplicand);
 
-            if (!(multiplicand instanceof EnumDimension)) {
-                throw new UnsupportedDimensionException(UnsupportedDimensionException.ERROR_UNSUPPORTED_DIMENSION,
-                                                        multiplicand.getClass());
-            }
-
             // Optimization: NONE * anything = anything
             if (this == NONE) {
                 return multiplicand;
             }
 
-            EnumDimension other = (EnumDimension) multiplicand;
-            return of(combine(this.dimensionMap, other.dimensionMap, fraction -> fraction, Fraction::add));
+            // the other instance must be of type EnumDimension.
+            EnumDimension that = (EnumDimension) multiplicand;
+            return of(combine(this.dimensionMap, that.dimensionMap, fraction -> fraction, Fraction::add));
         }
 
         @Override
         public Dimension divide(Dimension divisor) {
             Objects.requireNonNull(divisor);
 
-            if (!(divisor instanceof EnumDimension)) {
-                throw new UnsupportedDimensionException(UnsupportedDimensionException.ERROR_UNSUPPORTED_DIMENSION,
-                                                        divisor.getClass());
-            }
-
-            EnumDimension other = (EnumDimension) divisor;
-            return of(combine(this.dimensionMap, other.dimensionMap, Fraction::negate, Fraction::subtract));
+            // the other instance must be of type EnumDimension.
+            EnumDimension that = (EnumDimension) divisor;
+            return of(combine(this.dimensionMap, that.dimensionMap, Fraction::negate, Fraction::subtract));
         }
 
-        private EnumMap<Base, Fraction> combine(Map<Base, Fraction>      first,
-                                                Map<Base, Fraction>      second,
+        private EnumMap<Base, Fraction> combine(EnumMap<Base, Fraction>  first,
+                                                EnumMap<Base, Fraction>  second,
                                                 UnaryOperator<Fraction>  absentOperator,
                                                 BinaryOperator<Fraction> presentOperator) {
+
             EnumMap<Base, Fraction> newMap = new EnumMap<>(first);
 
             for (Map.Entry<Base, Fraction> entry : second.entrySet()) {
@@ -266,7 +240,7 @@ public class Dimensions {
 
             EnumDimension newDimension = this.copy();
 
-            for (Map.Entry<Base, Fraction> entry : dimensionMap.entrySet()) {
+            for (Map.Entry<? extends Base, Fraction> entry : dimensionMap.entrySet()) {
                 Fraction value = newDimension.dimensionMap.get(entry.getKey());
                 value = value.multiply(Fraction.of(1, n));
                 newDimension.dimensionMap.put(entry.getKey(), value);
@@ -279,8 +253,8 @@ public class Dimensions {
         public Map<Dimension, Fraction> getBaseDimensions() {
             Map<Dimension, Fraction> baseDimensionMap = new HashMap<>();
 
-            for (Map.Entry<Base, Fraction> entry : dimensionMap.entrySet()) {
-                baseDimensionMap.put(getDimension(entry.getKey()), entry.getValue());
+            for (Map.Entry<? extends Base, Fraction> entry : dimensionMap.entrySet()) {
+                baseDimensionMap.put(getBaseDimension(entry.getKey()), entry.getValue());
             }
 
             return baseDimensionMap;
@@ -305,7 +279,7 @@ public class Dimensions {
             StringBuilder sb = new StringBuilder();
 
             for (Map.Entry<Base, Fraction> entry : dimensionMap.entrySet()) {
-                sb.append(entry.getKey().symbol);
+                sb.append(entry.getKey().getSymbol());
                 Fraction fraction = entry.getValue();
                 if (Fraction.ONE.compareTo(fraction) != 0) {
                     StringUtil.appendUnicodeString(fraction, sb);
@@ -314,26 +288,5 @@ public class Dimensions {
 
             return sb.toString();
         }
-    }
-
-    private static class UnsupportedDimensionException extends RuntimeException {
-
-        /** Error message for overflow during conversion. */
-        public static final String ERROR_UNSUPPORTED_DIMENSION = "Dimension of type '{0}' not supported.";
-
-        /** Serializable version identifier. */
-        private static final long serialVersionUID = 20200320L;
-
-        /**
-         * Create an exception where the message is constructed by applying
-         * the {@code format()} method from {@code java.text.MessageFormat}.
-         *
-         * @param message         the exception message with replaceable parameters.
-         * @param formatArguments the arguments for formatting the message.
-         */
-        private UnsupportedDimensionException(String message, Object... formatArguments) {
-            super(MessageFormat.format(message, formatArguments));
-        }
-
     }
 }

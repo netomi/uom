@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom;
+package org.netomi.uom.unit;
 
 import org.netomi.uom.math.Fraction;
 
@@ -30,15 +30,16 @@ import java.util.Map;
  *
  * with L, M, T, I, Θ, N and J representing the base dimensions with their respective dimensional exponent
  * as a fraction.
- * <p>
- * Note: users of the library are not supposed to create their own implementations of this interface but rather
- * extend the set of base dimensions as defined in the {@link org.netomi.uom.unit.Dimensions} class.
  *
  * @see <a href="https://en.wikipedia.org/wiki/Dimensional_analysis">Wikipedia: Dimensional analysis</a>
  *
  * @author Thomas Neidhart
  */
-public interface Dimension {
+public abstract class Dimension {
+
+    // Make default constructor package-private to
+    // prevent subclassing outside this package.
+    Dimension() {}
 
     /**
      * Returns a new dimension that represents the multiplication of this dimension with the
@@ -51,7 +52,7 @@ public interface Dimension {
      * @param multiplicand the dimension to multiply with his dimension.
      * @return a new dimension representing the multiplication of this dimension with the other.
      */
-    Dimension multiply(Dimension multiplicand);
+    public abstract Dimension multiply(Dimension multiplicand);
 
     /**
      * Returns a new dimension that represents the division of this dimension with the
@@ -64,7 +65,7 @@ public interface Dimension {
      * @param divisor the dimension to multiply with his dimension.
      * @return a new dimension representing the division of this dimension with the other.
      */
-    Dimension divide(Dimension divisor);
+    public abstract Dimension divide(Dimension divisor);
 
     /**
      * Returns a new dimension that represents the nth power of this dimension.
@@ -76,7 +77,7 @@ public interface Dimension {
      * @param n the exponent for the power operation.
      * @return a new dimension representing the nth power of this dimension.
      */
-    Dimension pow(int n);
+    public abstract Dimension pow(int n);
 
     /**
      * Returns a new dimension that represents the nth root of this dimension.
@@ -89,7 +90,7 @@ public interface Dimension {
      * @return a new dimension representing the nth root of this dimension.
      * @throws IllegalArgumentException if n is not a positive integer.
      */
-    Dimension root(int n);
+    public abstract Dimension root(int n);
 
     /**
      * Returns a new {@link Map} containing mappings for each base dimension
@@ -101,5 +102,13 @@ public interface Dimension {
      *
      * @return a new {@link Map} containing the base dimensions of this dimension.
      */
-    Map<Dimension, Fraction> getBaseDimensions();
+    public abstract Map<Dimension, Fraction> getBaseDimensions();
+
+    // indicate that the actual implementation implements {@code hashCode}.
+    @Override
+    public abstract int hashCode();
+
+    // indicate that the actual implementation implements {@code equals}.
+    @Override
+    public abstract boolean equals(Object o);
 }

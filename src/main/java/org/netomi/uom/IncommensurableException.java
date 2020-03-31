@@ -15,6 +15,8 @@
  */
 package org.netomi.uom;
 
+import org.netomi.uom.unit.Dimension;
+
 import java.text.MessageFormat;
 
 /**

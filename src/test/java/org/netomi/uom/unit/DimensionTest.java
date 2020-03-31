@@ -16,7 +16,6 @@
 package org.netomi.uom.unit;
 
 import org.junit.jupiter.api.Test;
-import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 
 import java.util.Map;

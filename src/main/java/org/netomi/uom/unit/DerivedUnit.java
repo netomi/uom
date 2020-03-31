@@ -20,7 +20,6 @@ import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
 
 import java.util.*;
-import java.util.function.UnaryOperator;
 
 /**
  * @param <Q> the quantity type
