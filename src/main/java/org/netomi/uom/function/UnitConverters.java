@@ -20,6 +20,7 @@ import org.netomi.uom.math.ArithmeticUtils;
 import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
 
@@ -78,6 +79,10 @@ public class UnitConverters {
         return numerator == denominator ? identity() : multiply(BigFraction.of(numerator, denominator));
     }
 
+    public static UnitConverter multiply(BigInteger numerator, BigInteger denominator) {
+        return numerator.compareTo(denominator) == 0 ? identity() : multiply(BigFraction.of(numerator, denominator));
+    }
+
     static UnitConverter multiply(BigFraction multiplicand) {
         return BigFraction.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
     }
@@ -88,11 +93,23 @@ public class UnitConverters {
         }
 
         if (exponent > 0) {
-            int value = ArithmeticUtils.pow(base, exponent);
-            return multiply(value, 1);
+            try {
+                long value = ArithmeticUtils.pow((long) base, exponent);
+                return multiply(value, 1l);
+            } catch (ArithmeticException ex) {
+                // long overflow.
+                BigInteger numerator = BigInteger.valueOf(base).pow(exponent);
+                return multiply(numerator, BigInteger.ONE);
+            }
         } else {
-            int value = ArithmeticUtils.pow(base, -exponent);
-            return multiply(1, value);
+            try {
+                long value = ArithmeticUtils.pow((long) base, -exponent);
+                return multiply(1l, value);
+            } catch (ArithmeticException ex) {
+                // long overflow.
+                BigInteger denominator = BigInteger.valueOf(base).pow(-exponent);
+                return multiply(BigInteger.ONE, denominator);
+            }
         }
     }
 
