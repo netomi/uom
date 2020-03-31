@@ -100,32 +100,32 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
     }
 
     public UnitBuilder<Q> shiftedBy(double offset) {
-        converterToParent = converterToParent.andThen(UnitConverters.shift(offset));
+        transformedBy(UnitConverters.shift(offset));
         return this;
     }
 
     public UnitBuilder<Q> shiftedBy(BigDecimal offset) {
-        converterToParent = converterToParent.andThen(UnitConverters.shift(offset));
+        transformedBy(UnitConverters.shift(offset));
         return this;
     }
 
     public UnitBuilder<Q> multipliedBy(double multiplicand) {
-        converterToParent = converterToParent.andThen(UnitConverters.multiply(multiplicand));
+        transformedBy(UnitConverters.multiply(multiplicand));
         return this;
     }
 
     public UnitBuilder<Q> multipliedBy(BigDecimal multiplicand) {
-        converterToParent = converterToParent.andThen(UnitConverters.multiply(multiplicand));
+        transformedBy(UnitConverters.multiply(multiplicand));
         return this;
     }
 
     public UnitBuilder<Q> multipliedBy(long numerator, long denominator) {
-        converterToParent = converterToParent.andThen(UnitConverters.multiply(numerator, denominator));
+        transformedBy(UnitConverters.multiply(numerator, denominator));
         return this;
     }
 
     public UnitBuilder<Q> transformedBy(UnitConverter unitConverter) {
-        converterToParent = converterToParent.andThen(unitConverter);
+        converterToParent = converterToParent.compose(unitConverter);
         return this;
     }
 
@@ -159,16 +159,36 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
         @Override
         public String getSymbol() {
-            return symbol != null ? symbol :
-                   prefix != null ? prefix.getSymbol() + delegateUnit.getSymbol() :
-                                    delegateUnit.getSymbol();
+            StringBuilder sb = new StringBuilder();
+
+            if (prefix != null) {
+                sb.append(prefix.getSymbol());
+            }
+
+            if (symbol != null) {
+                sb.append(symbol);
+            } else {
+                sb.append(delegateUnit.getSymbol());
+            }
+
+            return sb.toString();
         }
 
         @Override
         public String getName() {
-            return name   != null ? name :
-                   prefix != null ? prefix.getName() + delegateUnit.getName() :
-                                    delegateUnit.getName();
+            StringBuilder sb = new StringBuilder();
+
+            if (prefix != null) {
+                sb.append(prefix.getName());
+            }
+
+            if (name != null) {
+                sb.append(name);
+            } else {
+                sb.append(delegateUnit.getName());
+            }
+
+            return sb.toString();
         }
 
         @Override

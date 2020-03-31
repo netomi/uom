@@ -19,8 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.Prefix;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.UnitConverter;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Temperature;
 
 import java.math.BigDecimal;
 
@@ -91,6 +93,50 @@ public class UnitBuilderTest {
         assertEquals("10^4*" + parentUnit.getName(), unit.getName());
         assertEquals(UnitConverters.multiply(10000, 1).andThen(parentUnit.getConverterToAny(Units.Imperial.YARD)),
                      unit.getConverterToAny(Units.Imperial.YARD));
+    }
+
+    @Test
+    public void prefixWithNonLinearConverter() {
+        Unit<Temperature> mC = Units.Other.CELSIUS.withPrefix(Prefixes.Metric.MILLI);
+
+        UnitConverter withPrefix    = mC.getConverterTo(Units.SI.KELVIN);
+        UnitConverter withoutPrefix = Units.Other.CELSIUS.getConverterTo(Units.SI.KELVIN);
+
+        // 0.01 C converted to K should be equal to 10 mC.
+        assertEquals(withoutPrefix.convert(10 * 1e-3), withPrefix.convert(10), 1e-6);
+        // 10 K converted to C should be 1e3 in mC.
+        assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-3, 1e-6);
+
+        // apply milli prefix again to get microdegree celsius.
+        Unit<Temperature> µC = mC.withPrefix(Prefixes.Metric.MILLI);
+
+        withPrefix    = µC.getConverterTo(Units.SI.KELVIN);
+        withoutPrefix = Units.Other.CELSIUS.getConverterTo(Units.SI.KELVIN);
+
+        assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
+        assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);
+    }
+
+    @Test
+    public void prefixWithLinearConverter() {
+        Unit<Length> mm = Units.SI.METRE.withPrefix(Prefixes.Metric.MILLI);
+
+        UnitConverter withPrefix    = mm.getConverterTo(Units.Imperial.YARD);
+        UnitConverter withoutPrefix = Units.SI.METRE.getConverterTo(Units.Imperial.YARD);
+
+        // 0.02 m converted to yd should be equal to 20 mm.
+        assertEquals(withoutPrefix.convert(20 * 1e-3), withPrefix.convert(20), 1e-6);
+        // 20 yd converted to m should be 1e3 in mm.
+        assertEquals(withoutPrefix.inverse().convert(20), withPrefix.inverse().convert(20) * 1e-3, 1e-6);
+
+        // apply milli prefix again to get micrometer.
+        Unit<Length> µm = mm.withPrefix(Prefixes.Metric.MILLI);
+
+        withPrefix    = µm.getConverterTo(Units.Imperial.YARD);
+        withoutPrefix = Units.SI.METRE.getConverterTo(Units.Imperial.YARD);
+
+        assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
+        assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);
     }
 
     @Test
