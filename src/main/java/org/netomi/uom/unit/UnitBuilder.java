@@ -77,7 +77,7 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
             // Reset any prefix if the combined exponent is zero.
             if (combinedExponent == 0) {
-                transformedBy(UnitConverters.pow(previousPrefix.getBase(), -previousPrefix.getExponent()));
+                compose(UnitConverters.pow(previousPrefix.getBase(), -previousPrefix.getExponent()));
                 this.prefix         = null;
                 this.previousPrefix = null;
                 return this;
@@ -85,8 +85,8 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
             Prefix combinedPrefix = prefix.withExponent(combinedExponent);
             if (combinedPrefix != null) {
-                transformedBy(UnitConverters.pow(previousPrefix.getBase(),
-                              combinedPrefix.getExponent() - previousPrefix.getExponent()));
+                compose(UnitConverters.pow(previousPrefix.getBase(),
+                        combinedPrefix.getExponent() - previousPrefix.getExponent()));
                 this.prefix         = combinedPrefix;
                 this.previousPrefix = combinedPrefix;
                 return this;
@@ -95,7 +95,7 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
         this.prefix         = prefix;
         this.previousPrefix = prefix;
-        transformedBy(UnitConverters.pow(prefix.getBase(), prefix.getExponent()));
+        compose(UnitConverters.pow(prefix.getBase(), prefix.getExponent()));
         return this;
     }
 
@@ -125,6 +125,11 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
     }
 
     public UnitBuilder<Q> transformedBy(UnitConverter unitConverter) {
+        converterToParent = converterToParent.andThen(unitConverter);
+        return this;
+    }
+
+    private UnitBuilder<Q> compose(UnitConverter unitConverter) {
         converterToParent = converterToParent.compose(unitConverter);
         return this;
     }
