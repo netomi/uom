@@ -36,6 +36,8 @@ public interface Unit<Q extends Quantity<Q>> {
 
     UnitConverter getConverterTo(Unit<Q> unit);
 
+    UnitConverter getConverterToAny(Unit<?> unit);
+
     Unit<Q> shift(double offset);
 
     Unit<Q> multiply(double multiplier);

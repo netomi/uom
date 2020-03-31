@@ -40,6 +40,11 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
     }
 
     @Override
+    public UnitConverter getConverterToAny(Unit<?> unit) {
+        return getConverterTo((Unit) unit);
+    }
+
+    @Override
     public Unit<Q> shift(double offset) {
         return transform(UnitConverters.shift(offset));
     }

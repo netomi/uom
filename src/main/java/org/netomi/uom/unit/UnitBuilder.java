@@ -71,17 +71,25 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
     public UnitBuilder<Q> withPrefix(Prefix prefix) {
         // If the delegate unit already contains a prefix,
         // try to combine it with this one.
-        if (previousPrefix != null) {
+        if (previousPrefix != null &&
+            previousPrefix.getClass().equals(prefix.getClass())) {
             int combinedExponent = previousPrefix.getExponent() + prefix.getExponent();
 
+            // Reset any prefix if the combined exponent is zero.
             if (combinedExponent == 0) {
-                this.prefix = null;
+                transformedBy(UnitConverters.pow(previousPrefix.getBase(), -previousPrefix.getExponent()));
+                this.prefix         = null;
+                this.previousPrefix = null;
                 return this;
             }
 
             Prefix combinedPrefix = prefix.withExponent(combinedExponent);
             if (combinedPrefix != null) {
-                prefix = combinedPrefix;
+                transformedBy(UnitConverters.pow(previousPrefix.getBase(),
+                              combinedPrefix.getExponent() - previousPrefix.getExponent()));
+                this.prefix         = combinedPrefix;
+                this.previousPrefix = combinedPrefix;
+                return this;
             }
         }
 

@@ -418,7 +418,7 @@ public final class Prefixes {
 
         @Override
         public String getName() {
-            return String.format("%d^%d", base, exponent);
+            return String.format("%d^%d*", base, exponent);
         }
 
         @Override
