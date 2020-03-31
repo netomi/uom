@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.unit;
 
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.Prefix;
+import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.quantity.Length;
@@ -26,13 +26,20 @@ import java.math.BigDecimal;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Unit tests for the {@link UnitBuilder} class.
+ */
 public class UnitBuilderTest {
+
+    private static <Q extends Quantity<Q>> UnitBuilder<Q> buildFrom(Unit<Q> unit) {
+        return new UnitBuilder<>(unit);
+    }
 
     @Test
     public void symbol() {
         Unit<?> parentUnit = Units.SI.METRE;
 
-        Unit<?> unit = Units.buildFrom(parentUnit).withSymbol("sym").build();
+        Unit<?> unit = buildFrom(parentUnit).withSymbol("sym").build();
 
         assertEquals("sym", unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
@@ -43,7 +50,7 @@ public class UnitBuilderTest {
     public void name() {
         Unit<?> parentUnit = Units.SI.METRE;
 
-        Unit<?> unit = Units.buildFrom(parentUnit).withName("MY METER").build();
+        Unit<?> unit = buildFrom(parentUnit).withName("MY METER").build();
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals("MY METER", unit.getName());
@@ -55,7 +62,7 @@ public class UnitBuilderTest {
         Prefix  prefix = Prefixes.Metric.KILO;
         Unit<?> parentUnit = Units.SI.METRE;
 
-        Unit<?> km = Units.buildFrom(parentUnit).withPrefix(prefix).build();
+        Unit<?> km = buildFrom(parentUnit).withPrefix(prefix).build();
 
         assertEquals(prefix.getSymbol() + parentUnit.getSymbol(), km.getSymbol());
         assertEquals(prefix.getName() + parentUnit.getName(), km.getName());
@@ -63,14 +70,14 @@ public class UnitBuilderTest {
                      km.getConverterToAny(Units.Imperial.YARD));
 
         // MILLI(KILO(m)) = m
-        Unit<?> unit = Units.buildFrom(km).withPrefix(Prefixes.Metric.MILLI).build();
+        Unit<?> unit = buildFrom(km).withPrefix(Prefixes.Metric.MILLI).build();
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
         assertEquals(parentUnit.getConverterToAny(Units.Imperial.YARD), unit.getConverterToAny(Units.Imperial.YARD));
 
         // DECI(KILO(m)) = HECTO(m)
-        unit = Units.buildFrom(km).withPrefix(Prefixes.Metric.DECI).build();
+        unit = buildFrom(km).withPrefix(Prefixes.Metric.DECI).build();
 
         assertEquals(Prefixes.Metric.HECTO.getSymbol() + parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(Prefixes.Metric.HECTO.getName() + parentUnit.getName(), unit.getName());
@@ -78,7 +85,7 @@ public class UnitBuilderTest {
                      unit.getConverterToAny(Units.Imperial.YARD));
 
         // DEKA(KILO(m)) = 10^4(m)
-        unit = Units.buildFrom(km).withPrefix(Prefixes.Metric.DEKA).build();
+        unit = buildFrom(km).withPrefix(Prefixes.Metric.DEKA).build();
 
         assertEquals("10^4*" + parentUnit.getSymbol(), unit.getSymbol());
         assertEquals("10^4*" + parentUnit.getName(), unit.getName());
@@ -99,7 +106,7 @@ public class UnitBuilderTest {
                      unit.getConverterToAny(Units.Imperial.YARD));
 
         // m + 200.23
-        unit = Units.buildFrom(parentUnit).shiftedBy(BigDecimal.valueOf(200.23)).build();
+        unit = buildFrom(parentUnit).shiftedBy(BigDecimal.valueOf(200.23)).build();
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
@@ -112,7 +119,7 @@ public class UnitBuilderTest {
         Unit<?> parentUnit = Units.SI.METRE;
 
         // m * 2.5
-        Unit<?> unit = Units.buildFrom(parentUnit).multipliedBy(2.5).build();
+        Unit<?> unit = buildFrom(parentUnit).multipliedBy(2.5).build();
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
@@ -120,7 +127,7 @@ public class UnitBuilderTest {
                      unit.getConverterToAny(Units.Imperial.YARD));
 
         // m * 2.5
-        unit = Units.buildFrom(parentUnit).multipliedBy(BigDecimal.valueOf(2.5)).build();
+        unit = buildFrom(parentUnit).multipliedBy(BigDecimal.valueOf(2.5)).build();
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
@@ -128,7 +135,7 @@ public class UnitBuilderTest {
                      unit.getConverterToAny(Units.Imperial.YARD));
 
         // m * 5/9
-        unit = Units.buildFrom(parentUnit).multipliedBy(5, 9).build();
+        unit = buildFrom(parentUnit).multipliedBy(5, 9).build();
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
@@ -141,7 +148,7 @@ public class UnitBuilderTest {
         Unit<?> parentUnit = Units.SI.METRE;
 
         // not really a functional test, rather a compiler check.
-        Unit<Length> unit = Units.buildFrom(parentUnit).forQuantity(Length.class).build();
+        Unit<Length> unit = buildFrom(parentUnit).forQuantity(Length.class).build();
 
         assertEquals(parentUnit.getDimension(), unit.getDimension());
     }
