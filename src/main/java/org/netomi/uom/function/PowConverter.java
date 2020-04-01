@@ -19,6 +19,7 @@ import org.netomi.uom.UnitConverter;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
 
 /**
  * {@code UnitConverter} implementation that converts values by applying
@@ -29,7 +30,7 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-class PowConverter implements UnitConverter {
+class PowConverter extends AbstractConverter {
 
     private final UnitConverter unitConverter;
     private final int           exponent;
@@ -77,6 +78,20 @@ class PowConverter implements UnitConverter {
             result = unitConverter.convert(result, context);
         }
         return result;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PowConverter that = (PowConverter) o;
+        return Objects.equals(unitConverter, that.unitConverter) &&
+               Objects.equals(exponent, that.exponent);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(unitConverter, exponent);
     }
 
     @Override

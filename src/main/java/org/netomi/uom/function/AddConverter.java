@@ -27,7 +27,7 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-class AddConverter implements UnitConverter {
+class AddConverter extends AbstractConverter {
 
     // the decimal offset to use for conversion.
     private final BigDecimal offset;
@@ -68,7 +68,7 @@ class AddConverter implements UnitConverter {
             return UnitConverters.shift(newOffset);
         }
 
-        return UnitConverter.super.compose(that);
+        return super.compose(that);
     }
 
     @Override
@@ -78,7 +78,7 @@ class AddConverter implements UnitConverter {
             return UnitConverters.shift(newOffset);
         }
 
-        return UnitConverter.super.andThen(that);
+        return super.andThen(that);
     }
 
     @Override

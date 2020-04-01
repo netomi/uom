@@ -36,6 +36,8 @@ public class UnitConverters {
 
     /**
      * Returns an identity converter.
+     * <p>
+     * This method always returns the same instance.
      */
     public static UnitConverter identity() {
         return IdentityConverter.INSTANCE;
@@ -44,9 +46,9 @@ public class UnitConverters {
     /**
      * Returns a {@link UnitConverter} that applies a shift by a constant factor.
      * <p>
-     * If an offset of {@code 0} is supplied, {@link #identity()} is returned.
+     * If an offset of {@code 0} is provided, {@link #identity()} is returned.
      * <p>
-     * Note: prefer using {@link #shift(BigDecimal)}
+     * Note: prefer using {@link #shift(BigDecimal)}.
      *
      * @param offset the constant factor by which the value will be shifted.
      * @return a {@link UnitConverter} applying a constant shift operation.
@@ -58,7 +60,7 @@ public class UnitConverters {
     /**
      * Returns a {@link UnitConverter} that applies a shift by a constant factor.
      * <p>
-     * If an offset of {@code 0} is supplied, {@link #identity()} is returned.
+     * If an offset of {@code 0} is provided, {@link #identity()} is returned.
      *
      * @param offset the constant factor by which the value will be shifted.
      * @return a {@link UnitConverter} applying a constant shift operation.
@@ -67,18 +69,58 @@ public class UnitConverters {
         return BigDecimal.ZERO.compareTo(offset) == 0 ? identity() : new AddConverter(offset);
     }
 
+    /**
+     * Returns a {@link UnitConverter} that multiplies the input with a constant factor.
+     * <p>
+     * If a factor of {@code 1} is provided, {@link #identity()} is returned.
+     * <p>
+     * Note: prefer using {@link #multiply(long, long)}.
+     *
+     * @param multiplicand the constant multiplication factor.
+     * @return a {@link UnitConverter} multiplying by a constant factor.
+     */
     public static UnitConverter multiply(double multiplicand) {
         return multiply(BigFraction.from(multiplicand));
     }
 
+    /**
+     * Returns a {@link UnitConverter} that multiplies the input with a constant factor.
+     * <p>
+     * If a factor of {@code 1} is provided, {@link #identity()} is returned.
+     * <p>
+     * Note: prefer using {@link #multiply(long, long)}.
+     *
+     * @param multiplicand the constant multiplication factor.
+     * @return a {@link UnitConverter} multiplying by a constant factor.
+     */
     public static UnitConverter multiply(BigDecimal multiplicand) {
         return multiply(BigFraction.from(multiplicand));
     }
 
+    /**
+     * Returns a {@link UnitConverter} that multiplies the input with a constant factor provided as
+     * fraction {@code numerator / denominator}.
+     * <p>
+     * If a factor of {@code 1} is provided, {@link #identity()} is returned.
+     *
+     * @param numerator    the numerator of the fraction.
+     * @param denominator  the denominator of the fraction.
+     * @return a {@link UnitConverter} multiplying by a constant factor.
+     */
     public static UnitConverter multiply(long numerator, long denominator) {
         return numerator == denominator ? identity() : multiply(BigFraction.of(numerator, denominator));
     }
 
+    /**
+     * Returns a {@link UnitConverter} that multiplies the input with a constant factor provided as
+     * fraction {@code numerator / denominator}.
+     * <p>
+     * If a factor of {@code 1} is provided, {@link #identity()} is returned.
+     *
+     * @param numerator    the numerator of the fraction.
+     * @param denominator  the denominator of the fraction.
+     * @return a {@link UnitConverter} multiplying by a constant factor.
+     */
     public static UnitConverter multiply(BigInteger numerator, BigInteger denominator) {
         return numerator.compareTo(denominator) == 0 ? identity() : multiply(BigFraction.of(numerator, denominator));
     }
@@ -87,6 +129,9 @@ public class UnitConverters {
         return BigFraction.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
     }
 
+    /**
+     * Returns a {@link UnitConverter} that
+     */
     public static UnitConverter pow(int base, int exponent) {
         if (exponent == 0) {
             return identity();
@@ -95,7 +140,7 @@ public class UnitConverters {
         if (exponent > 0) {
             try {
                 long value = ArithmeticUtils.pow((long) base, exponent);
-                return multiply(value, 1l);
+                return multiply(value, 1);
             } catch (ArithmeticException ex) {
                 // long overflow.
                 BigInteger numerator = BigInteger.valueOf(base).pow(exponent);
@@ -104,7 +149,7 @@ public class UnitConverters {
         } else {
             try {
                 long value = ArithmeticUtils.pow((long) base, -exponent);
-                return multiply(1l, value);
+                return multiply(1, value);
             } catch (ArithmeticException ex) {
                 // long overflow.
                 BigInteger denominator = BigInteger.valueOf(base).pow(-exponent);
@@ -113,22 +158,55 @@ public class UnitConverters {
         }
     }
 
+    /**
+     * Returns a {@link UnitConverter} that applies the given converter n times
+     * to the input.
+     * <p>
+     * Special cases:
+     * <ul>
+     *   <li>if an identity converter is provided, return the converter as is
+     *   <li>if an exponent of 1 is provided, return the converter as is
+     *   <li>if an exponent of 0 is provided, return a converter always returning 1
+     * </ul>
+     *
+     * @param converter  the converter to use for the power operation.
+     * @param exponent   the exponent of the power operation.
+     * @return a {@link UnitConverter} applying the converter n times.
+     */
     public static UnitConverter pow(UnitConverter converter, int exponent) {
         return converter.isIdentity() ? converter :
                exponent == 1          ? converter :
-               exponent == 0          ? new MultiplyConverter(1, 1) :
-               exponent > 1           ? new PowConverter(converter, exponent) :
+               exponent == 0          ? new ConstantConverter(BigFraction.ONE) :
+               exponent > 1           ? new PowConverter(converter, exponent)  :
                                         new PowConverter(converter.inverse(), -exponent);
     }
 
+    /**
+     * Returns a {@link UnitConverter} that computes the root of the given
+     * converter. Only square roots are supported.
+     * <p>
+     * Special cases:
+     * <ul>
+     *   <li>if an identity converter is provided, return the converter as is
+     *   <li>if an exponent of 1 is provided, return the converter as is
+     * </ul>
+     *
+     * @param converter  the converter to use for the power operation.
+     * @param n          specifies the number of the root operation.
+     * @return a {@link UnitConverter} applying the converter n times.
+     * @throws IllegalArgumentException if n is negative or {@code n > 2}.
+     */
     public static UnitConverter root(UnitConverter converter, int n) {
         return converter.isIdentity() ? converter :
                n == 1                 ? converter :
-               n == 0                 ? new ConstantConverter(BigFraction.ONE) :
                                         new RootConverter(converter, n);
     }
 
-    public static UnitConverter compose(UnitConverter before, UnitConverter after) {
+    /**
+     * Internal method, use {@link UnitConverter#compose(UnitConverter)} or
+     * {@link UnitConverter#andThen(UnitConverter)} instead.
+     */
+    static UnitConverter compose(UnitConverter before, UnitConverter after) {
         if (before.isIdentity()) {
             return after;
         } else if (after.isIdentity()) {
@@ -166,7 +244,6 @@ public class UnitConverters {
             return that;
         }
 
-
         @Override
         public UnitConverter inverse() {
             return INSTANCE;
@@ -174,6 +251,11 @@ public class UnitConverters {
 
         @Override
         public double convert(double value) {
+            return value;
+        }
+
+        @Override
+        public BigDecimal convert(BigDecimal value) {
             return value;
         }
 
@@ -192,7 +274,7 @@ public class UnitConverters {
      * A converter that returns a constant value.
      * Not really needed but added for completeness (used for root(x, 0)).
      */
-    private static class ConstantConverter implements UnitConverter {
+    private static class ConstantConverter extends AbstractConverter {
         private final BigFraction constant;
         private final double      constantAsDouble;
 
@@ -212,17 +294,6 @@ public class UnitConverters {
         }
 
         @Override
-        public UnitConverter compose(UnitConverter before) {
-            return before;
-        }
-
-        @Override
-        public UnitConverter andThen(UnitConverter that) {
-            return that;
-        }
-
-
-        @Override
         public UnitConverter inverse() {
             return new ConstantConverter(constant.reciprocal());
         }
@@ -238,6 +309,19 @@ public class UnitConverters {
         }
 
         @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            ConstantConverter that = (ConstantConverter) o;
+            return Objects.equals(constant, that.constant);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(constant);
+        }
+
+        @Override
         public String toString() {
             return String.format("(constant '%s')", constant.toString());
         }
@@ -246,7 +330,7 @@ public class UnitConverters {
     /**
      * A converter that composes 2 {@link UnitConverter} instances.
      */
-    private static class ComposeConverter implements UnitConverter {
+    private static class ComposeConverter extends AbstractConverter {
         private final UnitConverter before;
         private final UnitConverter after;
 

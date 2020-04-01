@@ -15,8 +15,6 @@
  */
 package org.netomi.uom;
 
-import org.netomi.uom.function.UnitConverters;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
 
@@ -70,9 +68,7 @@ public interface UnitConverter {
      * @param value the decimal value to convert.
      * @return the converted value.
      */
-    default BigDecimal convert(BigDecimal value) {
-        return convert(value, MathContext.DECIMAL128);
-    }
+    BigDecimal convert(BigDecimal value);
 
     /**
      * Converts the given decimal value with using the
@@ -94,9 +90,7 @@ public interface UnitConverter {
      * @param before the converter to apply before this converter is applied.
      * @return a composed converter that first applies the before converter and then applies this converter.
      */
-    default UnitConverter compose(UnitConverter before) {
-        return UnitConverters.compose(before, this);
-    }
+    UnitConverter compose(UnitConverter before);
 
     /**
      * Returns a composed {@link UnitConverter} that first applies this converter
@@ -108,7 +102,5 @@ public interface UnitConverter {
      * @param after the converter to apply after this converter is applied.
      * @return a composed converter that first applies this converter and then applies the after converter.
      */
-    default UnitConverter andThen(UnitConverter after) {
-        return UnitConverters.compose(this, after);
-    }
+    UnitConverter andThen(UnitConverter after);
 }

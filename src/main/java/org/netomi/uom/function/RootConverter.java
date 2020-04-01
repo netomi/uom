@@ -20,6 +20,7 @@ import org.netomi.uom.math.ArithmeticUtils;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
 
 /**
  * {@code UnitConverter} implementation that converts values by applying
@@ -32,7 +33,7 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-class RootConverter implements UnitConverter {
+class RootConverter extends AbstractConverter {
 
     private final UnitConverter unitConverter;
     private final double        multiplierRooted;
@@ -86,6 +87,21 @@ class RootConverter implements UnitConverter {
         BigDecimal multiplier = unitConverter.convert(BigDecimal.ONE, context);
         multiplier = ArithmeticUtils.sqrt(multiplier, context);
         return value.multiply(multiplier, context);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        RootConverter that = (RootConverter) o;
+        return Objects.equals(unitConverter, that.unitConverter) &&
+               // comparison for the exponent only for completeness.
+               Objects.equals(getN(), that.getN());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(unitConverter, getN());
     }
 
     @Override

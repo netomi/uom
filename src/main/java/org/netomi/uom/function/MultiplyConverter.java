@@ -28,7 +28,7 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-class MultiplyConverter implements UnitConverter {
+class MultiplyConverter extends AbstractConverter {
 
     // the multiplier represented as decimal fraction.
     private final BigFraction multiplier;
@@ -76,7 +76,7 @@ class MultiplyConverter implements UnitConverter {
             return UnitConverters.multiply(multiplicand);
         }
 
-        return UnitConverter.super.compose(that);
+        return super.compose(that);
     }
 
     @Override
@@ -86,7 +86,7 @@ class MultiplyConverter implements UnitConverter {
             return UnitConverters.multiply(multiplicand);
         }
 
-        return UnitConverter.super.andThen(that);
+        return super.andThen(that);
     }
 
     @Override

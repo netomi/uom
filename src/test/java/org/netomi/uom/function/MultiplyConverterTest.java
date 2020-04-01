@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.function;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
@@ -108,5 +109,16 @@ public class MultiplyConverterTest {
         double val2 = concatenate.convert(1.0);
 
         assertEquals(val1, val2, 1e-6);
+    }
+
+    @Test
+    public void equality() {
+        new EqualsTester()
+                .addEqualityGroup(new MultiplyConverter(2.0), new MultiplyConverter(2, 1), new MultiplyConverter(4.0).andThen(new MultiplyConverter(0.5)))
+                .addEqualityGroup(new MultiplyConverter(5.0), new MultiplyConverter(2.5).andThen(new MultiplyConverter(2.0)))
+                .addEqualityGroup(new MultiplyConverter(4))
+                .addEqualityGroup(new AddConverter(100))
+                .addEqualityGroup("blabla")
+                .testEquals();
     }
 }

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.*;
 /**
  * Unit tests for the {@link Dimensions} class and its inner classes.
  */
-public class DimensionTest {
+public class DimensionsTest {
 
     @Test
     public void noneDimension() {
@@ -110,6 +110,8 @@ public class DimensionTest {
                 .addEqualityGroup(Dimensions.NONE)
                 .addEqualityGroup(Dimensions.TIME.pow(2))
                 .addEqualityGroup(Dimensions.LENGTH.multiply(Dimensions.LENGTH), Dimensions.LENGTH.pow(2), Dimensions.LENGTH.pow(4).root(2))
+                .addEqualityGroup(Dimensions.LENGTH.multiply(Dimensions.TIME).multiply(Dimensions.MASS.pow(5).root(2)),
+                                  Dimensions.LENGTH.divide(Dimensions.TIME).multiply(Dimensions.MASS.root(2)).divide(Dimensions.MASS.pow(-2)).multiply(Dimensions.TIME.pow(2)))
                 .addEqualityGroup("blabla")
                 .testEquals();
 

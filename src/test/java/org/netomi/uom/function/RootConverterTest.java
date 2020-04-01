@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.function;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
@@ -50,15 +51,6 @@ public class RootConverterTest {
             // constructor is hidden, thus this should never happen.
             new RootConverter(new AddConverter(100), 2);
         });
-    }
-
-    @Test
-    public void factoryMethod() {
-        // ensure that the UnitConverters class returns a
-        // constant converter when supplying an n of 0.
-        UnitConverter converter = UnitConverters.root(new AddConverter(100), 0);
-
-        assertEquals(1, converter.convert(100));
     }
 
     @Test
@@ -106,5 +98,16 @@ public class RootConverterTest {
 
         // x = (x * sqrt(1000 / 1)) + 10
         assertEquals(Math.sqrt(1000) * 1 + 10, unitConverter.convert(1), 1e-6);
+    }
+
+    @Test
+    public void equality() {
+        new EqualsTester()
+                .addEqualityGroup(new RootConverter(new MultiplyConverter(10), 2), new RootConverter(new MultiplyConverter(10), 2))
+                .addEqualityGroup(new RootConverter(new MultiplyConverter(20), 2), new RootConverter(new MultiplyConverter(5).andThen(new MultiplyConverter(4)), 2))
+                .addEqualityGroup(new RootConverter(new PowConverter(new MultiplyConverter(5), 2), 2))
+                .addEqualityGroup(new MultiplyConverter(4))
+                .addEqualityGroup("blabla")
+                .testEquals();
     }
 }

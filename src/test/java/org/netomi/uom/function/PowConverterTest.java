@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.function;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
 
@@ -109,5 +110,15 @@ public class PowConverterTest {
 
         // x = (x + 10 + 10) + 20
         assertEquals(40.0, unitConverter.convert(0), 1e-6);
+    }
+
+    @Test
+    public void equality() {
+        new EqualsTester()
+                .addEqualityGroup(new PowConverter(new AddConverter(10), 2), new PowConverter(new AddConverter(10), 2))
+                .addEqualityGroup(new PowConverter(new AddConverter(10), 3), new PowConverter(new AddConverter(5).andThen(new AddConverter(5)), 3))
+                .addEqualityGroup(new MultiplyConverter(4))
+                .addEqualityGroup("blabla")
+                .testEquals();
     }
 }
