@@ -24,7 +24,7 @@ import java.util.Map;
 
 /**
  * A builder class to construct new {@link Unit} instances from existing
- * units without as efficient as possible.
+ * units without as easy as possible.
  *
  * @param <Q> the quantity type
  *
@@ -32,114 +32,177 @@ import java.util.Map;
  */
 public final class UnitBuilder<Q extends Quantity<Q>> {
 
-    private Unit<Q> delegateUnit;
+    private Unit<Q>       delegateUnit;
+    private UnitConverter converterToDelegate;
+    private boolean       delegateHasPrefix;
 
     private String symbol;
     private String name;
     private Prefix prefix;
-    private Prefix previousPrefix;
 
-    private UnitConverter converterToParent;
+    /**
+     * Create a new {@link UnitBuilder} instance to create a new unit with the
+     * given unit as starting point.
+
+     * @return a new {@link UnitBuilder} instance to build a new unit with the
+     * specified unit as reference.
+     */
+    public static <Q extends Quantity<Q>> UnitBuilder<Q> from(Unit<Q> unit) {
+        return new UnitBuilder(unit);
+    }
 
     UnitBuilder(Unit<Q> unit) {
-        this.delegateUnit      = unit;
-        this.converterToParent = UnitConverters.identity();
+        this.delegateUnit        = unit;
+        this.converterToDelegate = UnitConverters.identity();
 
+        // if the unit to build from does not have a prefix yet,
+        // we can more efficiently build the new unit instead of
+        // creating a delegate to a delegate.
         if (unit instanceof UnitImpl) {
             UnitImpl impl = (UnitImpl) unit;
 
-            delegateUnit      = impl.delegateUnit;
-            converterToParent = impl.converterToDelegate;
+            delegateHasPrefix = impl.prefix != null;
+            if (!delegateHasPrefix) {
+                this.delegateUnit        = impl.delegateUnit;
+                this.converterToDelegate = impl.converterToDelegate;
 
-            symbol         = impl.symbol;
-            name           = impl.name;
-            prefix         = impl.prefix;
-            previousPrefix = impl.prefix;
+                this.symbol = impl.symbol;
+                this.name   = impl.name;
+            }
         }
     }
 
+    /**
+     * Set the symbol of the new unit to the given string.
+     *
+     * @param symbol the symbol of the unit.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> withSymbol(String symbol) {
         this.symbol = symbol;
         return this;
     }
 
+    /**
+     * Set the name of the new unit to the given string.
+     *
+     * @param name the name of the unit.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> withName(String name) {
         this.name = name;
         return this;
     }
 
+    /**
+     * Add the given prefix to the new unit.
+     * <p>
+     * Note: there is no check if the reference
+     * unit already has a prefix. Adding another
+     * prefix to a unit which already has a prefix
+     * usually doesn't make sense.
+     *
+     * @param prefix the prefix to add.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> withPrefix(Prefix prefix) {
-        // If the delegate unit already contains a prefix,
-        // try to combine it with this one.
-        if (previousPrefix != null &&
-            previousPrefix.getClass().equals(prefix.getClass())) {
-            int combinedExponent = previousPrefix.getExponent() + prefix.getExponent();
-
-            // Reset any prefix if the combined exponent is zero.
-            if (combinedExponent == 0) {
-                compose(UnitConverters.pow(previousPrefix.getBase(), -previousPrefix.getExponent()));
-                this.prefix         = null;
-                this.previousPrefix = null;
-                return this;
-            }
-
-            Prefix combinedPrefix = prefix.withExponent(combinedExponent);
-            if (combinedPrefix != null) {
-                compose(UnitConverters.pow(previousPrefix.getBase(),
-                        combinedPrefix.getExponent() - previousPrefix.getExponent()));
-                this.prefix         = combinedPrefix;
-                this.previousPrefix = combinedPrefix;
-                return this;
-            }
-        }
-
-        this.prefix         = prefix;
-        this.previousPrefix = prefix;
+        this.prefix = prefix;
         compose(prefix.getUnitConverter());
         return this;
     }
 
+    /**
+     * Concatenates a constant offset converter
+     * to the existing converter to the reference unit.
+     *
+     * @param offset the constant offset.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> shiftedBy(double offset) {
         transformedBy(UnitConverters.shift(offset));
         return this;
     }
 
+    /**
+     * Concatenates a constant offset converter
+     * to the existing converter to the reference unit.
+     *
+     * @param offset the constant offset.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> shiftedBy(BigDecimal offset) {
         transformedBy(UnitConverters.shift(offset));
         return this;
     }
 
+    /**
+     * Concatenates a constant factor converter
+     * to the existing converter to the reference unit.
+     *
+     * @param multiplicand the constant factor.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> multipliedBy(double multiplicand) {
         transformedBy(UnitConverters.multiply(multiplicand));
         return this;
     }
 
+    /**
+     * Concatenates a constant factor converter
+     * to the existing converter to the reference unit.
+     *
+     * @param multiplicand the constant factor.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> multipliedBy(BigDecimal multiplicand) {
         transformedBy(UnitConverters.multiply(multiplicand));
         return this;
     }
 
+    /**
+     * Concatenates a constant factor converter
+     * to the existing converter to the reference unit.
+     *
+     * @param numerator   the numerator part of the factor in fractional form.
+     * @param denominator the denominator part of the factor in fractional form.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> multipliedBy(long numerator, long denominator) {
         transformedBy(UnitConverters.multiply(numerator, denominator));
         return this;
     }
 
+    /**
+     * Concatenates the given converter to the existing converter
+     * to the reference unit.
+     *
+     * @param unitConverter  the converter to concatenate.
+     * @return this {@link UnitBuilder} instance.
+     */
     public UnitBuilder<Q> transformedBy(UnitConverter unitConverter) {
-        converterToParent = converterToParent.andThen(unitConverter);
+        converterToDelegate = converterToDelegate.andThen(unitConverter);
         return this;
     }
 
     private UnitBuilder<Q> compose(UnitConverter unitConverter) {
-        converterToParent = converterToParent.compose(unitConverter);
+        converterToDelegate = converterToDelegate.compose(unitConverter);
         return this;
     }
 
+    /**
+     * Casts this {@link UnitBuilder} instance to the given quantity type.
+     */
     public <T extends Quantity<T>> UnitBuilder<T> forQuantity(Class<T> quantityClass) {
         return (UnitBuilder<T>) this;
     }
 
+    /**
+     * Create the unit based on information provided through the builder methods.
+     *
+     * @return a new {@link Unit} instance.
+     */
     public Unit<Q> build() {
-        UnitImpl<Q> impl = new UnitImpl<>(delegateUnit, converterToParent);
+        UnitImpl<Q> impl = new UnitImpl<>(delegateUnit, converterToDelegate);
 
         impl.symbol = symbol;
         impl.name   = name;
@@ -214,8 +277,8 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
         @Override
         public UnitConverter getSystemConverter() {
             return converterToDelegate.isIdentity() ?
-                delegateUnit.getSystemConverter() :
-                converterToDelegate.andThen(delegateUnit.getSystemConverter());
+                    delegateUnit.getSystemConverter() :
+                    converterToDelegate.andThen(delegateUnit.getSystemConverter());
         }
 
         @Override

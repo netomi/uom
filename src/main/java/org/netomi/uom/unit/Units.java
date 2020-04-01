@@ -67,7 +67,7 @@ public final class Units {
     }
 
     public static <Q extends Quantity<Q>> UnitBuilder<Q> buildFrom(Unit<Q> unit) {
-        return new UnitBuilder(unit);
+        return UnitBuilder.from(unit);
     }
 
     /**
