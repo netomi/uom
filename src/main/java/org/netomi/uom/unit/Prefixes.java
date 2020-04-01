@@ -16,6 +16,7 @@
 package org.netomi.uom.unit;
 
 import org.netomi.uom.*;
+import org.netomi.uom.function.UnitConverters;
 
 /**
  * A utility class to provide access to different {@link Prefix} implementations.
@@ -263,6 +264,11 @@ public final class Prefixes {
         }
 
         @Override
+        public UnitConverter getUnitConverter() {
+            return UnitConverters.pow(getBase(), getExponent());
+        }
+
+        @Override
         public Prefix withExponent(int exponent) {
             for (Metric prefix : values()) {
                 if (prefix.getExponent() == exponent) {
@@ -390,6 +396,11 @@ public final class Prefixes {
         }
 
         @Override
+        public UnitConverter getUnitConverter() {
+            return UnitConverters.pow(getBase(), getExponent());
+        }
+
+        @Override
         public Prefix withExponent(int exponent) {
             for (Binary prefix : values()) {
                 if (prefix.getExponent() == exponent) {
@@ -434,6 +445,11 @@ public final class Prefixes {
         @Override
         public int getExponent() {
             return exponent;
+        }
+
+        @Override
+        public UnitConverter getUnitConverter() {
+            return UnitConverters.pow(getBase(), getExponent());
         }
 
         @Override

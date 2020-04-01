@@ -95,7 +95,7 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
         this.prefix         = prefix;
         this.previousPrefix = prefix;
-        compose(UnitConverters.pow(prefix.getBase(), prefix.getExponent()));
+        compose(prefix.getUnitConverter());
         return this;
     }
 

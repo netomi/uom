@@ -271,6 +271,16 @@ public class UnitConverters {
         }
 
         @Override
+        public UnitConverter compose(UnitConverter that) {
+            return UnitConverters.compose(before.compose(that), after);
+        }
+
+        @Override
+        public UnitConverter andThen(UnitConverter that) {
+            return UnitConverters.compose(before, after.andThen(that));
+        }
+
+        @Override
         public double convert(double value) {
             return after.convert(before.convert(value));
         }
