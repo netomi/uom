@@ -166,7 +166,7 @@ public class UnitConverters {
      * <ul>
      *   <li>if an identity converter is provided, return the converter as is
      *   <li>if an exponent of 1 is provided, return the converter as is
-     *   <li>if an exponent of 0 is provided, return a converter always returning 1
+     *   <li>if an exponent of 0 is provided, return {@link #identity()}
      * </ul>
      *
      * @param converter  the converter to use for the power operation.
@@ -174,9 +174,9 @@ public class UnitConverters {
      * @return a {@link UnitConverter} applying the converter n times.
      */
     public static UnitConverter pow(UnitConverter converter, int exponent) {
-        return converter.isIdentity() ? converter :
-               exponent == 1          ? converter :
-               exponent == 0          ? new ConstantConverter(BigFraction.ONE) :
+        return converter.isIdentity() ? converter  :
+               exponent == 1          ? converter  :
+               exponent == 0          ? identity() :
                exponent > 1           ? new PowConverter(converter, exponent)  :
                                         new PowConverter(converter.inverse(), -exponent);
     }
@@ -267,63 +267,6 @@ public class UnitConverters {
         @Override
         public String toString() {
             return "(identity x)";
-        }
-    }
-
-    /**
-     * A converter that returns a constant value.
-     * Not really needed but added for completeness (used for root(x, 0)).
-     */
-    private static class ConstantConverter extends AbstractConverter {
-        private final BigFraction constant;
-        private final double      constantAsDouble;
-
-        ConstantConverter(BigFraction value) {
-            this.constant         = value;
-            this.constantAsDouble = value.doubleValue();
-        }
-
-        @Override
-        public boolean isIdentity() {
-            return false;
-        }
-
-        @Override
-        public boolean isLinear() {
-            return false;
-        }
-
-        @Override
-        public UnitConverter inverse() {
-            return new ConstantConverter(constant.reciprocal());
-        }
-
-        @Override
-        public double convert(double value) {
-            return constantAsDouble;
-        }
-
-        @Override
-        public BigDecimal convert(BigDecimal value, MathContext context) {
-            return constant.bigDecimalValue(context);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-            ConstantConverter that = (ConstantConverter) o;
-            return Objects.equals(constant, that.constant);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(constant);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("(constant '%s')", constant.toString());
         }
     }
 

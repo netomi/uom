@@ -93,13 +93,9 @@ public class DimensionsTest {
 
     @Test
     public void rootWithNonPositiveInteger() {
-        assertThrows(IllegalArgumentException.class, () -> {
-           Dimensions.LENGTH.root(-2);
-        });
+        assertThrows(IllegalArgumentException.class, () -> Dimensions.LENGTH.root(-2));
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            Dimensions.LENGTH.root(0);
-        });
+        assertThrows(IllegalArgumentException.class, () -> Dimensions.LENGTH.root(0));
     }
 
     @Test

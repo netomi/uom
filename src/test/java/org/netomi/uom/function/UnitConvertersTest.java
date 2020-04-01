@@ -16,11 +16,13 @@
 
 package org.netomi.uom.function;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.math.MathContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,6 +41,7 @@ public class UnitConvertersTest {
         assertEquals(5, identity.convert(5), 1e-12);
         BigDecimal value = BigDecimal.valueOf(5);
         assertSame(value, identity.convert(value));
+        assertSame(value, identity.convert(value, MathContext.DECIMAL128));
     }
 
     @Test
@@ -109,9 +112,8 @@ public class UnitConvertersTest {
         UnitConverter multiplyConverter = new MultiplyConverter(2);
         assertSame(multiplyConverter, UnitConverters.pow(multiplyConverter, 1));
 
-        // C^0 = 1
-        UnitConverter constant = UnitConverters.pow(multiplyConverter, 0);
-        assertEquals(1, constant.convert(100), 1e-12);
+        // C^0 = I
+        assertSame(UnitConverters.identity(), UnitConverters.pow(multiplyConverter, 0));
 
         // positive exponent
         UnitConverter pow = UnitConverters.pow(multiplyConverter, 2);
@@ -152,18 +154,12 @@ public class UnitConvertersTest {
         assertEquals(rootMultiplier * -10, root.convert(BigDecimal.TEN.negate()).doubleValue(), 1e-12);
 
         // non-positive exponent
-        assertThrows(IllegalArgumentException.class, () -> {
-            UnitConverters.root(multiplyConverter, 0);
-        });
+        assertThrows(IllegalArgumentException.class, () -> UnitConverters.root(multiplyConverter, 0));
 
-        assertThrows(IllegalArgumentException.class, () -> {
-            UnitConverters.root(multiplyConverter, -2);
-        });
+        assertThrows(IllegalArgumentException.class, () -> UnitConverters.root(multiplyConverter, -2));
 
         // exponent > 2
-        assertThrows(IllegalArgumentException.class, () -> {
-            UnitConverters.root(multiplyConverter, 3);
-        });
+        assertThrows(IllegalArgumentException.class, () -> UnitConverters.root(multiplyConverter, 3));
     }
 
     @Test
@@ -187,5 +183,19 @@ public class UnitConvertersTest {
 
         UnitConverter m12 = UnitConverters.compose(m1, m2);
         assertEquals(m3.convert(m2.convert(m1.convert(10))), UnitConverters.compose(m12, m3).convert(10), 1e-6);
+    }
+
+    @Test
+    public void equality() {
+        // all unit converters shall be different.
+        new EqualsTester()
+                .addEqualityGroup(UnitConverters.identity())
+                .addEqualityGroup(UnitConverters.shift(100))
+                .addEqualityGroup(UnitConverters.multiply(2))
+                .addEqualityGroup(UnitConverters.pow(10, 6))
+                .addEqualityGroup(UnitConverters.pow(UnitConverters.multiply(5), 2))
+                .addEqualityGroup(UnitConverters.root(UnitConverters.multiply(5), 2))
+                .addEqualityGroup(UnitConverters.compose(UnitConverters.shift(100), UnitConverters.multiply(2)))
+                .testEquals();
     }
 }

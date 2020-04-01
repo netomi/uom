@@ -44,9 +44,7 @@ public class MultiplyConverterTest {
 
     @Test
     public void invalidMultiplier() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            UnitConverter converter = new MultiplyConverter(0.0);
-        });
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new MultiplyConverter(0.0));
     }
 
     @Test
@@ -54,12 +52,12 @@ public class MultiplyConverterTest {
         MultiplyConverter converter = new MultiplyConverter(10.0);
 
         assertEquals(10.0, converter.getMultiplier().doubleValue(), 1e-6);
-        assertTrue(BigFraction.of(10).compareTo(converter.getMultiplier()) == 0);
+        assertEquals(0, BigFraction.of(10).compareTo(converter.getMultiplier()));
 
         converter = new MultiplyConverter(100.0);
 
         assertEquals(100.0, converter.getMultiplier().doubleValue(), 1e-6);
-        assertTrue(BigFraction.of(100).compareTo(converter.getMultiplier()) == 0);
+        assertEquals(0, BigFraction.of(100).compareTo(converter.getMultiplier()));
 
         assertTrue(converter.isLinear());
     }
@@ -98,7 +96,7 @@ public class MultiplyConverterTest {
         MultiplyConverter first = new MultiplyConverter(10.0);
         UnitConverter concatenate = first.andThen(new MultiplyConverter(1, 10));
 
-        assertTrue(concatenate == UnitConverters.identity());
+        assertSame(concatenate, UnitConverters.identity());
         assertEquals(1.0, concatenate.convert(1.0), 1e-6);
 
         MultiplyConverter left  = new MultiplyConverter(10.0);

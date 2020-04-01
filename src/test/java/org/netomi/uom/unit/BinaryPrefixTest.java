@@ -17,7 +17,6 @@ package org.netomi.uom.unit;
 
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.Prefix;
-import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Precision;
@@ -46,7 +45,7 @@ public class BinaryPrefixTest {
         checkFactoryMethod(Prefixes.Binary::YOBI, Prefixes.Binary.YOBI, Math.pow(1024, 8));
     }
 
-    private static <Q extends Quantity<Q>> void checkFactoryMethod(UnaryOperator<Unit<?>> factoryMethod, Prefix prefix, double multiplier) {
+    private static void checkFactoryMethod(UnaryOperator<Unit<?>> factoryMethod, Prefix prefix, double multiplier) {
         Unit<?> unit = Units.SI.METRE;
 
         Unit<?> prefixedUnit = factoryMethod.apply(unit);

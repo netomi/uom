@@ -45,12 +45,12 @@ public class AddConverterTest {
         AddConverter converter = new AddConverter(10.0);
 
         assertEquals(10.0, converter.getOffset().doubleValue(), 1e-6);
-        assertTrue(BigDecimal.TEN.compareTo(converter.getOffset()) == 0);
+        assertEquals(0, BigDecimal.TEN.compareTo(converter.getOffset()));
 
         converter = new AddConverter(100.0);
 
         assertEquals(100.0, converter.getOffset().doubleValue(), 1e-6);
-        assertTrue(new BigDecimal("100.0").compareTo(converter.getOffset()) == 0);
+        assertEquals(0, new BigDecimal("100.0").compareTo(converter.getOffset()));
 
         assertFalse(converter.isLinear());
     }
@@ -87,7 +87,7 @@ public class AddConverterTest {
         AddConverter first = new AddConverter(10.0);
         UnitConverter concatenate = first.andThen(new AddConverter(-10.0));
 
-        assertTrue(concatenate == UnitConverters.identity());
+        assertSame(concatenate, UnitConverters.identity());
         assertEquals(1.0, concatenate.convert(1.0), 1e-6);
 
         AddConverter left  = new AddConverter(10.0);
