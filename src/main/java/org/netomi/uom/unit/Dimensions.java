@@ -15,7 +15,6 @@
  */
 package org.netomi.uom.unit;
 
-import org.netomi.uom.math.BigFraction;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.StringUtil;
 
