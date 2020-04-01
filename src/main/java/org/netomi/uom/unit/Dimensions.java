@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.unit;
 
+import org.netomi.uom.math.BigFraction;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.StringUtil;
 
@@ -132,13 +133,20 @@ public class Dimensions {
         }
 
         static Dimension of(EnumMap<Base, Fraction> map) {
-            return map.isEmpty() ?
-                    Dimensions.NONE :
-                    new EnumDimension(map);
-        }
+            if (map.isEmpty()) {
+                return Dimensions.NONE;
+            }
 
-        EnumDimension(EnumDimension other) {
-            this(other.dimensionMap);
+            // optimization: if only a single base dimension with exponent 1 is present
+            //               return the corresponding instance.
+            if (map.size() == 1) {
+                Map.Entry<Base, Fraction> entry = map.entrySet().iterator().next();
+                if (Fraction.ONE.compareTo(entry.getValue()) == 0) {
+                    return getBaseDimension(entry.getKey());
+                }
+            }
+
+            return new EnumDimension(map);
         }
 
         EnumDimension(Base baseDimension) {
@@ -148,10 +156,6 @@ public class Dimensions {
 
         EnumDimension(Map<Base, Fraction> map) {
             dimensionMap = new EnumMap<>(map);
-        }
-
-        private EnumDimension copy() {
-            return new EnumDimension(this);
         }
 
         @Override
@@ -213,15 +217,15 @@ public class Dimensions {
                 return this;
             }
 
-            EnumDimension newDimension = this.copy();
+            EnumMap<Base, Fraction> newMap = new EnumMap<>(this.dimensionMap);
 
             for (Map.Entry<Base, Fraction> entry : dimensionMap.entrySet()) {
-                Fraction value = newDimension.dimensionMap.get(entry.getKey());
+                Fraction value = newMap.get(entry.getKey());
                 value = value.multiply(n);
-                newDimension.dimensionMap.put(entry.getKey(), value);
+                newMap.put(entry.getKey(), value);
             }
 
-            return newDimension;
+            return of(newMap);
         }
 
         @Override
@@ -238,15 +242,15 @@ public class Dimensions {
                 return this;
             }
 
-            EnumDimension newDimension = this.copy();
+            EnumMap<Base, Fraction> newMap = new EnumMap<>(this.dimensionMap);
 
             for (Map.Entry<? extends Base, Fraction> entry : dimensionMap.entrySet()) {
-                Fraction value = newDimension.dimensionMap.get(entry.getKey());
+                Fraction value = newMap.get(entry.getKey());
                 value = value.multiply(Fraction.of(1, n));
-                newDimension.dimensionMap.put(entry.getKey(), value);
+                newMap.put(entry.getKey(), value);
             }
 
-            return newDimension;
+            return of(newMap);
         }
 
         @Override

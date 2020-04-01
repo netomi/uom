@@ -101,6 +101,48 @@ public class DimensionTest {
         });
     }
 
+    @Test
+    public void testEquals() {
+        assertNotEquals(Dimensions.LENGTH, "blabla");
+
+        assertEquals(Dimensions.LENGTH, Dimensions.LENGTH);
+        assertNotEquals(Dimensions.NONE, Dimensions.LENGTH);
+        assertNotEquals(Dimensions.TIME, Dimensions.LENGTH);
+        assertNotEquals(Dimensions.TIME, Dimensions.TIME.pow(2));
+
+        assertSame(Dimensions.NONE, Dimensions.LENGTH.divide(Dimensions.LENGTH));
+        assertSame(Dimensions.TIME, Dimensions.LENGTH.multiply(Dimensions.TIME.divide(Dimensions.LENGTH)));
+
+        assertEquals(Dimensions.LENGTH.multiply(Dimensions.LENGTH), Dimensions.LENGTH.pow(2));
+        assertEquals(Dimensions.LENGTH.multiply(Dimensions.LENGTH), Dimensions.LENGTH.pow(4).root(2));
+        assertSame(Dimensions.LENGTH, Dimensions.LENGTH.pow(2).root(2));
+        assertSame(Dimensions.LENGTH, Dimensions.LENGTH.root(2).pow(2));
+    }
+
+    @Test
+    public void testHashcode() {
+        assertEqualHashcode(Dimensions.LENGTH, Dimensions.LENGTH);
+        assertNotEqualHashcode(Dimensions.NONE, Dimensions.LENGTH);
+        assertNotEqualHashcode(Dimensions.TIME, Dimensions.LENGTH);
+        assertNotEqualHashcode(Dimensions.TIME, Dimensions.TIME.pow(2));
+
+        assertEqualHashcode(Dimensions.NONE, Dimensions.LENGTH.divide(Dimensions.LENGTH));
+        assertEqualHashcode(Dimensions.TIME, Dimensions.LENGTH.multiply(Dimensions.TIME.divide(Dimensions.LENGTH)));
+
+        assertEqualHashcode(Dimensions.LENGTH.multiply(Dimensions.LENGTH), Dimensions.LENGTH.pow(2));
+        assertEqualHashcode(Dimensions.LENGTH.multiply(Dimensions.LENGTH), Dimensions.LENGTH.pow(4).root(2));
+        assertEqualHashcode(Dimensions.LENGTH, Dimensions.LENGTH.pow(2).root(2));
+        assertEqualHashcode(Dimensions.LENGTH, Dimensions.LENGTH.root(2).pow(2));
+    }
+
+    private void assertEqualHashcode(Dimension expected, Dimension actual) {
+        assertEquals(expected.hashCode(), actual.hashCode());
+    }
+
+    private void assertNotEqualHashcode(Dimension expected, Dimension actual) {
+        assertNotEquals(expected.hashCode(), actual.hashCode());
+    }
+
     private static void assertBaseDimensions(Dimension d, int numberOfDimensions, Dimension baseDimension, Fraction fraction) {
         Map<Dimension, Fraction> baseDimensions = d.getBaseDimensions();
 
