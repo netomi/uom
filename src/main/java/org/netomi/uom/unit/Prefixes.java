@@ -267,17 +267,6 @@ public final class Prefixes {
         public UnitConverter getUnitConverter() {
             return UnitConverters.pow(getBase(), getExponent());
         }
-
-        @Override
-        public Prefix withExponent(int exponent) {
-            for (Metric prefix : values()) {
-                if (prefix.getExponent() == exponent) {
-                    return prefix;
-                }
-            }
-
-            return new GenericPrefixImpl(this, getBase(), exponent);
-        }
     }
 
     /**
@@ -399,17 +388,6 @@ public final class Prefixes {
         public UnitConverter getUnitConverter() {
             return UnitConverters.pow(getBase(), getExponent());
         }
-
-        @Override
-        public Prefix withExponent(int exponent) {
-            for (Binary prefix : values()) {
-                if (prefix.getExponent() == exponent) {
-                    return prefix;
-                }
-            }
-
-            return new GenericPrefixImpl(this, getBase(), exponent);
-        }
     }
 
     /**
@@ -450,11 +428,6 @@ public final class Prefixes {
         @Override
         public UnitConverter getUnitConverter() {
             return UnitConverters.pow(getBase(), getExponent());
-        }
-
-        @Override
-        public Prefix withExponent(int exponent) {
-            return reference.withExponent(exponent);
         }
     }
 }
