@@ -26,7 +26,6 @@ import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Supplier;
 
 /**
  * @author Thomas Neidhart
@@ -101,15 +100,27 @@ public class Quantities {
     // hide constructor.
     private Quantities() {}
 
+    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(double value, Unit<Q> unit) {
+        return (Quantity<Q>) getQuantityFactory(null).create(value, (Unit) unit);
+    }
+
     public static <T extends Q, Q extends Quantity<Q>> T createQuantity(double value, Unit<Q> unit, Class<T> quantity) {
         return (T) getQuantityFactory(quantity).create(value, (Unit) unit);
     }
 
-    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, Unit<Q> unit, Class<Q> quantity) {
+    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal value, Unit<Q> unit) {
+        return (Quantity<Q>) getQuantityFactory(null).create(value, (Unit) unit);
+    }
+
+    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
+        return (Quantity<Q>) getQuantityFactory(null).create(value, mathContext, (Unit) unit);
+    }
+
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, Unit<Q> unit, Class<T> quantity) {
         return (T) getQuantityFactory(quantity).create(value, (Unit) unit);
     }
 
-    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, MathContext mathContext, Unit<Q> unit, Class<Q> quantity) {
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, MathContext mathContext, Unit<Q> unit, Class<T> quantity) {
         return (T) getQuantityFactory(quantity).create(value, mathContext, (Unit) unit);
     }
 

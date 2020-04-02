@@ -64,6 +64,20 @@ prints
 ```2.997925e+09 statC```
 
 
+Custom quantities and units:
+
+```
+    public interface Bmi extends Quantity<Bmi> {}
+
+    ...
+
+    final Unit<Bmi> bmiUnit = UnitBuilder.<Bmi>fromAny(Units.SI.KILOGRAM.divide(Units.SI.METRE.pow(2))).withSymbol("B").build();
+    Quantity<Bmi> bmiDouble  = Quantities.createQuantity(19, bmiUnit);
+    Quantity<Bmi> bmiDecimal = Quantities.createQuantity(BigDecimal.valueOf(21), bmiUnit);
+
+    System.out.println(bmiDouble);
+```
+
 License
 -------
 Code is under the [Apache Licence v2](https://www.apache.org/licenses/LICENSE-2.0.txt).

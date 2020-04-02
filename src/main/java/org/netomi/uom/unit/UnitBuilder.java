@@ -32,9 +32,9 @@ import java.util.Map;
  */
 public final class UnitBuilder<Q extends Quantity<Q>> {
 
-    private Unit<Q>       delegateUnit;
-    private UnitConverter converterToDelegate;
-    private boolean       delegateHasPrefix;
+    private Unit<?>        delegateUnit;
+    private UnitConverter  converterToDelegate;
+    private boolean        delegateHasPrefix;
 
     private String symbol;
     private String name;
@@ -47,11 +47,15 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
      * @return a new {@link UnitBuilder} instance to build a new unit with the
      * specified unit as reference.
      */
-    public static <Q extends Quantity<Q>> UnitBuilder<Q> from(Unit<Q> unit) {
-        return new UnitBuilder(unit);
+    public static <Q extends Quantity<Q>> UnitBuilder<Q> fromAny(Unit<?> unit) {
+        return new UnitBuilder<>(unit);
     }
 
-    UnitBuilder(Unit<Q> unit) {
+    public static <Q extends Quantity<Q>> UnitBuilder<Q> from(Unit<Q> unit) {
+        return new UnitBuilder<>(unit);
+    }
+
+    UnitBuilder(Unit<? extends Quantity<?>> unit) {
         this.delegateUnit        = unit;
         this.converterToDelegate = UnitConverters.identity();
 
@@ -190,10 +194,11 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
     }
 
     /**
-     * Casts this {@link UnitBuilder} instance to the given quantity type.
+     * Create the unit based on the provided information and casts it to the
+     * given quantity type.
      */
-    public <T extends Quantity<T>> UnitBuilder<T> forQuantity(Class<T> quantityClass) {
-        return (UnitBuilder<T>) this;
+    public <T extends Quantity<T>> Unit<T> build(Class<T> quantityClass) {
+        return (Unit<T>) build();
     }
 
     /**
@@ -202,7 +207,7 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
      * @return a new {@link Unit} instance.
      */
     public Unit<Q> build() {
-        UnitImpl<Q> impl = new UnitImpl<>(delegateUnit, converterToDelegate);
+        UnitImpl impl = new UnitImpl(delegateUnit, converterToDelegate);
 
         impl.symbol = symbol;
         impl.name   = name;

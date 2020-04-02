@@ -194,7 +194,7 @@ public class UnitBuilderTest {
         Unit<?> parentUnit = Units.SI.METRE;
 
         // not really a functional test, rather a compiler check.
-        Unit<Length> unit = from(parentUnit).forQuantity(Length.class).build();
+        Unit<Length> unit = UnitBuilder.<Length>fromAny(parentUnit).build();
 
         assertEquals(parentUnit.getDimension(), unit.getDimension());
     }

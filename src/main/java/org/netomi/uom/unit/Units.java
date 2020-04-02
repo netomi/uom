@@ -66,6 +66,10 @@ public final class Units {
         }
     }
 
+    public static <Q extends Quantity<Q>> UnitBuilder<Q> buildFromAny(Unit<?> unit) {
+        return UnitBuilder.fromAny(unit);
+    }
+
     public static <Q extends Quantity<Q>> UnitBuilder<Q> buildFrom(Unit<Q> unit) {
         return UnitBuilder.from(unit);
     }
@@ -82,34 +86,56 @@ public final class Units {
         }
 
         // Base units of the International System of Units (SI).
-        public Unit<Length>            METRE    = addUnit(new BaseUnit<>("m", "METER",     Dimensions.LENGTH),              Length.class);
-        public Unit<Time>              SECOND   = addUnit(new BaseUnit<>("s", "SECOND",    Dimensions.TIME),                Time.class);
-        public Unit<Mass>              KILOGRAM = addUnit(new BaseUnit<>("kg", "KILOGRAM", Dimensions.MASS),                Mass.class);
-        public Unit<Temperature>       KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN",    Dimensions.TEMPERATURE),         Temperature.class);
-        public Unit<ElectricCurrent>   AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE",    Dimensions.ELECTRIC_CURRENT),    ElectricCurrent.class);
-        public Unit<LuminousIntensity> CANDELA  = addUnit(new BaseUnit<>("cd", "CANDELA",  Dimensions.LUMINOUS_INTENSITY),  LuminousIntensity.class);
-        public Unit<AmountOfSubstance> MOLE     = addUnit(new BaseUnit<>("mol", "MOLE",    Dimensions.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
+        public Unit<Length>            METRE    = addUnit(new BaseUnit<>("m",   "METER",    Dimensions.LENGTH),              Length.class);
+        public Unit<Time>              SECOND   = addUnit(new BaseUnit<>("s",   "SECOND",   Dimensions.TIME),                Time.class);
+        public Unit<Mass>              KILOGRAM = addUnit(new BaseUnit<>("kg",  "KILOGRAM", Dimensions.MASS),                Mass.class);
+        public Unit<Temperature>       KELVIN   = addUnit(new BaseUnit<>("K",   "KELVIN",   Dimensions.TEMPERATURE),         Temperature.class);
+        public Unit<ElectricCurrent>   AMPERE   = addUnit(new BaseUnit<>("A",   "AMPERE",   Dimensions.ELECTRIC_CURRENT),    ElectricCurrent.class);
+        public Unit<LuminousIntensity> CANDELA  = addUnit(new BaseUnit<>("cd",  "CANDELA",  Dimensions.LUMINOUS_INTENSITY),  LuminousIntensity.class);
+        public Unit<AmountOfSubstance> MOLE     = addUnit(new BaseUnit<>("mol", "MOLE",     Dimensions.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
 
-        public Unit<Angle>           RADIAN   = buildFrom(ONE)               .withSymbol("rad").withName("RADIAN").forQuantity(Angle.class)    .build();
-        public Unit<Frequency>       HERTZ    = buildFrom(ONE.divide(SECOND)).withSymbol("Hz") .withName("HERTZ") .forQuantity(Frequency.class).build();
+        public Unit<Angle>             RADIAN   = UnitBuilder.<Angle>fromAny    (ONE)               .withSymbol("rad").withName("RADIAN").build();
+        public Unit<Frequency>         HERTZ    = UnitBuilder.<Frequency>fromAny(ONE.divide(SECOND)).withSymbol("Hz") .withName("HERTZ") .build();
 
-        public Unit<Speed>           METER_PER_SECOND = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
+        public Unit<Speed>             METER_PER_SECOND =
+                UnitBuilder.<Speed>fromAny(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").build();
 
-        public Unit<Acceleration>    METER_PER_SECOND_SQUARED = buildFrom(METER_PER_SECOND.divide(SECOND)).withSymbol("m/s²").withName("METER PER SECOND SQUARED").forQuantity(Acceleration.class).build();
+        public Unit<Acceleration>      METER_PER_SECOND_SQUARED =
+                UnitBuilder.<Acceleration>fromAny(METER_PER_SECOND.divide(SECOND))
+                           .withSymbol("m/s²")
+                           .withName("METER PER SECOND SQUARED")
+                           .build();
 
-        public Unit<Area>            SQUARE_METER = buildFrom(METRE.multiply(METRE)).withSymbol("m²").withName("SQUARE METER").forQuantity(Area.class).build();
+        public Unit<Area>              SQUARE_METER =
+                UnitBuilder.<Area>fromAny(METRE.multiply(METRE))
+                           .withSymbol("m²")
+                           .withName("SQUARE METER")
+                           .build();
 
-        public Unit<Force>           NEWTON   = buildFrom(KILOGRAM.multiply(METRE).divide(SECOND.pow(2))).withSymbol("N").withName("NEWTON").forQuantity(Force.class).build();
+        public Unit<Force>             NEWTON   =
+                UnitBuilder.<Force>fromAny(KILOGRAM.multiply(METRE).divide(SECOND.pow(2)))
+                           .withSymbol("N")
+                           .withName("NEWTON")
+                           .build();
 
-        public Unit<Energy>            JOULE     = buildFrom(NEWTON.multiply(METRE)) .withSymbol("J").withName("JOULE")  .forQuantity(Energy.class)           .build();
-        public Unit<Power>             WATT      = buildFrom(JOULE.divide(SECOND))   .withSymbol("W").withName("WATT")   .forQuantity(Power.class)            .build();
+        public Unit<Energy>            JOULE  = UnitBuilder.<Energy>fromAny(NEWTON.multiply(METRE)) .withSymbol("J").withName("JOULE").build();
+        public Unit<Power>             WATT   = UnitBuilder.<Power>fromAny (JOULE.divide(SECOND))   .withSymbol("W").withName("WATT") .build();
 
-        public Unit<ElectricCharge>    COULOMB   = buildFrom(AMPERE.multiply(SECOND)).withSymbol("C").withName("COULOMB").forQuantity(ElectricCharge.class)   .build();
-        public Unit<ElectricPotential> VOLT      = buildFrom(JOULE.divide(COULOMB))  .withSymbol("V").withName("VOLT")   .forQuantity(ElectricPotential.class).build();
+        public Unit<ElectricCharge>    COULOMB =
+                UnitBuilder.<ElectricCharge>fromAny   (AMPERE.multiply(SECOND))
+                           .withSymbol("C")
+                           .withName("COULOMB")
+                           .build();
+
+        public Unit<ElectricPotential> VOLT    =
+                UnitBuilder.<ElectricPotential>fromAny(JOULE.divide(COULOMB))
+                           .withSymbol("V")
+                           .withName("VOLT")
+                           .build();
 
         // Constants expressed in SI units.
-        public final Unit<Speed> C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
-        public final Unit<?>     COULOMB_CONSTANT = buildFrom(VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND))).multipliedBy(8.987551787368176E9).withName("COULOMB CONSTANT").build();
+        public final Unit<Speed>       C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
+        public final Unit<?>           COULOMB_CONSTANT = buildFrom(VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND))).multipliedBy(8.987551787368176E9).withName("COULOMB CONSTANT").build();
     }
 
     /**
@@ -127,10 +153,17 @@ public final class Units {
         public Unit<Mass>   GRAM       = buildFrom(SI.KILOGRAM).multipliedBy(1, 1000).withSymbol("g") .withName("GRAM")      .build();
         public Unit<Time>   SECOND     = Units.SI.SECOND;
 
-        public Unit<Force>  DYN = buildFrom(GRAM.multiply(CENTIMETRE).divide(SECOND.pow(2))).withSymbol("dyn").withName("DYNE").forQuantity(Force.class).build();
+        public Unit<Force>  DYN = UnitBuilder.<Force>fromAny(GRAM.multiply(CENTIMETRE).divide(SECOND.pow(2)))
+                                             .withSymbol("dyn")
+                                             .withName("DYNE")
+                                             .build();
 
         //public Unit<ElectricCharge> STATCOULOMB = SI.COULOMB.divide(SI.C).multiply(1, 10).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
-        public Unit<ElectricCharge> STATCOULOMB = buildFrom(DYN.root(2).multiply(CENTIMETRE).divide(Units.SI.COULOMB_CONSTANT.root(2))).withSymbol("statC").withName("STATCOULOMB").forQuantity(ElectricCharge.class).build();
+        public Unit<ElectricCharge> STATCOULOMB =
+                UnitBuilder.<ElectricCharge>fromAny(DYN.root(2).multiply(CENTIMETRE).divide(Units.SI.COULOMB_CONSTANT.root(2)))
+                           .withSymbol("statC")
+                           .withName("STATCOULOMB")
+                           .build();
     }
 
     /**
@@ -183,7 +216,7 @@ public final class Units {
         public Unit<Angle> DEGREE = buildFrom(SI.RADIAN).multipliedBy(PI).multipliedBy(1, 180).withSymbol("deg").withName("DEGREE").build();
 
         // speed units
-        public Unit<Speed> KMH = buildFrom(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR)).withSymbol("km/h").withName("KM PER HOUR").forQuantity(Speed.class).build();
+        public Unit<Speed> KMH = UnitBuilder.<Speed>fromAny(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR)).withSymbol("km/h").withName("KM PER HOUR").build();
 
         // temperature units
         public Unit<Temperature> CELSIUS    = buildFrom(SI.KELVIN).shiftedBy(273.15)                   .withSymbol("°C").withName("CELSIUS")   .build();
