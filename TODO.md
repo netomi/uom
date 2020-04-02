@@ -6,6 +6,7 @@
 * add all quantities for which SI units exists
 * tests for root units, e.g. 1 s^1/2 ~= 31.623ms1/2)
 * add all SI units
+* unit & quantity formatter / parser
 
 ## Desirable
 
