@@ -10,16 +10,37 @@ The design goal of the library is to include the following:
 
 * fully typed quantities:
   ```
-  Length l = Length.of(1, Units.METER);
+  Length l1 = Length.of(1, Units.METER);
+  Length l2 = Length.ofMeter(2);          // convenience factory method for SI unit 
   ```
-* support for double and arbitrary decimal precision quantities (BigDecimal): ``` ```
+* support for double and arbitrary decimal precision quantities (BigDecimal):
   ```
-  DoubleLength  l1 = Length.of(1, Units.METER);
-  DecimalLength l2 = Length.decimalOf(1, Units.YARD);
+  DoubleLength  l1 = DoubleLength.of(1, Units.METER);
+  DecimalLength l2 = DecimalLength.of(BigDecimal.ONE, Units.YARD);
   
   Length l3 = l1.add(l2);
   ```
-* unit conversions are performed with user-defined precision
+* support for generic quantities:
+  ```
+    Quantity<Speed> speed = Quantities.create(1, Units.SI.METER_PER_SECOND, Speed.class);
+  
+    System.out.println(speed.add(Speed.ofMeterPerSecond(2))); // -> prints 3 m/s
+  ```
+* support for quantity factories:
+  ```
+    QuantityFactory<Length> factory = DoubleLength.factory();
+  
+    Length l1 = factory.create(1, Units.SI.METRE);
+  
+    // default factories can be replaced
+    // use decimal precision for every quantity of type Lengh:
+    Quantities.registerQuantityFactory(Length.class, DecimalLength.factory());
+  
+    // quantity factories with caching behavior can be registered
+    QuantityFactory<Length> myCachingFactory = ...;
+    Quantities.registerQuantityFactory(Length.class, myCachingFactory);
+  ```  
+* unit conversions can be performed with user-defined precision if needed
   ```
   DecimalLength l1 = ...
   DecimalLength l2 = l1.to(Units.YARD, MathContext.DECIMAL128);
