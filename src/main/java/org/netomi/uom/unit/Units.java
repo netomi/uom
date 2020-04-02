@@ -82,12 +82,13 @@ public final class Units {
         }
 
         // Base units of the International System of Units (SI).
-        public Unit<Length>            METRE    = addUnit(new BaseUnit<>("m", "METER",     Dimensions.LENGTH),             Length.class);
-        public Unit<Time>              SECOND   = addUnit(new BaseUnit<>("s", "SECOND",    Dimensions.TIME),               Time.class);
-        public Unit<Mass>              KILOGRAM = addUnit(new BaseUnit<>("kg", "KILOGRAM", Dimensions.MASS),               Mass.class);
-        public Unit<Temperature>       KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN",    Dimensions.TEMPERATURE),        Temperature.class);
-        public Unit<ElectricCurrent>   AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE",    Dimensions.ELECTRIC_CURRENT),   ElectricCurrent.class);
-        public Unit<LuminousIntensity> CANDELA  = addUnit(new BaseUnit<>("cd", "CANDELA",  Dimensions.LUMINOUS_INTENSITY), LuminousIntensity.class);
+        public Unit<Length>            METRE    = addUnit(new BaseUnit<>("m", "METER",     Dimensions.LENGTH),              Length.class);
+        public Unit<Time>              SECOND   = addUnit(new BaseUnit<>("s", "SECOND",    Dimensions.TIME),                Time.class);
+        public Unit<Mass>              KILOGRAM = addUnit(new BaseUnit<>("kg", "KILOGRAM", Dimensions.MASS),                Mass.class);
+        public Unit<Temperature>       KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN",    Dimensions.TEMPERATURE),         Temperature.class);
+        public Unit<ElectricCurrent>   AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE",    Dimensions.ELECTRIC_CURRENT),    ElectricCurrent.class);
+        public Unit<LuminousIntensity> CANDELA  = addUnit(new BaseUnit<>("cd", "CANDELA",  Dimensions.LUMINOUS_INTENSITY),  LuminousIntensity.class);
+        public Unit<AmountOfSubstance> MOLE     = addUnit(new BaseUnit<>("mol", "MOLE",    Dimensions.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
 
         public Unit<Frequency>       HERTZ    = buildFrom(ONE.divide(SECOND)).withSymbol("Hz").withName("HERTZ").forQuantity(Frequency.class).build();
 

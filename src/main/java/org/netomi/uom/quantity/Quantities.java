@@ -49,6 +49,8 @@ public class Quantities {
         registerInternalQuantityFactory(Time.class,              DoubleTime.factory(),              DecimalTime.factory());
         registerInternalQuantityFactory(Temperature.class,       DoubleTemperature.factory(),       DecimalTemperature.factory());
         registerInternalQuantityFactory(LuminousIntensity.class, DoubleLuminousIntensity.factory(), DecimalLuminousIntensity.factory());
+        registerInternalQuantityFactory(ElectricCurrent.class,   DoubleElectricCurrent.factory(),   DecimalElectricCurrent.factory());
+        registerInternalQuantityFactory(AmountOfSubstance.class, DoubleAmountOfSubstance.factory(), DecimalAmountOfSubstance.factory());
 
         // quantities for synonyms.
         registerInternalQuantityFactory(Distance.class,      DoubleDistance.factory(),      DecimalDistance.factory());
@@ -64,7 +66,6 @@ public class Quantities {
 
         registerInternalQuantityFactory(ElectricPotential.class, DoubleElectricPotential.factory(), DecimalElectricPotential.factory());
         registerInternalQuantityFactory(ElectricCharge.class,    DoubleElectricCharge.factory(),    DecimalElectricCharge.factory());
-        registerInternalQuantityFactory(ElectricCurrent.class,   DoubleElectricCurrent.factory(),   DecimalElectricCurrent.factory());
 
         genericQuantityFactory =
                 DelegateQuantityFactory.of(AbstractTypedDoubleQuantity.GenericImpl.factory(),
