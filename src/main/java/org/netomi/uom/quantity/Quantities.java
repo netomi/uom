@@ -43,19 +43,21 @@ public class Quantities {
         // register built-in factories.
         registerInternalQuantityFactory(Dimensionless.class, DoubleDimensionless.factory(), DecimalDimensionless.factory());
 
-        registerInternalQuantityFactory(Length.class,        DoubleLength.factory(),        DecimalLength.factory());
-        registerInternalQuantityFactory(Mass.class,          DoubleMass.factory(),          DecimalMass.factory());
-        registerInternalQuantityFactory(Time.class,          DoubleTime.factory(),          DecimalTime.factory());
-        registerInternalQuantityFactory(Temperature.class,   DoubleTemperature.factory(),   DecimalTemperature.factory());
+        // quantities for base units in SI.
+        registerInternalQuantityFactory(Length.class,            DoubleLength.factory(),            DecimalLength.factory());
+        registerInternalQuantityFactory(Mass.class,              DoubleMass.factory(),              DecimalMass.factory());
+        registerInternalQuantityFactory(Time.class,              DoubleTime.factory(),              DecimalTime.factory());
+        registerInternalQuantityFactory(Temperature.class,       DoubleTemperature.factory(),       DecimalTemperature.factory());
+        registerInternalQuantityFactory(LuminousIntensity.class, DoubleLuminousIntensity.factory(), DecimalLuminousIntensity.factory());
 
+        // quantities for synonyms.
         registerInternalQuantityFactory(Distance.class,      DoubleDistance.factory(),      DecimalDistance.factory());
 
+        // quantities for derives units.
         registerInternalQuantityFactory(Frequency.class,     DoubleFrequency.factory(),     DecimalFrequency.factory());
-
         registerInternalQuantityFactory(Speed.class,         DoubleSpeed.factory(),         DecimalSpeed.factory());
         registerInternalQuantityFactory(Acceleration.class,  DoubleAcceleration.factory(),  DecimalAcceleration.factory());
         registerInternalQuantityFactory(Area.class,          DoubleArea.factory(),          DecimalArea.factory());
-
         registerInternalQuantityFactory(Force.class,         DoubleForce.factory(),         DecimalForce.factory());
         registerInternalQuantityFactory(Energy.class,        DoubleEnergy.factory(),        DecimalEnergy.factory());
         registerInternalQuantityFactory(Power.class,         DoublePower.factory(),         DecimalPower.factory());
