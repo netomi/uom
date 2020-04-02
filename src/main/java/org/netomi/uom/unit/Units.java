@@ -88,6 +88,8 @@ public final class Units {
         public Unit<Temperature>     KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN",    Dimensions.TEMPERATURE),      Temperature.class);
         public Unit<ElectricCurrent> AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE",    Dimensions.ELECTRIC_CURRENT), ElectricCurrent.class);
 
+        public Unit<Frequency>       HERTZ    = buildFrom(ONE.divide(SECOND)).withSymbol("Hz").withName("HERTZ").forQuantity(Frequency.class).build();
+
         public Unit<Speed>           METER_PER_SECOND = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
 
         public Unit<Acceleration>    METER_PER_SQUARE_SECOND = buildFrom(METER_PER_SECOND.divide(SECOND)).withSymbol("m/s²").withName("METER PER SQUARESECOND").forQuantity(Acceleration.class).build();

@@ -50,6 +50,8 @@ public class Quantities {
 
         registerInternalQuantityFactory(Distance.class,      DoubleDistance.factory(),      DecimalDistance.factory());
 
+        registerInternalQuantityFactory(Frequency.class,     DoubleFrequency.factory(),     DecimalFrequency.factory());
+
         registerInternalQuantityFactory(Speed.class,         DoubleSpeed.factory(),         DecimalSpeed.factory());
         registerInternalQuantityFactory(Acceleration.class,  DoubleAcceleration.factory(),  DecimalAcceleration.factory());
         registerInternalQuantityFactory(Area.class,          DoubleArea.factory(),          DecimalArea.factory());
