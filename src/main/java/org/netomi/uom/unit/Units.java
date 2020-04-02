@@ -82,11 +82,11 @@ public final class Units {
         }
 
         // Base units of the International System of Units (SI).
-        public Unit<Length>          METRE    = addUnit(new BaseUnit<>("m", "METER", Dimensions.LENGTH), Length.class);
-        public Unit<Time>            SECOND   = addUnit(new BaseUnit<>("s", "SECOND", Dimensions.TIME), Time.class);
-        public Unit<Mass>            KILOGRAM = addUnit(new BaseUnit<>("kg", "KILOGRAM", Dimensions.MASS), Mass.class);
-        public Unit<Temperature>     KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN", Dimensions.TEMPERATURE), Temperature.class);
-        public Unit<ElectricCurrent> AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE", Dimensions.ELECTRIC_CURRENT), ElectricCurrent.class);
+        public Unit<Length>          METRE    = addUnit(new BaseUnit<>("m", "METER",     Dimensions.LENGTH),           Length.class);
+        public Unit<Time>            SECOND   = addUnit(new BaseUnit<>("s", "SECOND",    Dimensions.TIME),             Time.class);
+        public Unit<Mass>            KILOGRAM = addUnit(new BaseUnit<>("kg", "KILOGRAM", Dimensions.MASS),             Mass.class);
+        public Unit<Temperature>     KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN",    Dimensions.TEMPERATURE),      Temperature.class);
+        public Unit<ElectricCurrent> AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE",    Dimensions.ELECTRIC_CURRENT), ElectricCurrent.class);
 
         public Unit<Speed>           METER_PER_SECOND = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
 
@@ -95,8 +95,10 @@ public final class Units {
         public Unit<Force>           NEWTON   = buildFrom(KILOGRAM.multiply(METRE).divide(SECOND.pow(2))).withSymbol("N").withName("NEWTON").forQuantity(Force.class).build();
 
         public Unit<Energy>            JOULE     = buildFrom(NEWTON.multiply(METRE)) .withSymbol("J").withName("JOULE")  .forQuantity(Energy.class)           .build();
+        public Unit<Power>             WATT      = buildFrom(JOULE.divide(SECOND))   .withSymbol("W").withName("WATT")   .forQuantity(Power.class)            .build();
+
         public Unit<ElectricCharge>    COULOMB   = buildFrom(AMPERE.multiply(SECOND)).withSymbol("C").withName("COULOMB").forQuantity(ElectricCharge.class)   .build();
-        public Unit<ElectricPotential> VOLT      = buildFrom(JOULE.divide(COULOMB)).withSymbol("V").withName("VOLT")     .forQuantity(ElectricPotential.class).build();
+        public Unit<ElectricPotential> VOLT      = buildFrom(JOULE.divide(COULOMB))  .withSymbol("V").withName("VOLT")   .forQuantity(ElectricPotential.class).build();
 
         // Constants expressed in SI units.
         public final Unit<Speed> C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
