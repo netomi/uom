@@ -28,8 +28,7 @@ import java.util.Objects;
  * <p>
  * This class should not be used directly, instead use
  * {@code UnitConverters#root} to create an instance of this class. Only square
- * roots are supported atm, special cases like n = 0 are handled by the
- * factory method.
+ * roots are supported atm.
  *
  * @author Thomas Neidhart
  */
