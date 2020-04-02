@@ -20,16 +20,16 @@ import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
 /**
- * A {@link Quantity} representing a measure of an acceleration.
+ * A {@link Quantity} representing a measure of an angle.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Acceleration">Wikipedia: Acceleration</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Angle">Wikipedia: Angle</a>
  *
  * @author Thomas Neidhart
  */
-public interface Acceleration extends Quantity<Acceleration> {
+public interface Angle extends Quantity<Angle> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Acceleration}.
+     * Convenience method to create a {@link Quantity} of type {@link Angle}.
      * <p>
      * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -38,25 +38,25 @@ public interface Acceleration extends Quantity<Acceleration> {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Acceleration} instance for the given value.
+     * @return a new {@link Angle} instance for the given value.
      */
-    static Acceleration of(double value, Unit<Acceleration> unit) {
-        return Quantities.createQuantity(value, unit, Acceleration.class);
+    static Angle of(double value, Unit<Angle> unit) {
+        return Quantities.createQuantity(value, unit, Angle.class);
     }
 
-    static Acceleration ofMeterPerSquareSecond(double value) {
-        return of(value, Units.SI.METER_PER_SECOND_SQUARED);
+    static Angle ofRadian(double value) {
+        return of(value, Units.SI.RADIAN);
     }
 
     @Override
-    Acceleration to(Unit<Acceleration> unit);
+    Angle to(Unit<Angle> unit);
 
     @Override
-    Acceleration add(Quantity<Acceleration> addend);
+    Angle add(Quantity<Angle> addend);
 
     @Override
-    Acceleration subtract(Quantity<Acceleration> subtrahend);
+    Angle subtract(Quantity<Angle> subtrahend);
 
     @Override
-    Acceleration negate();
+    Angle negate();
 }

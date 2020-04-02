@@ -47,7 +47,7 @@ public final class DecimalAcceleration
     }
 
     public static DecimalAcceleration ofMeterPerSquareSecond(BigDecimal value, MathContext mathContext) {
-        return of(value, mathContext, Units.SI.METER_PER_SQUARE_SECOND);
+        return of(value, mathContext, Units.SI.METER_PER_SECOND_SQUARED);
     }
 
     public static DecimalQuantityFactory<DecimalAcceleration, Acceleration> factory() {

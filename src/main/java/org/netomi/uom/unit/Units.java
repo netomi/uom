@@ -35,7 +35,7 @@ public final class Units {
 
     // Some globally unique units / constants.
     public static final Unit<Dimensionless> ONE = new DerivedUnit<>();
-    public static final Unit<Dimensionless> PI  = ONE.multiply(StrictMath.PI);
+    public static final BigDecimal          PI  = BigDecimal.valueOf(StrictMath.PI);
 
     // System of Units.
     public static final SI       SI       = new Units.SI();
@@ -90,13 +90,14 @@ public final class Units {
         public Unit<LuminousIntensity> CANDELA  = addUnit(new BaseUnit<>("cd", "CANDELA",  Dimensions.LUMINOUS_INTENSITY),  LuminousIntensity.class);
         public Unit<AmountOfSubstance> MOLE     = addUnit(new BaseUnit<>("mol", "MOLE",    Dimensions.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
 
-        public Unit<Frequency>       HERTZ    = buildFrom(ONE.divide(SECOND)).withSymbol("Hz").withName("HERTZ").forQuantity(Frequency.class).build();
+        public Unit<Angle>           RADIAN   = buildFrom(ONE)               .withSymbol("rad").withName("RADIAN").forQuantity(Angle.class)    .build();
+        public Unit<Frequency>       HERTZ    = buildFrom(ONE.divide(SECOND)).withSymbol("Hz") .withName("HERTZ") .forQuantity(Frequency.class).build();
 
         public Unit<Speed>           METER_PER_SECOND = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
 
-        public Unit<Acceleration>    METER_PER_SQUARE_SECOND = buildFrom(METER_PER_SECOND.divide(SECOND)).withSymbol("m/s²").withName("METER PER SQUARESECOND").forQuantity(Acceleration.class).build();
+        public Unit<Acceleration>    METER_PER_SECOND_SQUARED = buildFrom(METER_PER_SECOND.divide(SECOND)).withSymbol("m/s²").withName("METER PER SECOND SQUARED").forQuantity(Acceleration.class).build();
 
-        public Unit<Area>            SQUARE_METER = buildFrom(METRE.multiply(METRE)).withSymbol("m²").withName("SQUAREMETER").forQuantity(Area.class).build();
+        public Unit<Area>            SQUARE_METER = buildFrom(METRE.multiply(METRE)).withSymbol("m²").withName("SQUARE METER").forQuantity(Area.class).build();
 
         public Unit<Force>           NEWTON   = buildFrom(KILOGRAM.multiply(METRE).divide(SECOND.pow(2))).withSymbol("N").withName("NEWTON").forQuantity(Force.class).build();
 
@@ -178,6 +179,8 @@ public final class Units {
         // time units
         public Unit<Time>  MINUTE = buildFrom(SI.SECOND).multipliedBy(60, 1).withSymbol("m").withName("MINUTE").build();
         public Unit<Time>  HOUR   = buildFrom(MINUTE)   .multipliedBy(60, 1).withSymbol("h").withName("HOUR")  .build();
+
+        public Unit<Angle> DEGREE = buildFrom(SI.RADIAN).multipliedBy(PI).multipliedBy(1, 180).withSymbol("deg").withName("DEGREE").build();
 
         // speed units
         public Unit<Speed> KMH = buildFrom(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR)).withSymbol("km/h").withName("KM PER HOUR").forQuantity(Speed.class).build();

@@ -16,37 +16,37 @@
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Acceleration;
+import org.netomi.uom.quantity.Angle;
 import org.netomi.uom.unit.Units;
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Acceleration} with double precision.
+ * {@link Angle} with double precision.
  *
  * @author Thomas Neidhart
  */
-public final class DoubleAcceleration
-        extends    AbstractTypedDoubleQuantity<DoubleAcceleration, Acceleration>
-        implements Acceleration {
+public final class DoubleAngle
+        extends    AbstractTypedDoubleQuantity<DoubleAngle, Angle>
+        implements Angle {
 
-    public static DoubleAcceleration of(double value, Unit<Acceleration> unit) {
-        return new DoubleAcceleration(value, unit);
+    public static DoubleAngle of(double value, Unit<Angle> unit) {
+        return new DoubleAngle(value, unit);
     }
 
-    public static DoubleAcceleration ofMeterPerSquareSecond(double value) {
-        return of(value, Units.SI.METER_PER_SECOND_SQUARED);
+    public static DoubleAngle ofRadian(double value) {
+        return of(value, Units.SI.RADIAN);
     }
 
-    public static DoubleQuantityFactory<DoubleAcceleration, Acceleration> factory() {
+    public static DoubleQuantityFactory<DoubleAngle, Angle> factory() {
         return (value, unit) -> of(value, unit);
     }
 
-    private DoubleAcceleration(double value, Unit<Acceleration> unit) {
+    private DoubleAngle(double value, Unit<Angle> unit) {
         super(value, unit);
     }
 
     @Override
-    public DoubleAcceleration with(double value, Unit<Acceleration> unit) {
+    public DoubleAngle with(double value, Unit<Angle> unit) {
         return of(value, unit);
     }
 }
