@@ -25,6 +25,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
@@ -40,7 +41,7 @@ public class Quantities {
         factoryMap = new HashMap<>();
 
         // register built-in factories.
-        registerInternalQuantityFactory(Dimensionless.class, DoubleDimensionless.factory(), null);
+        registerInternalQuantityFactory(Dimensionless.class, DoubleDimensionless.factory(), DecimalDimensionless.factory());
 
         registerInternalQuantityFactory(Length.class,      DoubleLength.factory(),      DecimalLength.factory());
         registerInternalQuantityFactory(Mass.class,        DoubleMass.factory(),        DecimalMass.factory());
@@ -61,7 +62,7 @@ public class Quantities {
 
         genericQuantityFactory =
                 DelegateQuantityFactory.of(AbstractTypedDoubleQuantity.GenericImpl.factory(),
-                                           null);
+                                           AbstractTypedDecimalQuantity.GenericImpl.factory());
     }
 
     private static <T extends Q, Q extends Quantity<Q>>
@@ -124,6 +125,9 @@ public class Quantities {
 
         private DelegateQuantityFactory(DoubleQuantityFactory<?, Q>  doubleQuantityFactory,
                                         DecimalQuantityFactory<?, Q> decimalQuantityFactory) {
+            Objects.requireNonNull(doubleQuantityFactory);
+            Objects.requireNonNull(decimalQuantityFactory);
+
             this.doubleQuantityFactory  = doubleQuantityFactory;
             this.decimalQuantityFactory = decimalQuantityFactory;
         }
@@ -135,16 +139,12 @@ public class Quantities {
 
         @Override
         public Q create(BigDecimal value, Unit<Q> unit) {
-            return decimalQuantityFactory != null ?
-                    decimalQuantityFactory.create(value, unit) :
-                    doubleQuantityFactory.create(value, unit);
+                return decimalQuantityFactory.create(value, unit);
         }
 
         @Override
         public Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
-            return decimalQuantityFactory != null ?
-                    decimalQuantityFactory.create(value, mathContext, unit) :
-                    doubleQuantityFactory.create(value, mathContext, unit);
+                return decimalQuantityFactory.create(value, mathContext, unit);
         }
     }
 }
