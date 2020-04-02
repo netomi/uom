@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Quantity;
@@ -23,7 +22,15 @@ import org.netomi.uom.quantity.Quantities;
 
 import java.math.BigDecimal;
 
-abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q extends Quantity<Q>> implements DoubleQuantity<Q> {
+/**
+ *
+ * @param <P>
+ * @param <Q>
+ *
+ * @author Thomas Neidhart
+ */
+public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q extends Quantity<Q>>
+    implements DoubleQuantity<Q> {
 
     protected final double  value;
     protected final Unit<Q> unit;
@@ -50,34 +57,50 @@ abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q extend
 
     @Override
     public P add(Quantity<Q> addend) {
-        Quantity<Q> scaledQuantity = addend.to(getUnit());
-        return with(doubleValue() + scaledQuantity.doubleValue(), getUnit());
+        Quantity<Q> scaledQuantity = addend.to(unit);
+        return with(value + scaledQuantity.doubleValue(), unit);
+    }
+
+    @Override
+    public P subtract(Quantity<Q> subtrahend) {
+        Quantity<Q> scaledQuantity = subtrahend.to(unit);
+        return with(value - scaledQuantity.doubleValue(), unit);
+    }
+
+    @Override
+    public P negate() {
+        return with(-value, unit);
     }
 
     @Override
     public DoubleQuantity<?> multiply(Quantity<?> multiplicand) {
-        Unit<?> unit = this.getUnit().multiply(multiplicand.getUnit());
-        return genericDoubleQuantity(doubleValue() * multiplicand.doubleValue(), unit);
+        Unit<?> combinedUnit = unit.multiply(multiplicand.getUnit());
+        return genericDoubleQuantity(value * multiplicand.doubleValue(), combinedUnit);
     }
 
     @Override
     public DoubleQuantity<?> divide(Quantity<?> divisor) {
-        Unit<?> unit = this.getUnit().divide(divisor.getUnit());
-        return genericDoubleQuantity(doubleValue() / divisor.doubleValue(), unit);
+        Unit<?> combinedUnit = unit.divide(divisor.getUnit());
+        return genericDoubleQuantity(value / divisor.doubleValue(), combinedUnit);
     }
 
     @Override
-    public P to(Unit<Q> unit) {
-        UnitConverter converter = getUnit().getConverterTo(unit);
-        return with(converter.convert(value), unit);
+    public DoubleQuantity<?> reciprocal() {
+        return genericDoubleQuantity(1. / value, unit.inverse());
     }
 
     @Override
-    public <T extends R, R extends Quantity<R>> T asType(Class<T> clazz) {
+    public P to(Unit<Q> toUnit) {
+        UnitConverter converter = unit.getConverterTo(toUnit);
+        return with(converter.convert(value), toUnit);
+    }
+
+    @Override
+    public <T extends R, R extends Quantity<R>> T asTypedQuantity(Class<T> clazz) {
         return Quantities.getQuantityAsType(this, clazz);
     }
 
-    protected abstract P with(double value, Unit<Q> unit);
+    public abstract P with(double value, Unit<Q> unit);
 
     protected DoubleQuantity<?> genericDoubleQuantity(double value, Unit<?> unit) {
         return new GenericImpl(value, unit);
@@ -88,14 +111,18 @@ abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q extend
         return String.format("%e %s", doubleValue(), getUnit().getSymbol());
     }
 
-    static class GenericImpl extends AbstractTypedDoubleQuantity {
+    public static class GenericImpl extends AbstractTypedDoubleQuantity {
 
-        public GenericImpl(double value, Unit<?> unit) {
+        public static DoubleQuantityFactory factory() {
+            return (value, unit) -> new GenericImpl(value, unit);
+        }
+
+        private GenericImpl(double value, Unit<?> unit) {
             super(value, unit);
         }
 
         @Override
-        protected DoubleQuantity with(double value, Unit unit) {
+        public DoubleQuantity with(double value, Unit unit) {
             return new GenericImpl(value, unit);
         }
     }

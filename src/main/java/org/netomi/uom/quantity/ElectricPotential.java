@@ -13,13 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A {@link Quantity} representing a measure of an electric potential.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Electric_potential">Wikipedia: Electric potential</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface ElectricPotential extends Quantity<ElectricPotential> {
+
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link ElectricPotential}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link ElectricPotential} instance for the given value.
+     */
+    static ElectricPotential of(double value, Unit<ElectricPotential> unit) {
+        return Quantities.createQuantity(value, unit, ElectricPotential.class);
+    }
+
+    static ElectricPotential ofVolt(double value) {
+        return of(value, Units.SI.VOLT);
+    }
 
     @Override
     ElectricPotential to(Unit<ElectricPotential> unit);
@@ -27,4 +54,9 @@ public interface ElectricPotential extends Quantity<ElectricPotential> {
     @Override
     ElectricPotential add(Quantity<ElectricPotential> addend);
 
+    @Override
+    ElectricPotential subtract(Quantity<ElectricPotential> subtrahend);
+
+    @Override
+    ElectricPotential negate();
 }

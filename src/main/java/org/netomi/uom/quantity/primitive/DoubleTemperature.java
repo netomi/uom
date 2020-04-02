@@ -13,21 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.Temperature;
-import org.netomi.uom.quantity.Time;
+import org.netomi.uom.unit.Units;
 
-public class DoubleTemperature extends AbstractTypedDoubleQuantity<DoubleTemperature, Temperature> implements Temperature {
+/**
+ * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
+ * {@link Temperature} with double precision.
+ *
+ * @author Thomas Neidhart
+ */
+public final class DoubleTemperature
+        extends    AbstractTypedDoubleQuantity<DoubleTemperature, Temperature>
+        implements Temperature {
 
-    public DoubleTemperature(double value, Unit<Temperature> unit) {
+    public static DoubleTemperature of(double value, Unit<Temperature> unit) {
+        return new DoubleTemperature(value, unit);
+    }
+
+    public static DoubleTemperature ofKelvin(double value) {
+        return of(value, Units.SI.KELVIN);
+    }
+
+    public static DoubleQuantityFactory<DoubleTemperature, Temperature> factory() {
+        return (value, unit) -> of(value, unit);
+    }
+
+    private DoubleTemperature(double value, Unit<Temperature> unit) {
         super(value, unit);
     }
 
     @Override
-    protected DoubleTemperature with(double value, Unit<Temperature> unit) {
-        return new DoubleTemperature(value, unit);
+    public DoubleTemperature with(double value, Unit<Temperature> unit) {
+        return of(value, unit);
     }
 }

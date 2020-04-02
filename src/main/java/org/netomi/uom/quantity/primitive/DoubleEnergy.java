@@ -16,38 +16,35 @@
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Distance;
-import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Energy;
 import org.netomi.uom.unit.Units;
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Distance} with double precision.
+ * {@link Energy} with double precision.
  *
  * @author Thomas Neidhart
  */
-public final class DoubleDistance
-        extends    AbstractTypedDoubleQuantity<DoubleDistance, Length>
-        implements Distance {
+public final class DoubleEnergy extends AbstractTypedDoubleQuantity<DoubleEnergy, Energy> implements Energy {
 
-    public static DoubleDistance of(double value, Unit<Length> unit) {
-        return new DoubleDistance(value, unit);
+    public static DoubleEnergy of(double value, Unit<Energy> unit) {
+        return new DoubleEnergy(value, unit);
     }
 
-    public static DoubleDistance ofMeter(double value) {
-        return of(value, Units.SI.METRE);
+    public static DoubleEnergy ofNewton(double value) {
+        return of(value, Units.SI.JOULE);
     }
 
-    public static DoubleQuantityFactory<DoubleDistance, Length> factory() {
+    public static DoubleQuantityFactory<DoubleEnergy, Energy> factory() {
         return (value, unit) -> of(value, unit);
     }
 
-    private DoubleDistance(double value, Unit<Length> unit) {
+    private DoubleEnergy(double value, Unit<Energy> unit) {
         super(value, unit);
     }
 
     @Override
-    public DoubleDistance with(double value, Unit<Length> unit) {
+    public DoubleEnergy with(double value, Unit<Energy> unit) {
         return of(value, unit);
     }
 }

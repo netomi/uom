@@ -88,7 +88,9 @@ public final class Units {
         public Unit<Temperature>     KELVIN   = addUnit(new BaseUnit<>("K", "KELVIN", Dimensions.TEMPERATURE), Temperature.class);
         public Unit<ElectricCurrent> AMPERE   = addUnit(new BaseUnit<>("A", "AMPERE", Dimensions.ELECTRIC_CURRENT), ElectricCurrent.class);
 
-        public Unit<Speed>           M_PER_S = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
+        public Unit<Speed>           METER_PER_SECOND = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
+
+        public Unit<Area>            SQUARE_METER = buildFrom(METRE.multiply(METRE)).withSymbol("m²").withName("SQUAREMETER").forQuantity(Area.class).build();
 
         public Unit<Force>           NEWTON   = buildFrom(KILOGRAM.multiply(METRE).divide(SECOND.pow(2))).withSymbol("N").withName("NEWTON").forQuantity(Force.class).build();
 
@@ -97,7 +99,7 @@ public final class Units {
         public Unit<ElectricPotential> VOLT      = buildFrom(JOULE.divide(COULOMB)).withSymbol("V").withName("VOLT")     .forQuantity(ElectricPotential.class).build();
 
         // Constants expressed in SI units.
-        public final Unit<Speed> C                = buildFrom(M_PER_S).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
+        public final Unit<Speed> C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
         public final Unit<?>     COULOMB_CONSTANT = buildFrom(VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND))).multipliedBy(8.987551787368176E9).withName("COULOMB CONSTANT").build();
     }
 

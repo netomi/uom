@@ -16,6 +16,7 @@
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Unit;
+import org.netomi.uom.quantity.Distance;
 import org.netomi.uom.quantity.Length;
 import org.netomi.uom.unit.Units;
 
@@ -26,42 +27,44 @@ import static org.netomi.uom.quantity.decimal.DecimalQuantityFactory.DEFAULT_MAT
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Length} with decimal precision.
+ * {@link Distance} with decimal precision.
  *
  * @author Thomas Neidhart
  */
-public final class DecimalLength extends AbstractTypedDecimalQuantity<DecimalLength, Length> implements Length {
+public final class DecimalDistance
+        extends    AbstractTypedDecimalQuantity<DecimalDistance, Length>
+        implements Distance {
 
-    public static DecimalLength of(BigDecimal value, Unit<Length> unit) {
+    public static DecimalDistance of(BigDecimal value, Unit<Length> unit) {
         return of(value, DEFAULT_MATH_CONTEXT, unit);
     }
 
-    public static DecimalLength of(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public static DecimalDistance of(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
+        return new DecimalDistance(value, mathContext, unit);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value) {
+    public static DecimalDistance ofMeter(BigDecimal value) {
         return ofMeter(value, DEFAULT_MATH_CONTEXT);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value, MathContext mathContext) {
+    public static DecimalDistance ofMeter(BigDecimal value, MathContext mathContext) {
         return of(value, mathContext, Units.SI.METRE);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory() {
+    public static DecimalQuantityFactory<DecimalDistance, Length> factory() {
         return (value, context, unit) -> of(value, context, unit);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory(MathContext mathContext) {
+    public static DecimalQuantityFactory<DecimalDistance, Length> factory(MathContext mathContext) {
         return (value, context, unit) -> of(value, mathContext, unit);
     }
 
-    private DecimalLength(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
+    private DecimalDistance(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
         super(value, mathContext, unit);
     }
 
     @Override
-    public DecimalLength with(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public DecimalDistance with(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
+        return new DecimalDistance(value, mathContext, unit);
     }
 }

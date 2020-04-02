@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Speed;
 import org.netomi.uom.unit.Units;
 
 import java.math.BigDecimal;
@@ -26,42 +26,44 @@ import static org.netomi.uom.quantity.decimal.DecimalQuantityFactory.DEFAULT_MAT
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Length} with decimal precision.
+ * {@link Speed} with decimal precision.
  *
  * @author Thomas Neidhart
  */
-public final class DecimalLength extends AbstractTypedDecimalQuantity<DecimalLength, Length> implements Length {
+public final class DecimalSpeed
+        extends    AbstractTypedDecimalQuantity<DecimalSpeed, Speed>
+        implements Speed {
 
-    public static DecimalLength of(BigDecimal value, Unit<Length> unit) {
+    public static DecimalSpeed of(BigDecimal value, Unit<Speed> unit) {
         return of(value, DEFAULT_MATH_CONTEXT, unit);
     }
 
-    public static DecimalLength of(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public static DecimalSpeed of(BigDecimal value, MathContext mathContext, Unit<Speed> unit) {
+        return new DecimalSpeed(value, mathContext, unit);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value) {
-        return ofMeter(value, DEFAULT_MATH_CONTEXT);
+    public static DecimalSpeed ofMeterPerSecond(BigDecimal value) {
+        return ofMeterPerSecond(value, DEFAULT_MATH_CONTEXT);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value, MathContext mathContext) {
-        return of(value, mathContext, Units.SI.METRE);
+    public static DecimalSpeed ofMeterPerSecond(BigDecimal value, MathContext mathContext) {
+        return of(value, mathContext, Units.SI.METER_PER_SECOND);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory() {
+    public static DecimalQuantityFactory<DecimalSpeed, Speed> factory() {
         return (value, context, unit) -> of(value, context, unit);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory(MathContext mathContext) {
+    public static DecimalQuantityFactory<DecimalSpeed, Speed> factory(MathContext mathContext) {
         return (value, context, unit) -> of(value, mathContext, unit);
     }
 
-    private DecimalLength(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
+    private DecimalSpeed(BigDecimal value, MathContext mathContext, Unit<Speed> unit) {
         super(value, mathContext, unit);
     }
 
     @Override
-    public DecimalLength with(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public DecimalSpeed with(BigDecimal value, MathContext mathContext, Unit<Speed> unit) {
+        return new DecimalSpeed(value, mathContext, unit);
     }
 }

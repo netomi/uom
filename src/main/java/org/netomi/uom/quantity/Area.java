@@ -13,21 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.primitive.DoubleArea;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A {@link Quantity} representing a measure of an area.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Area">Wikipedia: Area</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface Area extends Quantity<Area> {
 
-    static Area of(Quantity<?> quantity) {
-        return of(quantity.doubleValue(), (Unit) quantity.getUnit());
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link Area}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link Area} instance for the given value.
+     */
+    static Area of(double value, Unit<Area> unit) {
+        return Quantities.createQuantity(value, unit, Area.class);
     }
 
-    static DoubleArea of(double value, Unit<Area> unit) {
-        return new DoubleArea(value, unit);
+    static Area ofSquareMeter(double value) {
+        return of(value, Units.SI.SQUARE_METER);
     }
 
     @Override
@@ -36,4 +54,9 @@ public interface Area extends Quantity<Area> {
     @Override
     Area add(Quantity<Area> addend);
 
+    @Override
+    Area subtract(Quantity<Area> subtrahend);
+
+    @Override
+    Area negate();
 }

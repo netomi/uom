@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Temperature;
 import org.netomi.uom.unit.Units;
 
 import java.math.BigDecimal;
@@ -26,42 +26,44 @@ import static org.netomi.uom.quantity.decimal.DecimalQuantityFactory.DEFAULT_MAT
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Length} with decimal precision.
+ * {@link Temperature} with decimal precision.
  *
  * @author Thomas Neidhart
  */
-public final class DecimalLength extends AbstractTypedDecimalQuantity<DecimalLength, Length> implements Length {
+public final class DecimalTemperature
+        extends    AbstractTypedDecimalQuantity<DecimalTemperature, Temperature>
+        implements Temperature {
 
-    public static DecimalLength of(BigDecimal value, Unit<Length> unit) {
+    public static DecimalTemperature of(BigDecimal value, Unit<Temperature> unit) {
         return of(value, DEFAULT_MATH_CONTEXT, unit);
     }
 
-    public static DecimalLength of(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public static DecimalTemperature of(BigDecimal value, MathContext mathContext, Unit<Temperature> unit) {
+        return new DecimalTemperature(value, mathContext, unit);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value) {
-        return ofMeter(value, DEFAULT_MATH_CONTEXT);
+    public static DecimalTemperature ofKelvin(BigDecimal value) {
+        return ofKelvin(value, DEFAULT_MATH_CONTEXT);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value, MathContext mathContext) {
-        return of(value, mathContext, Units.SI.METRE);
+    public static DecimalTemperature ofKelvin(BigDecimal value, MathContext mathContext) {
+        return of(value, mathContext, Units.SI.KELVIN);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory() {
+    public static DecimalQuantityFactory<DecimalTemperature, Temperature> factory() {
         return (value, context, unit) -> of(value, context, unit);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory(MathContext mathContext) {
+    public static DecimalQuantityFactory<DecimalTemperature, Temperature> factory(MathContext mathContext) {
         return (value, context, unit) -> of(value, mathContext, unit);
     }
 
-    private DecimalLength(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
+    private DecimalTemperature(BigDecimal value, MathContext mathContext, Unit<Temperature> unit) {
         super(value, mathContext, unit);
     }
 
     @Override
-    public DecimalLength with(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public DecimalTemperature with(BigDecimal value, MathContext mathContext, Unit<Temperature> unit) {
+        return new DecimalTemperature(value, mathContext, unit);
     }
 }

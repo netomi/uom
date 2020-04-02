@@ -13,29 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.quantity.Quantities;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * An extension of the {@link Quantity} interface for quantities with decimal precisions.
+ *
+ * @param <Q> the quantity type
+ *
+ * @author Thomas Neidhart
+ */
 public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <P extends Quantity<P>> DecimalQuantity<P> of(BigDecimal value, Unit<P> unit) {
-        return new AbstractTypedDecimalQuantity.GenericImpl(value, MathContext.DECIMAL128, unit);
+        return Quantities.createQuantity(value, unit, null);
     }
 
     static <P extends Quantity<P>> DecimalQuantity<P> of(BigDecimal value, MathContext mathContext, Unit<P> unit) {
-        return new AbstractTypedDecimalQuantity.GenericImpl(value, mathContext, unit);
+        return Quantities.createQuantity(value, mathContext, unit, null);
     }
 
     MathContext getMathContext();
 
+    default DecimalQuantity<Q> with(BigDecimal value, Unit<Q> unit) {
+        return with(value, getMathContext(), unit);
+    }
+
+    DecimalQuantity<Q> with(BigDecimal value, MathContext mathContext, Unit<Q> unit);
+
+    @Override
+    default DecimalQuantity<Q> to(Unit<Q> unit) {
+        return to(unit, getMathContext());
+    }
+
+    DecimalQuantity<Q> to(Unit<Q> unit, MathContext context);
+
     @Override
     DecimalQuantity<Q> add(Quantity<Q> addend);
+
+    @Override
+    DecimalQuantity<Q> subtract(Quantity<Q> addend);
+
+    @Override
+    DecimalQuantity<Q> negate();
 
     @Override
     DecimalQuantity<?> multiply(Quantity<?> multiplicand);
@@ -44,9 +70,5 @@ public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
     DecimalQuantity<?> divide(Quantity<?> divisor);
 
     @Override
-    default DecimalQuantity<Q> to(Unit<Q> unit) {
-        return to(unit, getMathContext());
-    }
-
-    DecimalQuantity<Q> to(Unit<Q> unit, MathContext context);
+    DecimalQuantity<?> reciprocal();
 }

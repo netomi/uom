@@ -13,13 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A {@link Quantity} representing a measure of energy.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Energy">Wikipedia: Energy</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface Energy extends Quantity<Energy> {
+
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link Energy}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link Energy} instance for the given value.
+     */
+    static Energy of(double value, Unit<Energy> unit) {
+        return Quantities.createQuantity(value, unit, Energy.class);
+    }
+
+    static Energy ofJoule(double value) {
+        return of(value, Units.SI.JOULE);
+    }
 
     @Override
     Energy to(Unit<Energy> unit);
@@ -27,4 +54,9 @@ public interface Energy extends Quantity<Energy> {
     @Override
     Energy add(Quantity<Energy> addend);
 
+    @Override
+    Energy subtract(Quantity<Energy> subtrahend);
+
+    @Override
+    Energy negate();
 }

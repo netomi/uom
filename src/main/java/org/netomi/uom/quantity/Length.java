@@ -13,33 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.decimal.DecimalLength;
-import org.netomi.uom.quantity.primitive.DoubleLength;
+import org.netomi.uom.unit.Units;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
+/**
+ * A {@link Quantity} representing a measure of distance.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Length">Wikipedia: Length</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface Length extends Quantity<Length> {
 
-    static Length of(Quantity<?> quantity) {
-        return of(quantity.doubleValue(), (Unit<Length>) quantity.getUnit());
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link Length}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link Length} instance for the given value.
+     */
+    static Length of(double value, Unit<Length> unit) {
+        return Quantities.createQuantity(value, unit, Length.class);
     }
 
-    static DoubleLength of(double value, Unit<Length> unit) {
-        return new DoubleLength(value, unit);
-    }
-
-    static DecimalLength decimalOf(BigDecimal value, Unit<Length> unit) {
-        return decimalOf(value, MathContext.DECIMAL128, unit);
-    }
-
-    static DecimalLength decimalOf(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    static Length ofMeter(double value) {
+        return of(value, Units.SI.METRE);
     }
 
     @Override
@@ -48,11 +54,17 @@ public interface Length extends Quantity<Length> {
     @Override
     Length add(Quantity<Length> addend);
 
+    @Override
+    Length subtract(Quantity<Length> subtrahend);
+
+    @Override
+    Length negate();
+
     default Area multiplyByLength(Quantity<Length> multiplicand) {
-        return multiply(multiplicand).asType(Area.class);
+        return multiply(multiplicand).asTypedQuantity(Area.class);
     }
 
     default Speed divideByTime(Quantity<Time> divisor) {
-        return Speed.of(divide(divisor));
+        return divide(divisor).asTypedQuantity(Speed.class);
     }
 }

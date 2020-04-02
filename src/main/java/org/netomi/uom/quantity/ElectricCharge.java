@@ -13,14 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.primitive.DoubleArea;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A {@link Quantity} representing a measure of an electric charge.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Electric_charge">Wikipedia: Electric charge</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface ElectricCharge extends Quantity<ElectricCharge> {
+
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link ElectricCharge}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link ElectricCharge} instance for the given value.
+     */
+    static ElectricCharge of(double value, Unit<ElectricCharge> unit) {
+        return Quantities.createQuantity(value, unit, ElectricCharge.class);
+    }
+
+    static ElectricCharge ofCoulomb(double value) {
+        return of(value, Units.SI.COULOMB);
+    }
 
     @Override
     ElectricCharge to(Unit<ElectricCharge> unit);
@@ -28,4 +54,9 @@ public interface ElectricCharge extends Quantity<ElectricCharge> {
     @Override
     ElectricCharge add(Quantity<ElectricCharge> addend);
 
+    @Override
+    ElectricCharge subtract(Quantity<ElectricCharge> subtrahend);
+
+    @Override
+    ElectricCharge negate();
 }

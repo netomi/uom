@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.netomi.uom.quantity.decimal;
 
-package org.netomi.uom;
+import org.netomi.uom.Quantity;
+import org.netomi.uom.QuantityFactory;
+import org.netomi.uom.Unit;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-/**
- *
- * @param <Q>
- *
- * @author Thomas Neidhart
- */
-public interface QuantityFactory<Q extends Quantity<Q>> {
-    Q create(double value, Unit<Q> unit);
+public interface DecimalQuantityFactory<T extends Q, Q extends Quantity<Q>> extends QuantityFactory<Q> {
 
-    Q create(BigDecimal value, Unit<Q> unit);
+    MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL128;
 
-    Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit);
+    @Override
+    default T create(double value, Unit<Q> unit) {
+        return create(BigDecimal.valueOf(value), unit);
+    }
+
+    @Override
+    default T create(BigDecimal value, Unit<Q> unit) {
+        return create(value, DEFAULT_MATH_CONTEXT, unit);
+    }
+
+    T create(BigDecimal value, MathContext mathContext, Unit<Q> unit);
 }

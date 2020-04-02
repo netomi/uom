@@ -13,28 +13,138 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
+import org.netomi.uom.QuantityFactory;
+import org.netomi.uom.Unit;
+import org.netomi.uom.quantity.decimal.*;
+import org.netomi.uom.quantity.primitive.*;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
+/**
+ * @author Thomas Neidhart
+ */
 public class Quantities {
 
-    static Map<Class<? extends Quantity<?>>, Function<Quantity<?>, Quantity<?>>> factory;
+    static Map<Class<? extends Quantity<?>>, QuantityFactory<?>> factoryMap;
+
+    static QuantityFactory<?> genericQuantityFactory;
 
     static {
-        factory = new HashMap<>();
+        factoryMap = new HashMap<>();
 
-        factory.put(Length.class, Length::of);
-        factory.put(Speed.class, Speed::of);
-        factory.put(Area.class, Area::of);
+        // register built-in factories.
+        registerInternalQuantityFactory(Dimensionless.class, DoubleDimensionless.factory(), null);
+
+        registerInternalQuantityFactory(Length.class,      DoubleLength.factory(),      DecimalLength.factory());
+        registerInternalQuantityFactory(Mass.class,        DoubleMass.factory(),        DecimalMass.factory());
+        registerInternalQuantityFactory(Time.class,        DoubleTime.factory(),        DecimalTime.factory());
+        registerInternalQuantityFactory(Temperature.class, DoubleTemperature.factory(), DecimalTemperature.factory());
+
+        registerInternalQuantityFactory(Distance.class,       DoubleDistance.factory(), DecimalDistance.factory());
+
+        registerInternalQuantityFactory(Speed.class,       DoubleSpeed.factory(),       DecimalSpeed.factory());
+        registerInternalQuantityFactory(Area.class,        DoubleArea.factory(),        DecimalArea.factory());
+
+        registerInternalQuantityFactory(Force.class,       DoubleForce.factory(),       DecimalForce.factory());
+        registerInternalQuantityFactory(Energy.class,      DoubleEnergy.factory(),      DecimalEnergy.factory());
+
+        registerInternalQuantityFactory(ElectricPotential.class, DoubleElectricPotential.factory(), DecimalElectricPotential.factory());
+        registerInternalQuantityFactory(ElectricCharge.class,    DoubleElectricCharge.factory(),    DecimalElectricCharge.factory());
+        registerInternalQuantityFactory(ElectricCurrent.class,   DoubleElectricCurrent.factory(),   DecimalElectricCurrent.factory());
+
+        genericQuantityFactory =
+                DelegateQuantityFactory.of(AbstractTypedDoubleQuantity.GenericImpl.factory(),
+                                           null);
+    }
+
+    private static <T extends Q, Q extends Quantity<Q>>
+        void registerInternalQuantityFactory(Class<T> quantityClass,
+                                             DoubleQuantityFactory<?, ?>  doubleFactory,
+                                             DecimalQuantityFactory<?, ?> decimalFactory) {
+        factoryMap.put(quantityClass,
+                       DelegateQuantityFactory.of(doubleFactory, decimalFactory));
+    }
+
+    public static <T extends Q, Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<T> quantityClass) {
+        QuantityFactory<?> factory = null;
+
+        if (quantityClass != null) {
+            factory = factoryMap.get(quantityClass);
+        }
+
+        return factory == null ?
+                (QuantityFactory<Q>) genericQuantityFactory :
+                (QuantityFactory<Q>) factory;
+    }
+
+    public static <T extends Q, Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
+                                                                                    QuantityFactory<Q> factory) {
+        factoryMap.put(quantityClass, factory);
+    }
+
+    // hide constructor.
+    private Quantities() {}
+
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(double value, Unit<Q> unit, Class<T> quantity) {
+        return (T) getQuantityFactory(quantity).create(value, (Unit) unit);
+    }
+
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, Unit<Q> unit, Class<Q> quantity) {
+        return (T) getQuantityFactory(quantity).create(value, (Unit) unit);
+    }
+
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, MathContext mathContext, Unit<Q> unit, Class<Q> quantity) {
+        return (T) getQuantityFactory(quantity).create(value, mathContext, (Unit) unit);
     }
 
     public static <T extends Q, Q extends Quantity<Q>> T getQuantityAsType(Quantity<?> quantity, Class<T> clazz) {
-        return (T) factory.get(clazz).apply(quantity);
+        if (quantity instanceof DoubleQuantity<?>) {
+            return (T) createQuantity(quantity.doubleValue(), quantity.getUnit(), (Class) clazz);
+        } else {
+            return (T) createQuantity(quantity.decimalValue(), ((DecimalQuantity) quantity).getMathContext(), quantity.getUnit(), (Class) clazz);
+        }
+    }
+
+    static class DelegateQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
+
+        private final DoubleQuantityFactory<?, Q>  doubleQuantityFactory;
+        private final DecimalQuantityFactory<?, Q> decimalQuantityFactory;
+
+        static <Q extends Quantity<Q>> DelegateQuantityFactory<Q>
+            of(DoubleQuantityFactory doubleFactory, DecimalQuantityFactory decimalFactory) {
+            return new DelegateQuantityFactory<>(doubleFactory, decimalFactory);
+        }
+
+        private DelegateQuantityFactory(DoubleQuantityFactory<?, Q>  doubleQuantityFactory,
+                                        DecimalQuantityFactory<?, Q> decimalQuantityFactory) {
+            this.doubleQuantityFactory  = doubleQuantityFactory;
+            this.decimalQuantityFactory = decimalQuantityFactory;
+        }
+
+        @Override
+        public Q create(double value, Unit<Q> unit) {
+            return doubleQuantityFactory.create(value, unit);
+        }
+
+        @Override
+        public Q create(BigDecimal value, Unit<Q> unit) {
+            return decimalQuantityFactory != null ?
+                    decimalQuantityFactory.create(value, unit) :
+                    doubleQuantityFactory.create(value, unit);
+        }
+
+        @Override
+        public Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
+            return decimalQuantityFactory != null ?
+                    decimalQuantityFactory.create(value, mathContext, unit) :
+                    doubleQuantityFactory.create(value, mathContext, unit);
+        }
     }
 }

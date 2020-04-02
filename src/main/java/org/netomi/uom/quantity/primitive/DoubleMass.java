@@ -13,22 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.Mass;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
+ * {@link Mass} with double precision.
+ *
+ * @author Thomas Neidhart
+ */
+public final class DoubleMass extends AbstractTypedDoubleQuantity<DoubleMass, Mass> implements Mass {
 
-public class DoubleMass extends AbstractTypedDoubleQuantity<DoubleMass, Mass> implements Mass {
+    public static DoubleMass of(double value, Unit<Mass> unit) {
+        return new DoubleMass(value, unit);
+    }
 
-    public DoubleMass(double value, Unit<Mass> unit) {
+    public static DoubleMass ofKilogram(double value) {
+        return of(value, Units.SI.KILOGRAM);
+    }
+
+    public static DoubleQuantityFactory<DoubleMass, Mass> factory() {
+        return (value, unit) -> of(value, unit);
+    }
+
+    private DoubleMass(double value, Unit<Mass> unit) {
         super(value, unit);
     }
 
     @Override
-    protected DoubleMass with(double value, Unit<Mass> unit) {
-        return new DoubleMass(value, unit);
+    public DoubleMass with(double value, Unit<Mass> unit) {
+        return of(value, unit);
     }
-
 }

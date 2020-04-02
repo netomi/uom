@@ -13,33 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.decimal.DecimalMass;
-import org.netomi.uom.quantity.primitive.DoubleMass;
+import org.netomi.uom.unit.Units;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
+/**
+ * A {@link Quantity} representing a measure of mass.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Mass">Wikipedia: Mass</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface Mass extends Quantity<Mass> {
 
-    static Mass of(Quantity<?> quantity) {
-        return of(quantity.doubleValue(), (Unit<Mass>) quantity.getUnit());
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link Mass}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link Mass} instance for the given value.
+     */
+    static Mass of(double value, Unit<Mass> unit) {
+        return Quantities.createQuantity(value, unit, Mass.class);
     }
 
-    static DoubleMass of(double value, Unit<Mass> unit) {
-        return new DoubleMass(value, unit);
-    }
-
-    static DecimalMass decimalOf(BigDecimal value, Unit<Mass> unit) {
-        return decimalOf(value, MathContext.DECIMAL128, unit);
-    }
-
-    static DecimalMass decimalOf(BigDecimal value, MathContext mathContext, Unit<Mass> unit) {
-        return new DecimalMass(value, mathContext, unit);
+    static Mass ofKilogram(double value) {
+        return of(value, Units.SI.KILOGRAM);
     }
 
     @Override
@@ -47,4 +53,10 @@ public interface Mass extends Quantity<Mass> {
 
     @Override
     Mass add(Quantity<Mass> addend);
+
+    @Override
+    Mass subtract(Quantity<Mass> subtrahend);
+
+    @Override
+    Mass negate();
 }

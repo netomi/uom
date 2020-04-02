@@ -16,38 +16,37 @@
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Distance;
-import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Dimensionless;
 import org.netomi.uom.unit.Units;
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Distance} with double precision.
+ * {@link Dimensionless} with double precision.
  *
  * @author Thomas Neidhart
  */
-public final class DoubleDistance
-        extends    AbstractTypedDoubleQuantity<DoubleDistance, Length>
-        implements Distance {
+public final class DoubleDimensionless
+        extends    AbstractTypedDoubleQuantity<DoubleDimensionless, Dimensionless>
+        implements Dimensionless {
 
-    public static DoubleDistance of(double value, Unit<Length> unit) {
-        return new DoubleDistance(value, unit);
+    public static DoubleDimensionless of(double value, Unit<Dimensionless> unit) {
+        return new DoubleDimensionless(value, unit);
     }
 
-    public static DoubleDistance ofMeter(double value) {
-        return of(value, Units.SI.METRE);
+    public static DoubleDimensionless of(double value) {
+        return of(value, Units.ONE);
     }
 
-    public static DoubleQuantityFactory<DoubleDistance, Length> factory() {
+    public static DoubleQuantityFactory<DoubleDimensionless, Dimensionless> factory() {
         return (value, unit) -> of(value, unit);
     }
 
-    private DoubleDistance(double value, Unit<Length> unit) {
+    private DoubleDimensionless(double value, Unit<Dimensionless> unit) {
         super(value, unit);
     }
 
     @Override
-    public DoubleDistance with(double value, Unit<Length> unit) {
+    public DoubleDimensionless with(double value, Unit<Dimensionless> unit) {
         return of(value, unit);
     }
 }

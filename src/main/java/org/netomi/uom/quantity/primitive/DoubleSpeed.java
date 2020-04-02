@@ -13,25 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.Speed;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
+ * {@link Speed} with double precision.
+ *
+ * @author Thomas Neidhart
+ */
+public final class DoubleSpeed extends AbstractTypedDoubleQuantity<DoubleSpeed, Speed> implements Speed {
 
-public class DoubleSpeed extends AbstractTypedDoubleQuantity<DoubleSpeed, Speed> implements Speed {
-
-    static DoubleSpeed of(DoubleQuantity<?> quantity) {
-        return new DoubleSpeed(quantity.doubleValue(), (Unit) quantity.getUnit());
+    public static DoubleSpeed of(double value, Unit<Speed> unit) {
+        return new DoubleSpeed(value, unit);
     }
 
-    public DoubleSpeed(double value, Unit<Speed> unit) {
+    public static DoubleSpeed ofMeterPerSecond(double value) {
+        return of(value, Units.SI.METER_PER_SECOND);
+    }
+
+    public static DoubleQuantityFactory<DoubleSpeed, Speed> factory() {
+        return (value, unit) -> of(value, unit);
+    }
+
+    private DoubleSpeed(double value, Unit<Speed> unit) {
         super(value, unit);
     }
 
     @Override
-    protected DoubleSpeed with(double value, Unit<Speed> unit) {
-        return new DoubleSpeed(value, unit);
+    public DoubleSpeed with(double value, Unit<Speed> unit) {
+        return of(value, unit);
     }
 }

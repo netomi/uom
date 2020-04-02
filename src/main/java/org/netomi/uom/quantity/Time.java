@@ -13,29 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.decimal.DecimalTime;
-import org.netomi.uom.quantity.primitive.DoubleTime;
+import org.netomi.uom.unit.Units;
 
-import java.math.BigDecimal;
-import java.math.MathContext;
-
+/**
+ * A {@link Quantity} representing a measure of time.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Time">Wikipedia: Time</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface Time extends Quantity<Time> {
 
-    static DoubleTime of(double value, Unit<Time> unit) {
-        return new DoubleTime(value, unit);
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link Time}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link Time} instance for the given value.
+     */
+    static Time of(double value, Unit<Time> unit) {
+        return Quantities.createQuantity(value, unit, Time.class);
     }
 
-    static DecimalTime decimalOf(BigDecimal value, Unit<Time> unit) {
-        return new DecimalTime(value, MathContext.DECIMAL128, unit);
-    }
-
-    static DecimalTime decimalOf(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
-        return new DecimalTime(value, mathContext, unit);
+    static Time ofSecond(double value) {
+        return of(value, Units.SI.SECOND);
     }
 
     @Override
@@ -43,4 +53,10 @@ public interface Time extends Quantity<Time> {
 
     @Override
     Time add(Quantity<Time> addend);
+
+    @Override
+    Time subtract(Quantity<Time> subtrahend);
+
+    @Override
+    Time negate();
 }

@@ -13,17 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.primitive.DoubleTemperature;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A {@link Quantity} representing a measure of temperature.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Temperature">Wikipedia: Temperature</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface Temperature extends Quantity<Temperature> {
 
-    static DoubleTemperature of(double value, Unit<Temperature> unit) {
-        return new DoubleTemperature(value, unit);
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link Temperature}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link Temperature} instance for the given value.
+     */
+    static Temperature of(double value, Unit<Temperature> unit) {
+        return Quantities.createQuantity(value, unit, Temperature.class);
+    }
+
+    static Temperature ofKelvin(double value) {
+        return of(value, Units.SI.KELVIN);
     }
 
     @Override
@@ -31,4 +53,10 @@ public interface Temperature extends Quantity<Temperature> {
 
     @Override
     Temperature add(Quantity<Temperature> addend);
+
+    @Override
+    Temperature subtract(Quantity<Temperature> subtrahend);
+
+    @Override
+    Temperature negate();
 }

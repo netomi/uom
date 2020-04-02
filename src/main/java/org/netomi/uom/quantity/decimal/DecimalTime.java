@@ -13,23 +13,57 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.Time;
+import org.netomi.uom.unit.Units;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-public class DecimalTime extends AbstractTypedDecimalQuantity<DecimalTime, Time> implements Time {
+import static org.netomi.uom.quantity.decimal.DecimalQuantityFactory.DEFAULT_MATH_CONTEXT;
 
-    public DecimalTime(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
+/**
+ * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
+ * {@link Time} with decimal precision.
+ *
+ * @author Thomas Neidhart
+ */
+public final class DecimalTime
+        extends    AbstractTypedDecimalQuantity<DecimalTime, Time>
+        implements Time {
+
+    public static DecimalTime of(BigDecimal value, Unit<Time> unit) {
+        return of(value, DEFAULT_MATH_CONTEXT, unit);
+    }
+
+    public static DecimalTime of(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
+        return new DecimalTime(value, mathContext, unit);
+    }
+
+    public static DecimalTime ofSecond(BigDecimal value) {
+        return ofSecond(value, DEFAULT_MATH_CONTEXT);
+    }
+
+    public static DecimalTime ofSecond(BigDecimal value, MathContext mathContext) {
+        return of(value, mathContext, Units.SI.SECOND);
+    }
+
+    public static DecimalQuantityFactory<DecimalTime, Time> factory() {
+        return (value, context, unit) -> of(value, context, unit);
+    }
+
+    public static DecimalQuantityFactory<DecimalTime, Time> factory(MathContext mathContext) {
+        return (value, context, unit) -> of(value, mathContext, unit);
+    }
+
+    private DecimalTime(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
         super(value, mathContext, unit);
     }
 
     @Override
-    protected DecimalTime with(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
+    public DecimalTime with(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
         return new DecimalTime(value, mathContext, unit);
     }
 }

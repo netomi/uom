@@ -13,21 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.primitive.DoubleSpeed;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A {@link Quantity} representing a measure of speed.
+ *
+ * @see <a href="https://en.wikipedia.org/wiki/Speed">Wikipedia: Speed</a>
+ *
+ * @author Thomas Neidhart
+ */
 public interface Speed extends Quantity<Speed> {
 
-    static Speed of(Quantity<?> quantity) {
-        return of(quantity.doubleValue(), (Unit) quantity.getUnit());
+    /**
+     * Convenience method to create a {@link Quantity} of type {@link Speed}.
+     * <p>
+     * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
+     * is used to generate the concrete implementation, by default a quantity
+     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * will be returned.
+     *
+     * @param value the quantity value, expressed in the given unit.
+     * @param unit  the unit corresponding to the value.
+     * @return a new {@link Speed} instance for the given value.
+     */
+    static Speed of(double value, Unit<Speed> unit) {
+        return Quantities.createQuantity(value, unit, Speed.class);
     }
 
-    static DoubleSpeed of(double value, Unit<Speed> unit) {
-        return new DoubleSpeed(value, unit);
+    static Speed ofMeterPerSecond(double value) {
+        return of(value, Units.SI.METER_PER_SECOND);
     }
 
     @Override
@@ -35,4 +53,10 @@ public interface Speed extends Quantity<Speed> {
 
     @Override
     Speed add(Quantity<Speed> addend);
+
+    @Override
+    Speed subtract(Quantity<Speed> subtrahend);
+
+    @Override
+    Speed negate();
 }

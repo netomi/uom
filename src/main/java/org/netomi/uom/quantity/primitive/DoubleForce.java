@@ -16,38 +16,35 @@
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Distance;
-import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Force;
 import org.netomi.uom.unit.Units;
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Distance} with double precision.
+ * {@link Force} with double precision.
  *
  * @author Thomas Neidhart
  */
-public final class DoubleDistance
-        extends    AbstractTypedDoubleQuantity<DoubleDistance, Length>
-        implements Distance {
+public final class DoubleForce extends AbstractTypedDoubleQuantity<DoubleForce, Force> implements Force {
 
-    public static DoubleDistance of(double value, Unit<Length> unit) {
-        return new DoubleDistance(value, unit);
+    public static DoubleForce of(double value, Unit<Force> unit) {
+        return new DoubleForce(value, unit);
     }
 
-    public static DoubleDistance ofMeter(double value) {
-        return of(value, Units.SI.METRE);
+    public static DoubleForce ofNewton(double value) {
+        return of(value, Units.SI.NEWTON);
     }
 
-    public static DoubleQuantityFactory<DoubleDistance, Length> factory() {
+    public static DoubleQuantityFactory<DoubleForce, Force> factory() {
         return (value, unit) -> of(value, unit);
     }
 
-    private DoubleDistance(double value, Unit<Length> unit) {
+    private DoubleForce(double value, Unit<Force> unit) {
         super(value, unit);
     }
 
     @Override
-    public DoubleDistance with(double value, Unit<Length> unit) {
+    public DoubleForce with(double value, Unit<Force> unit) {
         return of(value, unit);
     }
 }

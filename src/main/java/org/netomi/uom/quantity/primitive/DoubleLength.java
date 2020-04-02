@@ -13,29 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.primitive;
 
-import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.Length;
-import org.netomi.uom.quantity.Time;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
+ * {@link Length} with double precision.
+ *
+ * @author Thomas Neidhart
+ */
+public final class DoubleLength extends AbstractTypedDoubleQuantity<DoubleLength, Length> implements Length {
 
-public class DoubleLength extends AbstractTypedDoubleQuantity<DoubleLength, Length> implements Length {
+    public static DoubleLength of(double value, Unit<Length> unit) {
+        return new DoubleLength(value, unit);
+    }
 
-    public DoubleLength(double value, Unit<Length> unit) {
+    public static DoubleLength ofMeter(double value) {
+        return of(value, Units.SI.METRE);
+    }
+
+    public static DoubleQuantityFactory<DoubleLength, Length> factory() {
+        return (value, unit) -> of(value, unit);
+    }
+
+    private DoubleLength(double value, Unit<Length> unit) {
         super(value, unit);
     }
 
     @Override
-    protected DoubleLength with(double value, Unit<Length> unit) {
-        return new DoubleLength(value, unit);
+    public DoubleLength with(double value, Unit<Length> unit) {
+        return of(value, unit);
     }
-
-    @Override
-    public DoubleSpeed divideByTime(Quantity<Time> divisor) {
-        return DoubleSpeed.of(divide(divisor));
-    }
-
 }

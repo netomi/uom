@@ -19,10 +19,17 @@ package org.netomi.uom.quantity.decimal;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.quantity.Quantities;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * @param <P>
+ * @param <Q>
+ *
+ * @author Thomas Neidhart
+ */
 public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>, Q extends Quantity<Q>> implements DecimalQuantity<Q> {
 
     protected final BigDecimal  value;
@@ -54,42 +61,60 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
 
     @Override
     public P add(Quantity<Q> addend) {
-        Quantity<Q> scaledQuantity = addend.to(getUnit());
-        return with(decimalValue().add(scaledQuantity.decimalValue()), getUnit());
+        Quantity<Q> scaledQuantity = addend.to(unit);
+        return with(value.add(scaledQuantity.decimalValue()), unit);
+    }
+
+    @Override
+    public P subtract(Quantity<Q> subtrahend) {
+        Quantity<Q> scaledQuantity = subtrahend.to(unit);
+        return with(value.subtract(scaledQuantity.decimalValue()), unit);
+    }
+
+    @Override
+    public P negate() {
+        return with(value.negate(mathContext), unit);
     }
 
     @Override
     public DecimalQuantity<?> multiply(Quantity<?> multiplicand) {
-        Unit<?> unit = this.getUnit().multiply(multiplicand.getUnit());
-        return genericDoubleQuantity(decimalValue().multiply(multiplicand.decimalValue()), unit);
+        Unit<?> combinedUnit = unit.multiply(multiplicand.getUnit());
+        return genericDoubleQuantity(value.multiply(multiplicand.decimalValue()), combinedUnit);
     }
 
     @Override
     public DecimalQuantity<?> divide(Quantity<?> divisor) {
-        Unit<?> unit = this.getUnit().divide(divisor.getUnit());
-        return genericDoubleQuantity(decimalValue().divide(divisor.decimalValue()), unit);
+        Unit<?> combinedUnit = unit.divide(divisor.getUnit());
+        return genericDoubleQuantity(value.divide(divisor.decimalValue()), combinedUnit);
     }
 
     @Override
-    public P to(Unit<Q> unit) {
-        return to(unit, mathContext);
-    }
-
-    public P to(Unit<Q> unit, MathContext context) {
-        UnitConverter converter = getUnit().getConverterTo(unit);
-        return with(converter.convert(value, context), unit);
+    public DecimalQuantity<?> reciprocal() {
+        return genericDoubleQuantity(BigDecimal.ONE.divide(value, mathContext), unit);
     }
 
     @Override
-    public <T extends R, R extends Quantity<R>> T asType(Class<T> clazz) {
-        return (T) this;
+    public P to(Unit<Q> toUnit) {
+        return to(toUnit, mathContext);
     }
 
-    protected P with(BigDecimal value, Unit<Q> unit) {
+    public P to(Unit<Q> toUnit, MathContext context) {
+        UnitConverter converter = unit.getConverterTo(toUnit);
+        return with(converter.convert(value, context), toUnit);
+    }
+
+    @Override
+    public <T extends R, R extends Quantity<R>> T asTypedQuantity(Class<T> clazz) {
+        return Quantities.getQuantityAsType(this, clazz);
+    }
+
+    @Override
+    public P with(BigDecimal value, Unit<Q> unit) {
         return with(value, mathContext, unit);
     }
 
-    protected abstract P with(BigDecimal value, MathContext mathContext, Unit<Q> unit);
+    @Override
+    public abstract P with(BigDecimal value, MathContext mathContext, Unit<Q> unit);
 
     protected DecimalQuantity<?> genericDoubleQuantity(BigDecimal value, Unit<?> unit) {
         return new GenericImpl(value, mathContext, unit);
@@ -97,17 +122,21 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
 
     @Override
     public String toString() {
-        return String.format("%s %s", decimalValue().toString(), getUnit().getSymbol());
+        return String.format("%s %s", value.toString(), unit.getSymbol());
     }
 
-    static class GenericImpl extends AbstractTypedDecimalQuantity {
+    public static class GenericImpl extends AbstractTypedDecimalQuantity {
+
+        public static DecimalQuantityFactory factory() {
+            return (value, context, unit) -> new GenericImpl(value, context, unit);
+        }
 
         public GenericImpl(BigDecimal value, MathContext mathContext, Unit<?> unit) {
             super(value, mathContext, unit);
         }
 
         @Override
-        protected DecimalQuantity with(BigDecimal value, MathContext mathContext, Unit unit) {
+        public DecimalQuantity with(BigDecimal value, MathContext mathContext, Unit unit) {
             return new GenericImpl(value, mathContext, unit);
         }
     }

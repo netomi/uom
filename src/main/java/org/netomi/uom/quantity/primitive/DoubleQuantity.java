@@ -13,22 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.quantity.Quantities;
 
+/**
+ * An extension of the {@link Quantity} interface for quantities with double precisions.
+ *
+ * @param <Q> the quantity type
+ *
+ * @author Thomas Neidhart
+ */
 public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <P extends Quantity<P>> DoubleQuantity<P> of(double value, Unit<P> unit) {
-        return new AbstractTypedDoubleQuantity.GenericImpl(value, unit);
+        return Quantities.createQuantity(value, unit, null);
     }
+
+    DoubleQuantity<Q> with(double value, Unit<Q> unit);
+
+    @Override
+    DoubleQuantity<Q> to(Unit<Q> unit);
 
     @Override
     DoubleQuantity<Q> add(Quantity<Q> addend);
 
     @Override
-    DoubleQuantity<Q> to(Unit<Q> unit);
+    DoubleQuantity<Q> subtract(Quantity<Q> subtrahend);
 
+    @Override
+    DoubleQuantity<Q> negate();
+
+    @Override
+    DoubleQuantity<?> multiply(Quantity<?> multiplicand);
+
+    @Override
+    DoubleQuantity<?> divide(Quantity<?> divisor);
+
+    @Override
+    DoubleQuantity<?> reciprocal();
 }

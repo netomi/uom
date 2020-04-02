@@ -13,22 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.Area;
+import org.netomi.uom.unit.Units;
 
+/**
+ * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
+ * {@link Area} with double precision.
+ *
+ * @author Thomas Neidhart
+ */
+public final class DoubleArea
+        extends    AbstractTypedDoubleQuantity<DoubleArea, Area>
+        implements Area {
 
-public class DoubleArea extends AbstractTypedDoubleQuantity<DoubleArea, Area> implements Area {
+    public static DoubleArea of(double value, Unit<Area> unit) {
+        return new DoubleArea(value, unit);
+    }
 
-    public DoubleArea(double value, Unit<Area> unit) {
+    public static DoubleArea ofSquareMeter(double value) {
+        return of(value, Units.SI.SQUARE_METER);
+    }
+
+    public static DoubleQuantityFactory<DoubleArea, Area> factory() {
+        return (value, unit) -> of(value, unit);
+    }
+
+    private DoubleArea(double value, Unit<Area> unit) {
         super(value, unit);
     }
 
     @Override
-    protected DoubleArea with(double value, Unit<Area> unit) {
-        return new DoubleArea(value, unit);
+    public DoubleArea with(double value, Unit<Area> unit) {
+        return of(value, unit);
     }
-
 }

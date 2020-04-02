@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Area;
 import org.netomi.uom.unit.Units;
 
 import java.math.BigDecimal;
@@ -26,42 +26,44 @@ import static org.netomi.uom.quantity.decimal.DecimalQuantityFactory.DEFAULT_MAT
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Length} with decimal precision.
+ * {@link Area} with decimal precision.
  *
  * @author Thomas Neidhart
  */
-public final class DecimalLength extends AbstractTypedDecimalQuantity<DecimalLength, Length> implements Length {
+public final class DecimalArea
+        extends    AbstractTypedDecimalQuantity<DecimalArea, Area>
+        implements Area {
 
-    public static DecimalLength of(BigDecimal value, Unit<Length> unit) {
+    public static DecimalArea of(BigDecimal value, Unit<Area> unit) {
         return of(value, DEFAULT_MATH_CONTEXT, unit);
     }
 
-    public static DecimalLength of(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public static DecimalArea of(BigDecimal value, MathContext mathContext, Unit<Area> unit) {
+        return new DecimalArea(value, mathContext, unit);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value) {
-        return ofMeter(value, DEFAULT_MATH_CONTEXT);
+    public static DecimalArea ofSquareMeter(BigDecimal value) {
+        return ofSquareMeter(value, DEFAULT_MATH_CONTEXT);
     }
 
-    public static DecimalLength ofMeter(BigDecimal value, MathContext mathContext) {
-        return of(value, mathContext, Units.SI.METRE);
+    public static DecimalArea ofSquareMeter(BigDecimal value, MathContext mathContext) {
+        return of(value, mathContext, Units.SI.SQUARE_METER);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory() {
+    public static DecimalQuantityFactory<DecimalArea, Area> factory() {
         return (value, context, unit) -> of(value, context, unit);
     }
 
-    public static DecimalQuantityFactory<DecimalLength, Length> factory(MathContext mathContext) {
+    public static DecimalQuantityFactory<DecimalArea, Area> factory(MathContext mathContext) {
         return (value, context, unit) -> of(value, mathContext, unit);
     }
 
-    private DecimalLength(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
+    private DecimalArea(BigDecimal value, MathContext mathContext, Unit<Area> unit) {
         super(value, mathContext, unit);
     }
 
     @Override
-    public DecimalLength with(BigDecimal value, MathContext mathContext, Unit<Length> unit) {
-        return new DecimalLength(value, mathContext, unit);
+    public DecimalArea with(BigDecimal value, MathContext mathContext, Unit<Area> unit) {
+        return new DecimalArea(value, mathContext, unit);
     }
 }
