@@ -90,6 +90,8 @@ public final class Units {
 
         public Unit<Speed>           METER_PER_SECOND = buildFrom(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").forQuantity(Speed.class).build();
 
+        public Unit<Acceleration>    METER_PER_SQUARE_SECOND = buildFrom(METER_PER_SECOND.divide(SECOND)).withSymbol("m/s²").withName("METER PER SQUARESECOND").forQuantity(Acceleration.class).build();
+
         public Unit<Area>            SQUARE_METER = buildFrom(METRE.multiply(METRE)).withSymbol("m²").withName("SQUAREMETER").forQuantity(Area.class).build();
 
         public Unit<Force>           NEWTON   = buildFrom(KILOGRAM.multiply(METRE).divide(SECOND.pow(2))).withSymbol("N").withName("NEWTON").forQuantity(Force.class).build();
