@@ -118,6 +118,12 @@ public final class Units {
                            .withName("NEWTON")
                            .build();
 
+        public Unit<Pressure>          PASCAL   =
+                UnitBuilder.<Pressure>fromAny(NEWTON.divide(SQUARE_METER))
+                        .withSymbol("Pa")
+                        .withName("PASCAL")
+                        .build();
+
         public Unit<Energy>            JOULE  = UnitBuilder.<Energy>fromAny(NEWTON.multiply(METRE)) .withSymbol("J").withName("JOULE").build();
         public Unit<Power>             WATT   = UnitBuilder.<Power>fromAny (JOULE.divide(SECOND))   .withSymbol("W").withName("WATT") .build();
 
