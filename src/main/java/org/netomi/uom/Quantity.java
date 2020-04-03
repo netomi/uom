@@ -69,7 +69,7 @@ public interface Quantity<Q extends Quantity<Q>> {
 
     /**
      * Returns a new {@link Quantity} that is the result of adding the given quantity
-     * to this quantity expressed in the specified {@link Unit}.
+     * to this quantity, expressed in the specified {@link Unit}.
      * <p>
      * Both quantities will be first converted to the specified {@link Unit} and then
      * added.
@@ -94,7 +94,7 @@ public interface Quantity<Q extends Quantity<Q>> {
 
     /**
      * Returns a new {@link Quantity} that is the result of subtracting the given quantity
-     * from this quantity expressed in the specified {@link Unit}.
+     * from this quantity, expressed in the specified {@link Unit}.
      * <p>
      * Both quantities will be first converted to the specified {@link Unit} and then
      * subtracted.
