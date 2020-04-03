@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.math.Fraction;
 
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -96,6 +97,44 @@ public class DimensionsTest {
         assertThrows(IllegalArgumentException.class, () -> Dimensions.LENGTH.root(-2));
 
         assertThrows(IllegalArgumentException.class, () -> Dimensions.LENGTH.root(0));
+    }
+
+    @Test
+    public void dimensionCache() {
+        Dimension none   = Dimensions.NONE;
+        Dimension length = Dimensions.LENGTH;
+        Dimension time   = Dimensions.TIME;
+
+        assertSame(time, length.multiply(time).divide(length));
+        assertSame(none, length.divide(length));
+        assertSame(length.multiply(time), length.multiply(time));
+    }
+
+    @Test
+    public void cacheCleanup() throws InterruptedException {
+        Dimension length = Dimensions.LENGTH;
+        Dimension time   = Dimensions.TIME;
+
+        // This test checks whether any dimension that does not have
+        // a strong reference gets remove from the dimension cache.
+        Dimension dimension = length.multiply(time);
+        // remember the memory location of the object.
+        int identityHashCode = System.identityHashCode(dimension);
+
+        assertSame(dimension, length.multiply(time));
+        assertEquals(identityHashCode, System.identityHashCode(length.multiply(time)));
+
+        // remove the strong reference.
+        dimension = null;
+
+        // let the GC do its work.
+        System.gc();
+        TimeUnit.SECONDS.sleep(3);
+        System.gc();
+
+        // the same dimension should have a different memory location, it should not
+        // be retrieved from the dimension cache.
+        assertNotEquals(identityHashCode, System.identityHashCode(length.multiply(time)));
     }
 
     @Test

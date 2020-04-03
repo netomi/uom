@@ -18,6 +18,7 @@ package org.netomi.uom.unit;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.StringUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
@@ -119,7 +120,20 @@ public class Dimensions {
         }
     }
 
+    /**
+     * An efficient implementation of a {@link Dimension} using an {@link EnumMap}
+     * that stores the fraction for each base dimension.
+     * <p>
+     * Created dimensions are cached in a synchronized {@link WeakHashMap} to avoid
+     * creating too many dimension instances. This implementation guarantees that
+     * for base dimensions (e.g. the result of operations like {@link #multiply(Dimension)})
+     * always the same instance is returned as these dimension have a strong reference in the
+     * {@link Dimensions} class and will never be garbage collected.
+     */
     private static class EnumDimension extends Dimension {
+
+        private static final Map<EnumMap, WeakReference<Dimension>> dimensionCache =
+                Collections.synchronizedMap(new WeakHashMap<>());
 
         private final EnumMap<Base, Fraction> dimensionMap;
 
@@ -132,29 +146,38 @@ public class Dimensions {
         }
 
         static Dimension of(EnumMap<Base, Fraction> map) {
-            if (map.isEmpty()) {
-                return Dimensions.NONE;
-            }
-
-            // optimization: if only a single base dimension with exponent 1 is present
-            //               return the corresponding instance.
-            if (map.size() == 1) {
-                Map.Entry<Base, Fraction> entry = map.entrySet().iterator().next();
-                if (Fraction.ONE.compareTo(entry.getValue()) == 0) {
-                    return getBaseDimension(entry.getKey());
-                }
+            Dimension cachedDimension = getCachedDimension(map);
+            if (cachedDimension != null) {
+                return cachedDimension;
             }
 
             return new EnumDimension(map);
         }
 
+        private static Dimension getCachedDimension(EnumMap<Base, Fraction> map) {
+            WeakReference<Dimension> reference = dimensionCache.get(map);
+            if (reference != null) {
+                return reference.get();
+            }
+
+            return null;
+        }
+
+        private static void putDimensionIntoCache(EnumDimension dimension) {
+            dimensionCache.put(dimension.dimensionMap, new WeakReference<>(dimension));
+        }
+
         EnumDimension(Base baseDimension) {
             dimensionMap = new EnumMap<>(Base.class);
             dimensionMap.put(baseDimension, Fraction.ONE);
+
+            putDimensionIntoCache(this);
         }
 
         EnumDimension(Map<Base, Fraction> map) {
             dimensionMap = new EnumMap<>(map);
+
+            putDimensionIntoCache(this);
         }
 
         @Override
