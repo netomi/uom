@@ -9,25 +9,25 @@ My personal take on a _units of measurement_ library for java.
 The design goal of the library is to include the following:
 
 * fully typed quantities:
-  ```
+  ```java
   Length l1 = Length.of(1, Units.METER);
   Length l2 = Length.ofMeter(2);          // convenience factory method for SI unit 
   ```
 * support for double and arbitrary decimal precision quantities (BigDecimal):
-  ```
+  ```java
   DoubleLength  l1 = DoubleLength.of(1, Units.METER);
   DecimalLength l2 = DecimalLength.of(BigDecimal.ONE, Units.YARD);
   
   Length l3 = l1.add(l2);
   ```
 * support for generic quantities:
-  ```
+  ```java
     Quantity<Speed> speed = Quantities.create(1, Units.SI.METER_PER_SECOND, Speed.class);
   
     System.out.println(speed.add(Speed.ofMeterPerSecond(2))); // -> prints 3 m/s
   ```
 * support for quantity factories:
-  ```
+  ```java
     QuantityFactory<Length> factory = DoubleLength.factory();
   
     Length l1 = factory.create(1, Units.SI.METRE);
@@ -41,7 +41,7 @@ The design goal of the library is to include the following:
     Quantities.registerQuantityFactory(Length.class, myCachingFactory);
   ```  
 * unit conversions can be performed with user-defined precision if needed
-  ```
+  ```java
   DecimalLength l1 = ...
   DecimalLength l2 = l1.to(Units.YARD, MathContext.DECIMAL128);
   ```
@@ -52,7 +52,7 @@ The design goal of the library is to include the following:
 
 Conversion of units between different system of units, e.g. SI and CGS
 
-```
+```java
 DoubleQuantity<ElectricCharge> e1 = DoubleQuantity.of(1, Units.SI.COULOMB);
 DoubleQuantity<ElectricCharge> e2 = e1.to(Units.CGS.STATCOULOMB);
 
@@ -66,7 +66,7 @@ prints
 
 Custom quantities and units:
 
-```
+```java
     public interface Bmi extends Quantity<Bmi> {}
 
     ...
