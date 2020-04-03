@@ -133,6 +133,12 @@ public final class Units {
                            .withName("VOLT")
                            .build();
 
+        public Unit<ElectricCapacitance> FARAD =
+                UnitBuilder.<ElectricCapacitance>fromAny(COULOMB.divide(VOLT))
+                        .withSymbol("F")
+                        .withName("FARAD")
+                        .build();
+
         // Constants expressed in SI units.
         public final Unit<Speed>       C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
         public final Unit<?>           COULOMB_CONSTANT = buildFrom(VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND))).multipliedBy(8.987551787368176E9).withName("COULOMB CONSTANT").build();
