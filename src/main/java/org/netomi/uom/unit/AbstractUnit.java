@@ -143,6 +143,7 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
         return Units.buildFrom(this).withName(name).build();
     }
 
+    @Override
     public Unit<Q> withPrefix(Prefix prefix) {
         return Units.buildFrom(this).withPrefix(prefix).build();
     }
