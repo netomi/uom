@@ -114,6 +114,12 @@ public final class Units {
                            .withName("SQUARE METER")
                            .build();
 
+        public Unit<Volume>            CUBIC_METER  =
+                UnitBuilder.<Volume>fromAny(SQUARE_METER.multiply(METRE))
+                        .withSymbol("m³")
+                        .withName("CUBIC METER")
+                        .build();
+
         public Unit<Force>             NEWTON   =
                 UnitBuilder.<Force>fromAny(KILOGRAM.multiply(METRE).divide(SECOND.pow(2)))
                            .withSymbol("N")

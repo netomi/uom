@@ -60,6 +60,7 @@ public class Quantities {
         registerInternalQuantityFactory(Speed.class,         DoubleSpeed.factory(),         DecimalSpeed.factory());
         registerInternalQuantityFactory(Acceleration.class,  DoubleAcceleration.factory(),  DecimalAcceleration.factory());
         registerInternalQuantityFactory(Area.class,          DoubleArea.factory(),          DecimalArea.factory());
+        registerInternalQuantityFactory(Volume.class,        DoubleVolume.factory(),        DecimalVolume.factory());
         registerInternalQuantityFactory(Force.class,         DoubleForce.factory(),         DecimalForce.factory());
         registerInternalQuantityFactory(Energy.class,        DoubleEnergy.factory(),        DecimalEnergy.factory());
         registerInternalQuantityFactory(Power.class,         DoublePower.factory(),         DecimalPower.factory());
