@@ -132,7 +132,12 @@ public class Dimensions {
      */
     private static class EnumDimension extends Dimension {
 
-        private static final Map<EnumMap, WeakReference<Dimension>> dimensionCache =
+        /**
+         * A cache for {@link Dimension} instances. Wrap values into a weak
+         * reference as the keys are contained in the values, creating a
+         * circular reference which would prevent the keys from being collected.
+         */
+        private static final Map<EnumMap<?, ?>, WeakReference<Dimension>> dimensionCache =
                 Collections.synchronizedMap(new WeakHashMap<>());
 
         private final EnumMap<Base, Fraction> dimensionMap;
@@ -147,20 +152,12 @@ public class Dimensions {
 
         static Dimension of(EnumMap<Base, Fraction> map) {
             Dimension cachedDimension = getCachedDimension(map);
-            if (cachedDimension != null) {
-                return cachedDimension;
-            }
-
-            return new EnumDimension(map);
+            return cachedDimension != null ? cachedDimension : new EnumDimension(map);
         }
 
         private static Dimension getCachedDimension(EnumMap<Base, Fraction> map) {
             WeakReference<Dimension> reference = dimensionCache.get(map);
-            if (reference != null) {
-                return reference.get();
-            }
-
-            return null;
+            return reference != null ? reference.get() : null;
         }
 
         private static void putDimensionIntoCache(EnumDimension dimension) {
