@@ -94,6 +94,8 @@ public final class Units {
         public Unit<LuminousIntensity> CANDELA  = addUnit(new BaseUnit<>("cd",  "CANDELA",  Dimensions.LUMINOUS_INTENSITY),  LuminousIntensity.class);
         public Unit<AmountOfSubstance> MOLE     = addUnit(new BaseUnit<>("mol", "MOLE",     Dimensions.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
 
+        public Unit<Temperature>       CELSIUS  = buildFrom(KELVIN).shiftedBy(273.15).withSymbol("°C").withName("DEGREE CELSIUS").build();
+
         public Unit<Angle>             RADIAN   = UnitBuilder.<Angle>fromAny    (ONE)               .withSymbol("rad").withName("RADIAN").build();
         public Unit<Frequency>         HERTZ    = UnitBuilder.<Frequency>fromAny(ONE.divide(SECOND)).withSymbol("Hz") .withName("HERTZ") .build();
 
@@ -231,7 +233,6 @@ public final class Units {
         public Unit<Speed> KMH = UnitBuilder.<Speed>fromAny(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR)).withSymbol("km/h").withName("KM PER HOUR").build();
 
         // temperature units
-        public Unit<Temperature> CELSIUS    = buildFrom(SI.KELVIN).shiftedBy(273.15)                   .withSymbol("°C").withName("CELSIUS")   .build();
         public Unit<Temperature> FAHRENHEIT = buildFrom(SI.KELVIN).shiftedBy(459.67).multipliedBy(5, 9).withSymbol("°F").withName("FAHRENHEIT").build();
     }
 }

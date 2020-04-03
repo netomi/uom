@@ -70,10 +70,10 @@ public class UnitBuilderTest {
 
     @Test
     public void prefixWithNonLinearConverter() {
-        Unit<Temperature> mC = Units.Other.CELSIUS.withPrefix(Prefixes.Metric.MILLI);
+        Unit<Temperature> mC = Units.SI.CELSIUS.withPrefix(Prefixes.Metric.MILLI);
 
         UnitConverter withPrefix    = mC.getConverterTo(Units.SI.KELVIN);
-        UnitConverter withoutPrefix = Units.Other.CELSIUS.getConverterTo(Units.SI.KELVIN);
+        UnitConverter withoutPrefix = Units.SI.CELSIUS.getConverterTo(Units.SI.KELVIN);
 
         // 0.01 C converted to K should be equal to 10 mC.
         assertEquals(withoutPrefix.convert(10 * 1e-3), withPrefix.convert(10), 1e-6);
@@ -84,7 +84,7 @@ public class UnitBuilderTest {
         Unit<Temperature> µC = mC.withPrefix(Prefixes.Metric.MILLI);
 
         withPrefix    = µC.getConverterTo(Units.SI.KELVIN);
-        withoutPrefix = Units.Other.CELSIUS.getConverterTo(Units.SI.KELVIN);
+        withoutPrefix = Units.SI.CELSIUS.getConverterTo(Units.SI.KELVIN);
 
         assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
         assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);
