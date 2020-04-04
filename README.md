@@ -46,7 +46,7 @@ The design goal of the library is to include the following:
   DecimalLength l2 = l1.to(Units.YARD, MathContext.DECIMAL128);
   ```
 * support for the standard unit manipulations as defined by [JSR-385](https://www.jcp.org/en/jsr/detail?id=385) et al
-* support for as many units as possible, the amazing [GUN units](https://www.gnu.org/software/units/) library is the reference to compare to
+* support for as many units as possible, the amazing [GNU units](https://www.gnu.org/software/units/) library is the reference to compare to
 
 ## Examples
 
