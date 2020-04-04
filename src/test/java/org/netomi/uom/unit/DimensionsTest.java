@@ -19,6 +19,7 @@ import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.math.Fraction;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -31,130 +32,70 @@ public class DimensionsTest {
 
     @Test
     public void noneDimension() {
-        Dimension none = Dimensions.NONE;
-
-        assertEquals("", none.toString());
-        assertTrue(none.getBaseDimensions().isEmpty());
-
-        // NONE * something = something
-        assertSame(Dimensions.LENGTH, none.multiply(Dimensions.LENGTH));
-
-        assertSame(Dimensions.NONE, Dimensions.LENGTH.divide(Dimensions.LENGTH));
-
-        assertSame(Dimensions.NONE, none.pow(2));
-        assertSame(Dimensions.NONE, none.root(2));
-    }
-
-    @Test
-    public void oneBaseDimension() {
-        Dimension length = Dimensions.LENGTH;
-
-        assertBaseDimensions(length.multiply(length), 1, length, Fraction.of(2));
-        assertSame(Dimensions.NONE, length.divide(length));
-        assertBaseDimensions(length.pow(3), 1, length, Fraction.of(3));
-        assertBaseDimensions(length.pow(4).root(2), 1, length, Fraction.of(2));
-        assertBaseDimensions(length.root(2), 1, length, Fraction.of(1, 2));
-    }
-
-    @Test
-    public void multipleBaseDimensions() {
-        Dimension length = Dimensions.LENGTH;
-        Dimension time   = Dimensions.TIME;
-        Dimension mass   = Dimensions.MASS;
-
-        // L^2
-        assertBaseDimensions(length.multiply(time), 2, length, Fraction.of(1));
-        assertBaseDimensions(length.multiply(time), 2, time, Fraction.of(1));
-
-        // LT
-        assertBaseDimensions(length.divide(time), 2, length, Fraction.of(1));
-        assertBaseDimensions(length.divide(time), 2, time, Fraction.of(-1));
-
-        // LT^-1
-        assertBaseDimensions(length.pow(2).divide(time), 2, length, Fraction.of(2));
-        assertBaseDimensions(length.pow(2).divide(time), 2, time, Fraction.of(-1));
-
-        // LT
-        assertBaseDimensions(length.multiply(mass).multiply(time).divide(mass), 2, length, Fraction.of(1));
-        assertBaseDimensions(length.multiply(mass).multiply(time).divide(mass), 2, time, Fraction.of(1));
-
-        // L^2T^-2
-        assertBaseDimensions(length.multiply(time).pow(2).divide(time.pow(4)), 2, length, Fraction.of(2));
-        assertBaseDimensions(length.multiply(time).pow(2).divide(time.pow(4)), 2, time, Fraction.of(-2));
-
-        // L^2T^6
-        assertBaseDimensions(length.multiply(time).pow(2).divide(time.pow(-4)), 2, length, Fraction.of(2));
-        assertBaseDimensions(length.multiply(time).pow(2).divide(time.pow(-4)), 2, time, Fraction.of(6));
-
-        // LT^1/2
-        assertBaseDimensions(length.multiply(time.root(2)), 2, length, Fraction.of(1));
-        assertBaseDimensions(length.multiply(time.root(2)), 2, time, Fraction.of(1, 2));
-
-    }
-
-    @Test
-    public void rootWithNonPositiveInteger() {
-        assertThrows(IllegalArgumentException.class, () -> Dimensions.LENGTH.root(-2));
-
-        assertThrows(IllegalArgumentException.class, () -> Dimensions.LENGTH.root(0));
-    }
-
-    @Test
-    public void dimensionCache() {
         Dimension none   = Dimensions.NONE;
         Dimension length = Dimensions.LENGTH;
-        Dimension time   = Dimensions.TIME;
 
-        assertSame(time, length.multiply(time).divide(length));
-        assertSame(none, length.divide(length));
-        assertSame(length.multiply(time), length.multiply(time));
+        assertSame(Dimensions.NONE, none.multiply(none));
+        assertSame(Dimensions.NONE, none.divide(none));
+        assertSame(Dimensions.NONE, none.pow(2));
+        assertSame(Dimensions.NONE, none.root(2));
+
+        assertEquals("", none.toString());
+
+        assertSame(length, none.multiply(length));
+        assertSame(length, length.multiply(none));
     }
 
     @Test
-    public void cacheCleanup() throws InterruptedException {
-        Dimension length = Dimensions.LENGTH;
-        Dimension time   = Dimensions.TIME;
+    public void physicalBaseDimensions() {
+        Collection<Dimension> baseDimensions = Dimensions.getPhysicalBaseDimensions();
 
-        // This test checks whether any dimension that does not have
-        // a strong reference gets remove from the dimension cache.
-        Dimension dimension = length.multiply(time);
-        // remember the memory location of the object.
-        int identityHashCode = System.identityHashCode(dimension);
-
-        assertSame(dimension, length.multiply(time));
-        assertEquals(identityHashCode, System.identityHashCode(length.multiply(time)));
-
-        // remove the strong reference.
-        dimension = null;
-
-        // let the GC do its work.
-        System.gc();
-        TimeUnit.SECONDS.sleep(3);
-        System.gc();
-
-        // the same dimension should have a different memory location, it should not
-        // be retrieved from the dimension cache.
-        assertNotEquals(identityHashCode, System.identityHashCode(length.multiply(time)));
+        assertTrue(baseDimensions.contains(Dimensions.LENGTH));
+        assertEquals("L", Dimensions.LENGTH.toString());
+        assertTrue(baseDimensions.contains(Dimensions.MASS));
+        assertEquals("M", Dimensions.MASS.toString());
+        assertTrue(baseDimensions.contains(Dimensions.TIME));
+        assertEquals("T", Dimensions.TIME.toString());
+        assertTrue(baseDimensions.contains(Dimensions.TEMPERATURE));
+        assertEquals("\u0398", Dimensions.TEMPERATURE.toString());
+        assertTrue(baseDimensions.contains(Dimensions.ELECTRIC_CURRENT));
+        assertEquals("I", Dimensions.ELECTRIC_CURRENT.toString());
+        assertTrue(baseDimensions.contains(Dimensions.AMOUNT_OF_SUBSTANCE));
+        assertEquals("N", Dimensions.AMOUNT_OF_SUBSTANCE.toString());
+        assertTrue(baseDimensions.contains(Dimensions.LUMINOUS_INTENSITY));
+        assertEquals("J", Dimensions.LUMINOUS_INTENSITY.toString());
     }
 
     @Test
-    public void equality() {
+    public void namedDimension() {
+        Dimension none = Dimensions.NONE;
+        Dimension d    = Dimensions.ofName("CUSTOM");
+
+        assertEquals("CUSTOM", d.toString());
+
+        assertSame(d, d.multiply(none));
+        assertSame(d, d.divide(none));
+
+        assertEquals(d, d.multiply(Dimensions.TIME).divide(Dimensions.TIME));
+
+        assertEquals(d, d.pow(2).root(2));
+        assertEquals(d, d.root(2).pow(2));
+
+        assertBaseDimensions(d, 1, d, Fraction.ONE);
+
+        assertBaseDimensions(d.multiply(Dimensions.LENGTH), 2, d, Fraction.ONE);
+        assertBaseDimensions(d.multiply(Dimensions.LENGTH), 2, Dimensions.LENGTH, Fraction.ONE);
+
+        assertBaseDimensions(d.multiply(Dimensions.LENGTH).divide(Dimensions.LENGTH), 1, d, Fraction.ONE);
+
         new EqualsTester()
-                .addEqualityGroup(Dimensions.LENGTH, Dimensions.LENGTH)
-                .addEqualityGroup(Dimensions.TIME)
+                .addEqualityGroup(d)
+                .addEqualityGroup(Dimensions.ofName("OTHER"))
                 .addEqualityGroup(Dimensions.NONE)
                 .addEqualityGroup(Dimensions.TIME.pow(2))
                 .addEqualityGroup(Dimensions.LENGTH.multiply(Dimensions.LENGTH), Dimensions.LENGTH.pow(2), Dimensions.LENGTH.pow(4).root(2))
-                .addEqualityGroup(Dimensions.LENGTH.multiply(Dimensions.TIME).multiply(Dimensions.MASS.pow(5).root(2)),
-                                  Dimensions.LENGTH.divide(Dimensions.TIME).multiply(Dimensions.MASS.root(2)).divide(Dimensions.MASS.pow(-2)).multiply(Dimensions.TIME.pow(2)))
                 .addEqualityGroup("blabla")
                 .testEquals();
-
-        assertSame(Dimensions.NONE, Dimensions.LENGTH.divide(Dimensions.LENGTH));
-        assertSame(Dimensions.TIME, Dimensions.LENGTH.multiply(Dimensions.TIME.divide(Dimensions.LENGTH)));
-
-        assertSame(Dimensions.LENGTH, Dimensions.LENGTH.pow(2).root(2));
-        assertSame(Dimensions.LENGTH, Dimensions.LENGTH.root(2).pow(2));
     }
 
     private static void assertBaseDimensions(Dimension d, int numberOfDimensions, Dimension baseDimension, Fraction fraction) {

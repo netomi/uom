@@ -37,10 +37,6 @@ import java.util.Map;
  */
 public abstract class Dimension {
 
-    // Make default constructor package-private to
-    // prevent subclassing outside this package.
-    Dimension() {}
-
     /**
      * Returns a new dimension that represents the multiplication of this dimension with the
      * specified dimension.
@@ -52,7 +48,11 @@ public abstract class Dimension {
      * @param multiplicand the dimension to multiply with his dimension.
      * @return a new dimension representing the multiplication of this dimension with the other.
      */
-    public abstract Dimension multiply(Dimension multiplicand);
+    public Dimension multiply(Dimension multiplicand) {
+        return multiplicand == Dimensions.NONE ?
+                this :
+                ProductDimension.ofProduct(this, Fraction.ONE, multiplicand, Fraction.ONE);
+    }
 
     /**
      * Returns a new dimension that represents the division of this dimension with the
@@ -65,7 +65,11 @@ public abstract class Dimension {
      * @param divisor the dimension to multiply with his dimension.
      * @return a new dimension representing the division of this dimension with the other.
      */
-    public abstract Dimension divide(Dimension divisor);
+    public Dimension divide(Dimension divisor) {
+        return divisor == Dimensions.NONE ?
+                this :
+                ProductDimension.ofProduct(this, Fraction.ONE, divisor, Fraction.of(-1));
+    }
 
     /**
      * Returns a new dimension that represents the nth power of this dimension.
@@ -77,7 +81,13 @@ public abstract class Dimension {
      * @param n the exponent for the power operation.
      * @return a new dimension representing the nth power of this dimension.
      */
-    public abstract Dimension pow(int n);
+    public Dimension pow(int n) {
+        if (n == 1) {
+            return this;
+        }
+
+        return ProductDimension.ofProduct(this, Fraction.of(n));
+    }
 
     /**
      * Returns a new dimension that represents the nth root of this dimension.
@@ -90,7 +100,17 @@ public abstract class Dimension {
      * @return a new dimension representing the nth root of this dimension.
      * @throws IllegalArgumentException if n is not a positive integer.
      */
-    public abstract Dimension root(int n);
+    public Dimension root(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("n must be a positive integer.");
+        }
+
+        if (n == 1) {
+            return this;
+        }
+
+        return ProductDimension.ofProduct(this, Fraction.of(1, n));
+    }
 
     /**
      * Returns a new {@link Map} containing mappings for each base dimension
@@ -104,11 +124,17 @@ public abstract class Dimension {
      */
     public abstract Map<Dimension, Fraction> getBaseDimensions();
 
-    // indicate that the actual implementation implements {@code hashCode}.
+    /**
+     * Any concrete implementation of a {@link Dimension} must properly implement
+     * {@link #hashCode()}.
+     */
     @Override
     public abstract int hashCode();
 
-    // indicate that the actual implementation implements {@code equals}.
+    /**
+     * Any concrete implementation of a {@link Dimension} must properly implement
+     * {@link #equals(Object)}.
+     */
     @Override
     public abstract boolean equals(Object o);
 }
