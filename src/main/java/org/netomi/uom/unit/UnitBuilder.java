@@ -73,6 +73,17 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
                 this.symbol = impl.symbol;
                 this.name   = impl.name;
             }
+        } else if (unit instanceof DerivedUnitImpl) {
+            DerivedUnitImpl impl = (DerivedUnitImpl) unit;
+
+            delegateHasPrefix = impl.prefix != null;
+            if (!delegateHasPrefix) {
+                this.delegateUnit        = impl;
+                this.converterToDelegate = impl.converterToDelegate;
+
+                this.symbol = impl.symbol;
+                this.name   = impl.name;
+            }
         }
     }
 
@@ -207,16 +218,82 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
      * @return a new {@link Unit} instance.
      */
     public Unit<Q> build() {
-        UnitImpl impl = new UnitImpl(delegateUnit, converterToDelegate);
+        if (delegateUnit instanceof DerivedUnit<?>) {
+            DerivedUnitImpl impl = new DerivedUnitImpl((DerivedUnit<?>) delegateUnit, converterToDelegate);
 
-        impl.symbol = symbol;
-        impl.name   = name;
-        impl.prefix = prefix;
+            impl.symbol = symbol;
+            impl.name   = name;
+            impl.prefix = prefix;
 
-        return impl;
+            return impl;
+        } else {
+            UnitImpl impl = new UnitImpl(delegateUnit, converterToDelegate);
+
+            impl.symbol = symbol;
+            impl.name   = name;
+            impl.prefix = prefix;
+
+            return impl;
+        }
     }
 
-    private static class UnitImpl<Q extends Quantity<Q>> extends AbstractUnit<Q> {
+    static class DerivedUnitImpl<Q extends Quantity<Q>> extends DerivedUnit<Q> {
+
+        private final UnitConverter converterToDelegate;
+
+        String  symbol;
+        String  name;
+        Prefix  prefix;
+
+        DerivedUnitImpl(DerivedUnit<?> derivedUnit, UnitConverter converterToDelegate) {
+            super(derivedUnit.getUnitElements());
+
+            this.converterToDelegate = converterToDelegate;
+        }
+
+        @Override
+        public String getSymbol() {
+            StringBuilder sb = new StringBuilder();
+
+            if (prefix != null) {
+                sb.append(prefix.getSymbol());
+            }
+
+            if (symbol != null) {
+                sb.append(symbol);
+            } else {
+                sb.append(super.getSymbol());
+            }
+
+            return sb.toString();
+        }
+
+        @Override
+        public String getName() {
+            StringBuilder sb = new StringBuilder();
+
+            if (prefix != null) {
+                sb.append(prefix.getName());
+            }
+
+            if (name != null) {
+                sb.append(name);
+            } else {
+                sb.append(super.getName());
+            }
+
+            return sb.toString();
+        }
+
+        @Override
+        public UnitConverter getSystemConverter() {
+            return converterToDelegate.isIdentity() ?
+                    super.getSystemConverter() :
+                    converterToDelegate.andThen(super.getSystemConverter());
+        }
+    }
+
+    static class UnitImpl<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
         private final Unit<Q>       delegateUnit;
         private final UnitConverter converterToDelegate;

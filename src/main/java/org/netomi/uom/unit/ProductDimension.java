@@ -28,48 +28,6 @@ import java.util.*;
  */
 class ProductDimension extends Dimension {
 
-    static class DimensionElement {
-        private final Dimension dimension;
-        private final Fraction  fraction;
-
-        DimensionElement(Dimension dim, Fraction fraction) {
-            this.dimension = dim;
-            this.fraction  = fraction;
-        }
-
-        Dimension getDimension() {
-            return dimension;
-        }
-
-        Fraction getFraction() {
-            return fraction;
-        }
-
-        DimensionElement multiply(Fraction multiplicand) {
-            return new DimensionElement(dimension, fraction.multiply(multiplicand));
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            DimensionElement element = (DimensionElement) o;
-            return Objects.equals(dimension, element.dimension) &&
-                   Objects.equals(fraction, element.fraction);
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(dimension, fraction);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s=%s", dimension, fraction);
-        }
-    }
-
     private final Dimension          physicalDimension;
     private final DimensionElement[] dimensionElements;
 
@@ -81,7 +39,7 @@ class ProductDimension extends Dimension {
         List<DimensionElement> physicalElements = new ArrayList<>();
         List<DimensionElement> elements         = new ArrayList<>();
 
-        collectElements(left,  leftFraction,  physicalElements, elements);
+        collectElements(left, leftFraction, physicalElements, elements);
         if (right != null) {
             collectElements(right, rightFraction, physicalElements, elements);
         }
@@ -247,5 +205,54 @@ class ProductDimension extends Dimension {
 
         sb.deleteCharAt(sb.length() - 1);
         return sb.toString();
+    }
+
+    /**
+     * Internal class representing a dimension element raised to a specific
+     * power/root fraction.
+     */
+    static class DimensionElement {
+        private final Dimension dimension;
+        private final Fraction  fraction;
+
+        DimensionElement(Dimension dimension, Fraction fraction) {
+            Objects.requireNonNull(dimension);
+            Objects.requireNonNull(fraction);
+
+            this.dimension = dimension;
+            this.fraction  = fraction;
+        }
+
+        Dimension getDimension() {
+            return dimension;
+        }
+
+        Fraction getFraction() {
+            return fraction;
+        }
+
+        DimensionElement multiply(Fraction multiplicand) {
+            return new DimensionElement(dimension, fraction.multiply(multiplicand));
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(dimension, fraction);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            DimensionElement element = (DimensionElement) o;
+            return Objects.equals(dimension, element.dimension) &&
+                   Objects.equals(fraction,  element.fraction);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("%s=%s", dimension, fraction);
+        }
     }
 }

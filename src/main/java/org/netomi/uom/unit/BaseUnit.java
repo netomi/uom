@@ -27,6 +27,12 @@ import java.util.Objects;
 
 /**
  * Represents a base unit in a given {@link org.netomi.uom.SystemOfUnits}.
+ * <p>
+ * For now, there is no support to convert between base units of different
+ * systems of units, thus any unit is defined in relation to a reference
+ * system of unit, i.e. SI. That means that base unit instances exist only
+ * for the base units of SI. All other base units in different systems of
+ * units are derives from these SI base units.
  *
  * @param <Q> the quantity type of this unit
  *
@@ -41,10 +47,9 @@ class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q>
     private final Map<Unit<Q>, Fraction> baseUnitMap;
 
     BaseUnit(String symbol, String name, Dimension dimension) {
-        this.symbol    = symbol;
-        this.name      = name;
-        this.dimension = dimension;
-
+        this.symbol      = symbol;
+        this.name        = name;
+        this.dimension   = dimension;
         this.baseUnitMap = Collections.singletonMap(this, Fraction.ONE);
     }
 
@@ -84,16 +89,17 @@ class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q>
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        BaseUnit<?> baseUnit = (BaseUnit<?>) o;
-        return Objects.equals(symbol, baseUnit.symbol) &&
-               Objects.equals(dimension, baseUnit.dimension);
+    public int hashCode() {
+        return Objects.hash(symbol, dimension);
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(symbol, dimension);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        BaseUnit<?> baseUnit = (BaseUnit<?>) o;
+        return Objects.equals(symbol,    baseUnit.symbol) &&
+               Objects.equals(dimension, baseUnit.dimension);
     }
 }

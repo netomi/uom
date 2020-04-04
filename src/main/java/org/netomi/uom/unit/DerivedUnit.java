@@ -18,6 +18,7 @@ package org.netomi.uom.unit;
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
+import org.netomi.uom.util.StringUtil;
 
 import java.util.*;
 
@@ -28,164 +29,152 @@ import java.util.*;
  */
 class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
-    private final Element[] elements;
-    private final String    symbol;
-    private final Dimension dimension;
+    private static final String EMPTY_SYMBOL = "1";
 
-    public static Unit<?> ofRoot(Unit<?> unit, int n) {
-        List<Element> elementList = new ArrayList<>();
+    private final UnitElement[] unitElements;
+    private final String        cachedSymbol;
+    private final Dimension     cachedDimension;
+    private final UnitConverter cachedSystemConverter;
 
-        if (unit instanceof DerivedUnit<?>) {
-            Element[] elems = ((DerivedUnit<?>) unit).elements;
-            for (int i = 0; i < elems.length; i++) {
-                Fraction f = elems[i].fraction;
-                elementList.add(new Element(elems[i].unit, f.multiply(Fraction.of(1, n))));
-            }
-        } else {
-            elementList.add(new Element(unit, Fraction.of(1, n)));
-        }
-        return getInstance(elementList);
+    public static Unit<?> ofProduct(Unit<?> unit, Fraction fraction) {
+        return ofProduct(unit, fraction, null, null);
     }
 
-    /**
-     * Returns the product unit corresponding to this unit raised to the specified exponent.
-     */
-    public static Unit<?> ofPow(Unit<?> unit, int n) {
-//        Element[] unitElems;
-//        if (unit instanceof ProductUnit<?>) {
-//            Element[] elems = ((ProductUnit<?>) unit).elements;
-//            unitElems = new Element[elems.length];
-//            for (int i = 0; i < elems.length; i++) {
-//                int gcd = gcd(Math.abs(elems[i].pow * n), elems[i].root);
-//                unitElems[i] = new Element(elems[i].unit, elems[i].pow * n / gcd, elems[i].root / gcd);
-//            }
-//        } else
-//            unitElems = new Element[] { new Element(unit, n, 1) };
-//        return getInstance(unitElems, new Element[0]);
-        return null;
-    }
+    public static Unit<?> ofProduct(Unit<?> left, Fraction leftFraction, Unit<?> right, Fraction rightFraction) {
+        List<UnitElement> elements = new ArrayList<>();
 
-    public static DerivedUnit<?> getProductInstance(Unit<?> left, Unit<?> right) {
-
-        List<Element> elementList = new ArrayList<>();
-
-        if (left instanceof DerivedUnit) {
-            elementList.addAll(Arrays.asList(((DerivedUnit<?>) left).elements));
-        } else {
-            elementList.add(new Element(left, Fraction.ONE));
+        collectElements(left, leftFraction, elements);
+        if (right != null) {
+            collectElements(right, rightFraction, elements);
         }
 
-        if (right instanceof DerivedUnit) {
-            elementList.addAll(Arrays.asList(((DerivedUnit<?>) right).elements));
-        } else {
-            elementList.add(new Element(right, Fraction.ONE));
-        }
-
-        return getInstance(elementList);
-    }
-
-    public static DerivedUnit<?> getQuotientInstance(Unit<?> left, Unit<?> right) {
-        List<Element> elementList = new ArrayList<>();
-
-        if (left instanceof DerivedUnit) {
-            elementList.addAll(Arrays.asList(((DerivedUnit<?>) left).elements));
-        } else {
-            elementList.add(new Element(left, Fraction.ONE));
-        }
-
-        if (right instanceof DerivedUnit) {
-            for (Element e : ((DerivedUnit<?>) right).elements) {
-                elementList.add(new Element(e.unit, e.fraction.multiply(-1)));
-            }
-        } else {
-            elementList.add(new Element(right, Fraction.ONE.multiply(-1)));
-        }
-
-        return getInstance(elementList);
-    }
-
-    public static DerivedUnit<?> getInstance(List<Element> elements) {
         Map<Unit<?>, Fraction> map = new LinkedHashMap<>();
-
-        for (Element element : elements) {
-            Fraction fraction = map.get(element.unit);
+        for (UnitElement element : elements) {
+            Fraction fraction = map.get(element.getUnit());
             if (fraction != null) {
-                fraction = fraction.add(element.fraction);
+                fraction = fraction.add(element.getFraction());
             } else {
-                fraction = element.fraction;
+                fraction = element.getFraction();
             }
-            map.put(element.unit, fraction);
+
+            if (Fraction.ZERO.compareTo(fraction) == 0) {
+                map.remove(element.getUnit());
+            } else {
+                map.put(element.getUnit(), fraction);
+            }
         }
 
-        Element[] newElements = new Element[map.size()];
+        if (map.isEmpty()) {
+            return Units.ONE;
+        }
+
         int idx = 0;
+        UnitElement[] newElements = new UnitElement[map.size()];
         for (Map.Entry<Unit<?>, Fraction> entry : map.entrySet()) {
-            newElements[idx++] = new Element(entry.getKey(), entry.getValue());
+            newElements[idx++] = new UnitElement(entry.getKey(), entry.getValue());
+        }
+
+        // If only one element with exponent 1 is left, return it.
+        if (newElements.length == 1 &&
+            newElements[0].getFraction().compareTo(Fraction.ONE) == 0) {
+            return newElements[0].getUnit();
         }
 
         return new DerivedUnit<>(newElements);
     }
 
-    protected DerivedUnit() {
-        this(new Element[0]);
+    private static void collectElements(Unit<?>           unit,
+                                        Fraction          fraction,
+                                        List<UnitElement> elements) {
+
+        if (unit instanceof DerivedUnit<?>) {
+            for (UnitElement e : ((DerivedUnit<?>) unit).unitElements) {
+                elements.add(e.multiply(fraction));
+            }
+        } else {
+            elements.add(new UnitElement(unit, fraction));
+        }
     }
 
-    protected DerivedUnit(Element... elements) {
-        this.elements  = elements;
-        this.symbol    = calculateSymbol();
-        this.dimension = calculateDimension();
+    protected DerivedUnit() {
+        this(new UnitElement[0]);
+    }
+
+    protected DerivedUnit(UnitElement... elements) {
+        this.unitElements          = elements;
+        this.cachedSymbol          = calculateSymbol();
+        this.cachedDimension       = calculateDimension();
+        this.cachedSystemConverter = calculateSystemConverter();
+    }
+
+    UnitElement[] getUnitElements() {
+        return Arrays.copyOf(unitElements, unitElements.length);
     }
 
     private String calculateSymbol() {
-        if (elements.length == 0) {
-            return "1";
+        if (unitElements.length == 0) {
+            return EMPTY_SYMBOL;
+        }
+
+        StringBuilder numerator   = new StringBuilder();
+        StringBuilder denominator = new StringBuilder();
+
+        for (UnitElement element : unitElements) {
+            if (element.getFraction().signum() > 0) {
+                appendUnitElementAsString(element.getUnit(), element.getFraction(), numerator);
+            } else {
+                appendUnitElementAsString(element.getUnit(), element.getFraction().negate(), denominator);
+            }
         }
 
         StringBuilder sb = new StringBuilder();
+        if (numerator.length() > 0) {
+            sb.append(numerator);
 
-        for (Element element : elements) {
-            sb.append(element.unit.getSymbol());
-
-            if (Fraction.ONE.compareTo(element.fraction) != 0) {
-                sb.append('^');
-                sb.append(element.fraction.getNumerator());
-                if (element.fraction.getDenominator() != 1) {
-                    sb.append('/');
-                    sb.append(element.fraction.getDenominator());
-                }
+            if (denominator.length() > 0) {
+                sb.append('/');
             }
-
-            sb.append(' ');
         }
 
-        sb.deleteCharAt(sb.length() - 1);
+        if (denominator.length() > 0) {
+            sb.append(denominator);
+        }
 
         return sb.toString();
     }
 
-    private Dimension calculateDimension() {
-        Dimension dimension = Dimensions.NONE;
-        for (Element element : elements) {
-            Dimension d = element.unit.getDimension();
-            d = d.pow(element.fraction.getNumerator()).root(element.fraction.getDenominator());
-            dimension = dimension.multiply(d);
+    private void appendUnitElementAsString(Unit<?> unit, Fraction fraction, StringBuilder stringBuilder) {
+        stringBuilder.append(unit.getSymbol());
+        if (Fraction.ONE.compareTo(fraction) != 0) {
+            StringUtil.appendUnicodeString(fraction, stringBuilder);
         }
-        return dimension;
+    }
+
+    private Dimension calculateDimension() {
+        Dimension combinedDimension = Dimensions.NONE;
+        for (UnitElement element : unitElements) {
+            Dimension dimension = element.getUnit().getDimension();
+            dimension = dimension.pow(element.getFraction().getNumerator())
+                                 .root(element.getFraction().getDenominator());
+            combinedDimension = combinedDimension.multiply(dimension);
+        }
+        return combinedDimension;
     }
 
     @Override
     public String getSymbol() {
-        return symbol;
+        return cachedSymbol;
     }
 
     @Override
     public String getName() {
+        // TODO: implement
         return null;
     }
 
     @Override
     public Dimension getDimension() {
-        return dimension;
+        return cachedDimension;
     }
 
     @Override
@@ -196,21 +185,30 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     @Override
     public Unit<Q> getSystemUnit() {
         Unit<?> systemUnit = Units.ONE;
-        for (Element element : elements) {
-            Unit unit = element.unit.getSystemUnit();
-            unit = unit.pow(element.fraction.getNumerator());
+        for (UnitElement element : unitElements) {
+            Unit unit = element.getUnit().getSystemUnit();
+            unit = unit.pow(element.getFraction().getNumerator());
             systemUnit = systemUnit.multiply(unit);
         }
+
+        if (!isCompatible(systemUnit)) {
+            throw new AssertionError(String.format("system unit dimension != this dimension: %s, %s", systemUnit, this));
+        }
+
         return (Unit<Q>) systemUnit;
     }
 
     @Override
     public UnitConverter getSystemConverter() {
+        return cachedSystemConverter;
+    }
+
+    private UnitConverter calculateSystemConverter() {
         UnitConverter systemConverter = UnitConverters.identity();
-        for (Element e : elements) {
-            UnitConverter converter = e.unit.getSystemConverter();
-            int pow  = e.fraction.getNumerator();
-            int root = e.fraction.getDenominator();
+        for (UnitElement e : unitElements) {
+            UnitConverter converter = e.getUnit().getSystemConverter();
+            int pow  = e.getFraction().getNumerator();
+            int root = e.getFraction().getDenominator();
 
             if (pow < 0) {
                 pow       = -pow;
@@ -218,7 +216,10 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             }
 
             if (root > 1) {
-                converter = UnitConverters.pow(converter, pow);
+                // TODO: unrolling the pow operation could be done always,
+                //       keeping the specific pow converter is only useful
+                //       for debugging.
+                converter = UnitConverters.pow(converter,  pow);
                 converter = UnitConverters.root(converter, root);
 
                 systemConverter = systemConverter.andThen(converter);
@@ -236,13 +237,13 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public Map<? extends Unit<?>, Fraction> getBaseUnits() {
-        Map<Unit<?>, Fraction> baseUnitMap = new HashMap<>();
+        Map<Unit<?>, Fraction> baseUnitMap = new LinkedHashMap<>();
 
-        for (Element e : elements) {
-            Map<? extends Unit<?>, Fraction> currentMap = e.unit.getBaseUnits();
+        for (UnitElement e : unitElements) {
+            Map<? extends Unit<?>, Fraction> currentMap = e.getUnit().getBaseUnits();
 
-            int pow  = e.fraction.getNumerator();
-            int root = e.fraction.getDenominator();
+            int pow  = e.getFraction().getNumerator();
+            int root = e.getFraction().getDenominator();
 
             for (Map.Entry<? extends Unit<?>, Fraction> entry : currentMap.entrySet()) {
                 Unit<?> unit = entry.getKey();
@@ -266,35 +267,52 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         return baseUnitMap;
     }
 
-    @Override
-    public Unit<Q> withPrefix(Prefix prefix) {
-        Element[] newElements = new Element[elements.length];
+    /**
+     * Internal class representing a unit element raised to a specific
+     * power/root fraction.
+     */
+    static class UnitElement {
+        private final Unit<?>  unit;
+        private final Fraction fraction;
 
-        for (int i = 0; i < elements.length; i++) {
-            Element element = elements[i];
-            newElements[i] = new Element(element.unit.withPrefix(prefix), element.fraction);
-        }
+        UnitElement(Unit<?> unit, Fraction fraction) {
+            Objects.requireNonNull(unit);
+            Objects.requireNonNull(fraction);
 
-        return new DerivedUnit<>(newElements);
-    }
-
-    @Override
-    public String toString() {
-        return String.format("DerivedUnit[elements=%s]", Arrays.toString(elements));
-    }
-
-    public static class Element {
-        Unit<?>  unit;
-        Fraction fraction;
-
-        private Element(Unit unit, Fraction fraction) {
             this.unit     = unit;
             this.fraction = fraction;
         }
 
+        Unit<?> getUnit() {
+            return unit;
+        }
+
+        Fraction getFraction() {
+            return fraction;
+        }
+
+        UnitElement multiply(Fraction multiplicand) {
+            return new UnitElement(unit, fraction.multiply(multiplicand));
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(unit, fraction);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UnitElement element = (UnitElement) o;
+            return Objects.equals(unit,     element.unit) &&
+                   Objects.equals(fraction, element.fraction);
+        }
+
         @Override
         public String toString() {
-            return String.format("Element[unit=%s, fraction=%s]", unit, fraction);
+            return String.format("%s=%s", unit, fraction);
         }
     }
 }

@@ -17,6 +17,7 @@ package org.netomi.uom.unit;
 
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
+import org.netomi.uom.math.Fraction;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -71,47 +72,38 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
 
     @Override
     public Unit<?> multiply(Unit<?> that) {
-        if (this == Units.ONE) {
-            return that;
-        } else if (that == Units.ONE) {
-            return this;
-        }
-        return DerivedUnit.getProductInstance(this, that);
+        return this == Units.ONE ? that :
+               that == Units.ONE ? this :
+                                   DerivedUnit.ofProduct(this, Fraction.ONE, that, Fraction.ONE);
     }
 
     @Override
     public Unit<?> divide(Unit<?> that) {
-        return multiply(that.inverse());
+        return that == Units.ONE ? this :
+                                   DerivedUnit.ofProduct(this, Fraction.ONE, that, Fraction.of(-1));
     }
 
     @Override
     public Unit<?> pow(int n) {
-        if (n > 0)
-            return this.multiply(this.pow(n - 1));
-        else if (n == 0)
-            return Units.ONE;
-        else
-            // n < 0
-            return Units.ONE.divide(this.pow(-n));
+        return n == 0 ? Units.ONE :
+               n == 1 ? this      :
+                        DerivedUnit.ofProduct(this, Fraction.of(n));
     }
 
     @Override
     public Unit<?> root(int n) {
-        if (n > 0)
-            return DerivedUnit.ofRoot(this, n);
-        else if (n == 0)
-            throw new ArithmeticException("Root's order of zero");
-        else
-            // n < 0
-            return Units.ONE.divide(this.root(-n));
+        if (n <= 0) {
+            throw new IllegalArgumentException("n must be a positive integer.");
+        }
+
+        return n == 1 ? this :
+                        DerivedUnit.ofProduct(this, Fraction.of(1, n));
     }
 
     @Override
     public Unit<?> inverse() {
-        if (this == Units.ONE) {
-            return this;
-        }
-        return DerivedUnit.getQuotientInstance(Units.ONE, this);
+        return this == Units.ONE ? this :
+                                   DerivedUnit.ofProduct(Units.ONE, Fraction.ONE, this, Fraction.of(-1));
     }
 
     @Override
@@ -149,18 +141,18 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(getDimension(), getSystemConverter());
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof AbstractUnit)) return false;
 
         AbstractUnit<?> otherUnit = (AbstractUnit<?>) o;
-        return Objects.equals(getDimension(), otherUnit.getDimension()) &&
+        return Objects.equals(getDimension(),       otherUnit.getDimension()) &&
                Objects.equals(getSystemConverter(), otherUnit.getSystemConverter());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(super.hashCode(), getDimension(), getSystemConverter());
     }
 
     @Override
