@@ -25,7 +25,7 @@ import static org.junit.Assert.assertSame;
 /**
  * Unit test for the {@link Length} quantity.
  */
-public class LengthTest extends GenericQuantityTest<Length> {
+public class LengthTest extends GenericQuantityTest<Length, Length> {
 
     @Override
     protected Class<Length> getQuantityClass() {

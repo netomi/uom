@@ -21,7 +21,7 @@ import org.netomi.uom.unit.Units;
 /**
  * Unit test for the {@link Speed} quantity.
  */
-public class SpeedTest extends GenericQuantityTest<Speed> {
+public class SpeedTest extends GenericQuantityTest<Speed, Speed> {
 
     @Override
     protected Class<Speed> getQuantityClass() {

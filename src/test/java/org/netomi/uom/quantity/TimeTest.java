@@ -21,7 +21,7 @@ import org.netomi.uom.unit.Units;
 /**
  * Unit test for the {@link Time} quantity.
  */
-public class TimeTest extends GenericQuantityTest<Time> {
+public class TimeTest extends GenericQuantityTest<Time, Time> {
 
     @Override
     protected Class<Time> getQuantityClass() {

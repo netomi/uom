@@ -21,15 +21,15 @@ import org.netomi.uom.unit.Units;
 /**
  * Unit test for the {@link Mass} quantity.
  */
-public class MassTest extends GenericQuantityTest<Time> {
+public class MassTest extends GenericQuantityTest<Mass, Mass> {
 
     @Override
-    protected Class<Time> getQuantityClass() {
-        return Time.class;
+    protected Class<Mass> getQuantityClass() {
+        return Mass.class;
     }
 
     @Override
-    protected Unit<Time> getSystemUnit() {
-        return Units.SI.SECOND;
+    protected Unit<Mass> getSystemUnit() {
+        return Units.SI.KILOGRAM;
     }
 }

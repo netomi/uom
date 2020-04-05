@@ -28,9 +28,9 @@ import static org.junit.Assert.*;
  *
  * @param <Q> the quantity type
  */
-public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
+public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
 
-    protected abstract Class<Q> getQuantityClass();
+    protected abstract Class<T> getQuantityClass();
 
     protected abstract Unit<Q> getSystemUnit();
 

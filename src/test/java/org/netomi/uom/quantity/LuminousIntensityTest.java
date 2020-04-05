@@ -19,17 +19,17 @@ import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
 /**
- * Unit test for the {@link Acceleration} quantity.
+ * Unit test for the {@link LuminousIntensity} quantity.
  */
-public class AccelerationTest extends GenericQuantityTest<Acceleration, Acceleration> {
+public class LuminousIntensityTest extends GenericQuantityTest<LuminousIntensity, LuminousIntensity> {
 
     @Override
-    protected Class<Acceleration> getQuantityClass() {
-        return Acceleration.class;
+    protected Class<LuminousIntensity> getQuantityClass() {
+        return LuminousIntensity.class;
     }
 
     @Override
-    protected Unit<Acceleration> getSystemUnit() {
-        return Units.SI.METER_PER_SECOND_SQUARED;
+    protected Unit<LuminousIntensity> getSystemUnit() {
+        return Units.SI.CANDELA;
     }
 }

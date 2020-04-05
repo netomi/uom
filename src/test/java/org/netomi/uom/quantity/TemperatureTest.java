@@ -21,7 +21,7 @@ import org.netomi.uom.unit.Units;
 /**
  * Unit test for the {@link Temperature} quantity.
  */
-public class TemperatureTest extends GenericQuantityTest<Temperature> {
+public class TemperatureTest extends GenericQuantityTest<Temperature, Temperature> {
 
     @Override
     protected Class<Temperature> getQuantityClass() {
