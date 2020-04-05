@@ -58,6 +58,15 @@ public interface Quantity<Q extends Quantity<Q>> {
     Quantity<Q> to(Unit<Q> unit);
 
     /**
+     * Returns a new {@link Quantity} with its value expressed in the
+     * corresponding system unit. If this quantity is already expressed
+     * in a system unit, the same quantity will be returned.
+     *
+     * @return a new {@link Quantity} with this value expressed in the corresponding system unit.
+     */
+    Quantity<Q> toSystemUnit();
+
+    /**
      * Returns a new {@link Quantity} that is the result of adding the given quantity
      * to this quantity. The resulting quantity will be expressed in the
      * same {@link Unit} as this quantity.

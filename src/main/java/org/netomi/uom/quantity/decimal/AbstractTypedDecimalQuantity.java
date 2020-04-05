@@ -86,7 +86,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
         Quantity<?> multiplicandInSystemUnit =
                 multiplicand.getUnit().isSystemUnit() ?
                         multiplicand :
-                        multiplicand.to((Unit) multiplicand.getUnit().getSystemUnit());
+                        multiplicand.toSystemUnit();
 
         return genericDecimalQuantity(valueInSystemUnit.multiply(multiplicandInSystemUnit.decimalValue(), mathContext),
                                       combinedSystemUnit);
@@ -102,7 +102,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
         Quantity<?> multiplicandInSystemUnit =
                 divisor.getUnit().isSystemUnit() ?
                         divisor :
-                        divisor.to((Unit) divisor.getUnit().getSystemUnit());
+                        divisor.toSystemUnit();
 
         return genericDecimalQuantity(valueInSystemUnit.divide(multiplicandInSystemUnit.decimalValue(), mathContext),
                                       combinedSystemUnit);
@@ -121,6 +121,16 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
     public P to(Unit<Q> toUnit, MathContext context) {
         UnitConverter converter = unit.getConverterTo(toUnit);
         return with(converter.convert(value, context), toUnit);
+    }
+
+    @Override
+    public P toSystemUnit(MathContext mathContext) {
+        if (unit.isSystemUnit()) {
+            return (P) this;
+        }
+
+        UnitConverter converter = unit.getSystemConverter();
+        return with(converter.convert(value, mathContext), unit.getSystemUnit());
     }
 
     @Override

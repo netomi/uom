@@ -76,13 +76,13 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
     public DoubleQuantity<?> multiply(Quantity<?> multiplicand) {
         Unit<?> combinedSystemUnit = unit.multiply(multiplicand.getUnit()).getSystemUnit();
 
-        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
+        UnitConverter toSystemConverter = unit.getSystemConverter();
         double valueInSystemUnit        = toSystemConverter.convert(value);
 
         Quantity<?> multiplicandInSystemUnit =
                 multiplicand.getUnit().isSystemUnit() ?
                         multiplicand :
-                        multiplicand.to((Unit) multiplicand.getUnit().getSystemUnit());
+                        multiplicand.toSystemUnit();
 
         return genericDoubleQuantity(valueInSystemUnit * multiplicandInSystemUnit.doubleValue(), combinedSystemUnit);
     }
@@ -91,13 +91,13 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
     public DoubleQuantity<?> divide(Quantity<?> divisor) {
         Unit<?> combinedSystemUnit = unit.divide(divisor.getUnit()).getSystemUnit();
 
-        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
+        UnitConverter toSystemConverter = unit.getSystemConverter();
         double valueInSystemUnit        = toSystemConverter.convert(value);
 
         Quantity<?> divisorInSystemUnit =
                 divisor.getUnit().isSystemUnit() ?
                         divisor :
-                        divisor.to((Unit) divisor.getUnit().getSystemUnit());
+                        divisor.toSystemUnit();
 
         return genericDoubleQuantity(valueInSystemUnit / divisorInSystemUnit.doubleValue(), combinedSystemUnit);
     }
@@ -111,6 +111,16 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
     public P to(Unit<Q> toUnit) {
         UnitConverter converter = unit.getConverterTo(toUnit);
         return with(converter.convert(value), toUnit);
+    }
+
+    @Override
+    public P toSystemUnit() {
+        if (unit.isSystemUnit()) {
+            return (P) this;
+        }
+
+        UnitConverter converter = unit.getSystemConverter();
+        return with(converter.convert(value), unit.getSystemUnit());
     }
 
     @Override
