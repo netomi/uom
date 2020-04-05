@@ -22,7 +22,7 @@ The design goal of the library is to include the following:
   ```
 * support for generic quantities:
   ```java
-    Quantity<Speed> speed = Quantities.create(1, Units.SI.METER_PER_SECOND, Speed.class);
+    Quantity<Speed> speed = Quantities.create(1, Units.SI.METER_PER_SECOND);
   
     System.out.println(speed.add(Speed.ofMeterPerSecond(2))); // -> prints 3 m/s
   ```
