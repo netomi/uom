@@ -24,9 +24,9 @@ import java.util.Map;
  * <p>
  * A dimension is represented in the form:
  *
- * <pre>
+ * <code>
  *     dim Q = L<sup>a</sup>M<sup>b</sup>T<sup>c</sup>I<sup>d</sup>Θ<sup>e</sup>N<sup>f</sup>J<sup>g</sup>
- * </pre>
+ * </code>
  *
  * with L, M, T, I, Θ, N and J representing the base dimensions with their respective dimensional exponent
  * as a fraction.
