@@ -2,7 +2,6 @@
 
 ## Manadatory
 
-* fix multiply and divide methods (currently only working if using the same base units)
 * more unit tests, especially for unit and quantity package
 * add all quantities for which SI units exists
 * tests for root units, e.g. 1 s^1/2 ~= 31.623ms1/2)

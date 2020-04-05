@@ -224,11 +224,6 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     @Override
-    public boolean isSystemUnit() {
-        return false;
-    }
-
-    @Override
     public Unit<Q> getSystemUnit() {
         synchronized (this) {
             if (cachedSystemUnit == null) {

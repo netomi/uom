@@ -74,14 +74,32 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
 
     @Override
     public DoubleQuantity<?> multiply(Quantity<?> multiplicand) {
-        Unit<?> combinedUnit = unit.multiply(multiplicand.getUnit());
-        return genericDoubleQuantity(value * multiplicand.doubleValue(), combinedUnit);
+        Unit<?> combinedSystemUnit = unit.multiply(multiplicand.getUnit()).getSystemUnit();
+
+        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
+        double valueInSystemUnit        = toSystemConverter.convert(value);
+
+        Quantity<?> multiplicandInSystemUnit =
+                multiplicand.getUnit().isSystemUnit() ?
+                        multiplicand :
+                        multiplicand.to((Unit) multiplicand.getUnit().getSystemUnit());
+
+        return genericDoubleQuantity(valueInSystemUnit * multiplicandInSystemUnit.doubleValue(), combinedSystemUnit);
     }
 
     @Override
     public DoubleQuantity<?> divide(Quantity<?> divisor) {
-        Unit<?> combinedUnit = unit.divide(divisor.getUnit());
-        return genericDoubleQuantity(value / divisor.doubleValue(), combinedUnit);
+        Unit<?> combinedSystemUnit = unit.divide(divisor.getUnit()).getSystemUnit();
+
+        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
+        double valueInSystemUnit        = toSystemConverter.convert(value);
+
+        Quantity<?> divisorInSystemUnit =
+                divisor.getUnit().isSystemUnit() ?
+                        divisor :
+                        divisor.to((Unit) divisor.getUnit().getSystemUnit());
+
+        return genericDoubleQuantity(valueInSystemUnit / divisorInSystemUnit.doubleValue(), combinedSystemUnit);
     }
 
     @Override

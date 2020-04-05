@@ -361,11 +361,6 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
         }
 
         @Override
-        public boolean isSystemUnit() {
-            return delegateUnit.isSystemUnit();
-        }
-
-        @Override
         public Unit<Q> getSystemUnit() {
             return delegateUnit.getSystemUnit();
         }

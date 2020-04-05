@@ -78,19 +78,39 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
 
     @Override
     public DecimalQuantity<?> multiply(Quantity<?> multiplicand) {
-        Unit<?> combinedUnit = unit.multiply(multiplicand.getUnit());
-        return genericDoubleQuantity(value.multiply(multiplicand.decimalValue()), combinedUnit);
+        Unit<?> combinedSystemUnit = unit.multiply(multiplicand.getUnit()).getSystemUnit();
+
+        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
+        BigDecimal valueInSystemUnit    = toSystemConverter.convert(value, mathContext);
+
+        Quantity<?> multiplicandInSystemUnit =
+                multiplicand.getUnit().isSystemUnit() ?
+                        multiplicand :
+                        multiplicand.to((Unit) multiplicand.getUnit().getSystemUnit());
+
+        return genericDecimalQuantity(valueInSystemUnit.multiply(multiplicandInSystemUnit.decimalValue(), mathContext),
+                                      combinedSystemUnit);
     }
 
     @Override
     public DecimalQuantity<?> divide(Quantity<?> divisor) {
-        Unit<?> combinedUnit = unit.divide(divisor.getUnit());
-        return genericDoubleQuantity(value.divide(divisor.decimalValue()), combinedUnit);
+        Unit<?> combinedSystemUnit = unit.divide(divisor.getUnit()).getSystemUnit();
+
+        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
+        BigDecimal valueInSystemUnit    = toSystemConverter.convert(value, mathContext);
+
+        Quantity<?> multiplicandInSystemUnit =
+                divisor.getUnit().isSystemUnit() ?
+                        divisor :
+                        divisor.to((Unit) divisor.getUnit().getSystemUnit());
+
+        return genericDecimalQuantity(valueInSystemUnit.divide(multiplicandInSystemUnit.decimalValue(), mathContext),
+                                      combinedSystemUnit);
     }
 
     @Override
     public DecimalQuantity<?> reciprocal() {
-        return genericDoubleQuantity(BigDecimal.ONE.divide(value, mathContext), unit);
+        return genericDecimalQuantity(BigDecimal.ONE.divide(value, mathContext), unit);
     }
 
     @Override
@@ -116,13 +136,13 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
     @Override
     public abstract P with(BigDecimal value, MathContext mathContext, Unit<Q> unit);
 
-    protected DecimalQuantity<?> genericDoubleQuantity(BigDecimal value, Unit<?> unit) {
+    protected DecimalQuantity<?> genericDecimalQuantity(BigDecimal value, Unit<?> unit) {
         return new GenericImpl(value, mathContext, unit);
     }
 
     @Override
     public String toString() {
-        return String.format("%s %s", value.toString(), unit.getSymbol());
+        return String.format("%f %s", value, unit.getSymbol());
     }
 
     public static class GenericImpl extends AbstractTypedDecimalQuantity {

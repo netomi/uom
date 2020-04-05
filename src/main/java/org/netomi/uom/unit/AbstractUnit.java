@@ -117,7 +117,7 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
 
     @Override
     public boolean isSystemUnit() {
-        return false;
+        return getSystemConverter().isIdentity();
     }
 
     @Override
