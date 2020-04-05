@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Speed} quantity.
  */
@@ -31,5 +34,15 @@ public class SpeedTest extends GenericQuantityTest<Speed, Speed> {
     @Override
     protected Unit<Speed> getSystemUnit() {
         return Units.SI.METER_PER_SECOND;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Speed>, Speed> getFactoryMethod() {
+        return Speed::of;
+    }
+
+    @Override
+    protected Function<Double, Speed> getFactoryMethodForSystemUnit() {
+        return Speed::ofMeterPerSecond;
     }
 }

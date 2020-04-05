@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Angle} quantity.
  */
@@ -31,5 +34,15 @@ public class AngleTest extends GenericQuantityTest<Angle, Angle> {
     @Override
     protected Unit<Angle> getSystemUnit() {
         return Units.SI.RADIAN;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Angle>, Angle> getFactoryMethod() {
+        return Angle::of;
+    }
+
+    @Override
+    protected Function<Double, Angle> getFactoryMethodForSystemUnit() {
+        return Angle::ofRadian;
     }
 }

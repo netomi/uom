@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Pressure} quantity.
  */
@@ -31,5 +34,15 @@ public class PressureTest extends GenericQuantityTest<Pressure, Pressure> {
     @Override
     protected Unit<Pressure> getSystemUnit() {
         return Units.SI.PASCAL;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Pressure>, Pressure> getFactoryMethod() {
+        return Pressure::of;
+    }
+
+    @Override
+    protected Function<Double, Pressure> getFactoryMethodForSystemUnit() {
+        return Pressure::ofPascal;
     }
 }

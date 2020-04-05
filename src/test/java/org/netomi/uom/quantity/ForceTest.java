@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Force} quantity.
  */
@@ -31,5 +34,15 @@ public class ForceTest extends GenericQuantityTest<Force, Force> {
     @Override
     protected Unit<Force> getSystemUnit() {
         return Units.SI.NEWTON;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Force>, Force> getFactoryMethod() {
+        return Force::of;
+    }
+
+    @Override
+    protected Function<Double, Force> getFactoryMethodForSystemUnit() {
+        return Force::ofNewton;
     }
 }

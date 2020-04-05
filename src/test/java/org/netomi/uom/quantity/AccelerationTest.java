@@ -15,8 +15,15 @@
  */
 package org.netomi.uom.quantity;
 
+import org.junit.jupiter.api.Test;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 /**
  * Unit test for the {@link Acceleration} quantity.
@@ -31,5 +38,15 @@ public class AccelerationTest extends GenericQuantityTest<Acceleration, Accelera
     @Override
     protected Unit<Acceleration> getSystemUnit() {
         return Units.SI.METER_PER_SECOND_SQUARED;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Acceleration>, Acceleration> getFactoryMethod() {
+        return Acceleration::of;
+    }
+
+    @Override
+    protected Function<Double, Acceleration> getFactoryMethodForSystemUnit() {
+        return Acceleration::ofMeterPerSquareSecond;
     }
 }

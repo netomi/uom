@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Distance} quantity.
  */
@@ -31,5 +34,15 @@ public class DistanceTest extends GenericQuantityTest<Distance, Length> {
     @Override
     protected Unit<Length> getSystemUnit() {
         return Units.SI.METRE;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Length>, Distance> getFactoryMethod() {
+        return Distance::of;
+    }
+
+    @Override
+    protected Function<Double, Distance> getFactoryMethodForSystemUnit() {
+        return Distance::ofMeter;
     }
 }

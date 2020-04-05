@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Frequency} quantity.
  */
@@ -31,5 +34,15 @@ public class FrequencyTest extends GenericQuantityTest<Frequency, Frequency> {
     @Override
     protected Unit<Frequency> getSystemUnit() {
         return Units.SI.HERTZ;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Frequency>, Frequency> getFactoryMethod() {
+        return Frequency::of;
+    }
+
+    @Override
+    protected Function<Double, Frequency> getFactoryMethodForSystemUnit() {
+        return Frequency::ofHertz;
     }
 }

@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Energy} quantity.
  */
@@ -31,5 +34,15 @@ public class EnergyTest extends GenericQuantityTest<Energy, Energy> {
     @Override
     protected Unit<Energy> getSystemUnit() {
         return Units.SI.JOULE;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Energy>, Energy> getFactoryMethod() {
+        return Energy::of;
+    }
+
+    @Override
+    protected Function<Double, Energy> getFactoryMethodForSystemUnit() {
+        return Energy::ofJoule;
     }
 }

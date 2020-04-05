@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link AmountOfSubstance} quantity.
  */
@@ -31,5 +34,15 @@ public class AmountOfSubstanceTest extends GenericQuantityTest<AmountOfSubstance
     @Override
     protected Unit<AmountOfSubstance> getSystemUnit() {
         return Units.SI.MOLE;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<AmountOfSubstance>, AmountOfSubstance> getFactoryMethod() {
+        return AmountOfSubstance::of;
+    }
+
+    @Override
+    protected Function<Double, AmountOfSubstance> getFactoryMethodForSystemUnit() {
+        return AmountOfSubstance::ofMole;
     }
 }

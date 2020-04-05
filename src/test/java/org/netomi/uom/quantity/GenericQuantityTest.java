@@ -20,6 +20,10 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
 import org.netomi.uom.unit.Prefixes;
+import org.netomi.uom.unit.Units;
+
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
 import static org.junit.Assert.*;
 
@@ -33,6 +37,10 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
     protected abstract Class<T> getQuantityClass();
 
     protected abstract Unit<Q> getSystemUnit();
+
+    protected abstract BiFunction<Double, Unit<Q>, T> getFactoryMethod();
+
+    protected abstract Function<Double, T> getFactoryMethodForSystemUnit();
 
     protected Q createQuantity(double value) {
         return Quantities.createQuantity(value, getSystemUnit(), getQuantityClass());
@@ -92,5 +100,18 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         Unit<Q> milliUnit = getSystemUnit().withPrefix(Prefixes.Metric.MILLI);
         UnitConverter converter = Prefixes.Metric.MILLI.getUnitConverter().inverse();
         assertEquals(converter.convert(123), quantity.to(milliUnit).doubleValue(), 1e-6);
+    }
+
+    @Test
+    public void factoryMethod() {
+        T quantity = getFactoryMethod().apply(10.0, getSystemUnit());
+
+        assertSame(getSystemUnit(), quantity.getUnit());
+        assertEquals(10, quantity.doubleValue(), 1e-6);
+
+        quantity = getFactoryMethodForSystemUnit().apply(20.0);
+
+        assertSame(getSystemUnit(), quantity.getUnit());
+        assertEquals(20, quantity.doubleValue(), 1e-6);
     }
 }

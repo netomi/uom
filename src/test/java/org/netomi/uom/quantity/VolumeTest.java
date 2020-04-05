@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Volume} quantity.
  */
@@ -31,5 +34,15 @@ public class VolumeTest extends GenericQuantityTest<Volume, Volume> {
     @Override
     protected Unit<Volume> getSystemUnit() {
         return Units.SI.CUBIC_METER;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Volume>, Volume> getFactoryMethod() {
+        return Volume::of;
+    }
+
+    @Override
+    protected Function<Double, Volume> getFactoryMethodForSystemUnit() {
+        return Volume::ofCubicMeter;
     }
 }

@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link LuminousIntensity} quantity.
  */
@@ -31,5 +34,15 @@ public class LuminousIntensityTest extends GenericQuantityTest<LuminousIntensity
     @Override
     protected Unit<LuminousIntensity> getSystemUnit() {
         return Units.SI.CANDELA;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<LuminousIntensity>, LuminousIntensity> getFactoryMethod() {
+        return LuminousIntensity::of;
+    }
+
+    @Override
+    protected Function<Double, LuminousIntensity> getFactoryMethodForSystemUnit() {
+        return LuminousIntensity::ofCandela;
     }
 }

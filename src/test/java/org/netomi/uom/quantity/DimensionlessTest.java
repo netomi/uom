@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Dimensionless} quantity.
  */
@@ -31,5 +34,15 @@ public class DimensionlessTest extends GenericQuantityTest<Dimensionless, Dimens
     @Override
     protected Unit<Dimensionless> getSystemUnit() {
         return Units.ONE;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Dimensionless>, Dimensionless> getFactoryMethod() {
+        return Dimensionless::of;
+    }
+
+    @Override
+    protected Function<Double, Dimensionless> getFactoryMethodForSystemUnit() {
+        return Dimensionless::of;
     }
 }

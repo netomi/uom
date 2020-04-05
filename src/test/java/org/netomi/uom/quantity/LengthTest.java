@@ -19,6 +19,9 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertSame;
 
@@ -37,15 +40,13 @@ public class LengthTest extends GenericQuantityTest<Length, Length> {
         return Units.SI.METRE;
     }
 
-    @Test
-    public void factoryMethods() {
-        Length l = Length.of(10, Units.SI.METRE);
+    @Override
+    protected BiFunction<Double, Unit<Length>, Length> getFactoryMethod() {
+        return Length::of;
+    }
 
-        assertSame(Units.SI.METRE, l.getUnit());
-        assertEquals(10, l.doubleValue(), 1e-6);
-
-        l = Length.ofMeter(20);
-        assertSame(Units.SI.METRE, l.getUnit());
-        assertEquals(20, l.doubleValue(), 1e-6);
+    @Override
+    protected Function<Double, Length> getFactoryMethodForSystemUnit() {
+        return Length::ofMeter;
     }
 }

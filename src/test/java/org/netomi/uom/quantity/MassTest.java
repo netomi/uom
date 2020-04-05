@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Mass} quantity.
  */
@@ -31,5 +34,15 @@ public class MassTest extends GenericQuantityTest<Mass, Mass> {
     @Override
     protected Unit<Mass> getSystemUnit() {
         return Units.SI.KILOGRAM;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Mass>, Mass> getFactoryMethod() {
+        return Mass::of;
+    }
+
+    @Override
+    protected Function<Double, Mass> getFactoryMethodForSystemUnit() {
+        return Mass::ofKilogram;
     }
 }

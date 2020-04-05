@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Area} quantity.
  */
@@ -31,5 +34,15 @@ public class AreaTest extends GenericQuantityTest<Area, Area> {
     @Override
     protected Unit<Area> getSystemUnit() {
         return Units.SI.SQUARE_METER;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Area>, Area> getFactoryMethod() {
+        return Area::of;
+    }
+
+    @Override
+    protected Function<Double, Area> getFactoryMethodForSystemUnit() {
+        return Area::ofSquareMeter;
     }
 }

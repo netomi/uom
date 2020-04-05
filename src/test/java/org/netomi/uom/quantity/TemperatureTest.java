@@ -18,6 +18,9 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Units;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+
 /**
  * Unit test for the {@link Temperature} quantity.
  */
@@ -31,5 +34,15 @@ public class TemperatureTest extends GenericQuantityTest<Temperature, Temperatur
     @Override
     protected Unit<Temperature> getSystemUnit() {
         return Units.SI.KELVIN;
+    }
+
+    @Override
+    protected BiFunction<Double, Unit<Temperature>, Temperature> getFactoryMethod() {
+        return Temperature::of;
+    }
+
+    @Override
+    protected Function<Double, Temperature> getFactoryMethodForSystemUnit() {
+        return Temperature::ofKelvin;
     }
 }
