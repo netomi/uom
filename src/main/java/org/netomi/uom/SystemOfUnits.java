@@ -15,13 +15,10 @@
  */
 package org.netomi.uom;
 
-public interface SystemOfUnits {
-    enum Type {
-        SI,
-        CGS,
-        IMPERIAL,
-        NONE
-    }
+import java.util.Set;
 
-    Type getType();
+public interface SystemOfUnits {
+    String getName();
+
+    Set<Unit<?>> getUnits();
 }

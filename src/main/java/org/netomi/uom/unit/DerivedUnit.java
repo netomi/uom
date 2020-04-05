@@ -45,6 +45,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     private final Dimension              cachedDimension;
     private final UnitConverter          cachedSystemConverter;
     private final Map<Unit<?>, Fraction> cachedBaseUnitMap;
+    private       Unit<Q>                cachedSystemUnit;
 
     public static Unit<?> ofProduct(Unit<?> unit, Fraction fraction) {
         return ofProduct(unit, fraction, null, null);
@@ -92,7 +93,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
         DerivedUnit<?> cachedUnit = getCachedUnit(newElements);
         if (cachedUnit != null) {
-            return cachedUnit;
+            return Units.getNamedUnitIfPresent(cachedUnit);
         } else {
             DerivedUnit<?> unit = new DerivedUnit<>(newElements);
             putUnitIntoCache(unit);
@@ -137,6 +138,8 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         this.cachedDimension       = calculateDimension();
         this.cachedSystemConverter = calculateSystemConverter();
         this.cachedBaseUnitMap     = calculateBaseUnitMap();
+        // the system unit is lazily initialized.
+        this.cachedSystemUnit      = null;
     }
 
     protected DerivedUnit(DerivedUnit<Q> other) {
@@ -145,6 +148,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         this.cachedDimension       = other.cachedDimension;
         this.cachedSystemConverter = other.cachedSystemConverter;
         this.cachedBaseUnitMap     = other.cachedBaseUnitMap;
+        this.cachedSystemUnit      = other.cachedSystemUnit;
     }
 
     UnitElement[] getUnitElements() {
@@ -226,6 +230,23 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public Unit<Q> getSystemUnit() {
+        synchronized (this) {
+            if (cachedSystemUnit == null) {
+                cachedSystemUnit = calculateSystemUnit();
+            }
+
+            return cachedSystemUnit;
+        }
+    }
+
+    private Unit<Q> calculateSystemUnit() {
+        // Shortcut: if the system converter is an identity
+        //           converter, the current unit is equal to the
+        //           system unit.
+        if (getSystemConverter().isIdentity()) {
+            return this;
+        }
+
         Unit<?> systemUnit = Units.ONE;
         for (UnitElement element : unitElements) {
             Unit unit = element.getUnit().getSystemUnit();

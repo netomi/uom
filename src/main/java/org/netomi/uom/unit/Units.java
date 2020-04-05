@@ -18,12 +18,11 @@ package org.netomi.uom.unit;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.SystemOfUnits;
 import org.netomi.uom.Unit;
+import org.netomi.uom.math.Fraction;
 import org.netomi.uom.quantity.*;
 
 import java.math.BigDecimal;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -31,7 +30,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class Units {
 
-    private static ConcurrentHashMap<Class<? extends Quantity<?>>, Set<Unit<?>>> unitsPerQuantity = new ConcurrentHashMap<>();
+    private static Map<Unit<?>, Unit<?>>                           namedUnits       = new ConcurrentHashMap<>();
+    private static Map<Class<? extends Quantity<?>>, Set<Unit<?>>> unitsPerQuantity = new ConcurrentHashMap<>();
 
     // Some globally unique units / constants.
     public static final Unit<Dimensionless> ONE = new DerivedUnit<>();
@@ -43,17 +43,33 @@ public final class Units {
     public static final Imperial Imperial = new Units.Imperial();
     public static final Other    Other    = new Units.Other();
 
-    private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<Q> unit, Class<Q> quantityClass) {
-        Set<Unit<?>> knownUnits = unitsPerQuantity.get(quantityClass);
+    static {
+        for (SystemOfUnits system : Arrays.asList(SI, CGS, Imperial, Other)) {
+            Set<Unit<?>> units = system.getUnits();
 
-        if (knownUnits == null) {
-            knownUnits = new LinkedHashSet<>();
-            unitsPerQuantity.put(quantityClass, knownUnits);
+            for (Unit<?> unit : units) {
+                namedUnits.put(unit, unit);
+            }
         }
+    }
+//    private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<Q> unit, Class<Q> quantityClass) {
+//        Set<Unit<?>> knownUnits = unitsPerQuantity.get(quantityClass);
+//
+//        if (knownUnits == null) {
+//            knownUnits = new LinkedHashSet<>();
+//            unitsPerQuantity.put(quantityClass, knownUnits);
+//        }
+//
+//        knownUnits.add(unit);
+//
+//        namedUnits.put(unit, unit);
+//
+//        return unit;
+//    }
 
-        knownUnits.add(unit);
-
-        return unit;
+    static <Q extends Quantity<Q>> Unit<Q> getNamedUnitIfPresent(Unit<Q> unit) {
+        Unit<?> namedUnit = namedUnits.get(unit);
+        return namedUnit != null ? (Unit<Q>) namedUnit : unit;
     }
 
     public static <Q extends Quantity<Q>> Set<? extends Unit<Q>> unitsForQuantity(Class<Q> quantityClass) {
@@ -77,12 +93,9 @@ public final class Units {
     /**
      * The SI system of units.
      */
-    public static class SI implements SystemOfUnits {
-        private SI() {}
-
-        @Override
-        public Type getType() {
-            return Type.SI;
+    public static class SI extends AbstractSystemOfUnits {
+        private SI() {
+            super("SI");
         }
 
         // Base units of the International System of Units (SI).
@@ -94,64 +107,64 @@ public final class Units {
         public Unit<LuminousIntensity> CANDELA  = addUnit(new BaseUnit<>("cd",  "CANDELA",  Dimensions.LUMINOUS_INTENSITY),  LuminousIntensity.class);
         public Unit<AmountOfSubstance> MOLE     = addUnit(new BaseUnit<>("mol", "MOLE",     Dimensions.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
 
-        public Unit<Temperature>       CELSIUS  = buildFrom(KELVIN).shiftedBy(273.15).withSymbol("°C").withName("DEGREE CELSIUS").build();
+        public Unit<Temperature>       CELSIUS  = addUnit(buildFrom(KELVIN).shiftedBy(273.15).withSymbol("°C").withName("DEGREE CELSIUS").build(), Temperature.class);
 
-        public Unit<Angle>             RADIAN   = UnitBuilder.<Angle>fromAny    (ONE)               .withSymbol("rad").withName("RADIAN").build();
-        public Unit<Frequency>         HERTZ    = UnitBuilder.<Frequency>fromAny(ONE.divide(SECOND)).withSymbol("Hz") .withName("HERTZ") .build();
+        public Unit<Angle>             RADIAN   = addUnit(UnitBuilder.<Angle>fromAny    (ONE)               .withSymbol("rad").withName("RADIAN").build(), Angle.class);
+        public Unit<Frequency>         HERTZ    = addUnit(UnitBuilder.<Frequency>fromAny(ONE.divide(SECOND)).withSymbol("Hz") .withName("HERTZ") .build(), Frequency.class);
 
         public Unit<Speed>             METER_PER_SECOND =
-                UnitBuilder.<Speed>fromAny(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").build();
+                addUnit(UnitBuilder.<Speed>fromAny(METRE.divide(SECOND)).withSymbol("m/s").withName("METER PER SECOND").build(), Speed.class);
 
         public Unit<Acceleration>      METER_PER_SECOND_SQUARED =
-                UnitBuilder.<Acceleration>fromAny(METER_PER_SECOND.divide(SECOND))
+                addUnit(UnitBuilder.<Acceleration>fromAny(METER_PER_SECOND.divide(SECOND))
                            .withSymbol("m/s²")
                            .withName("METER PER SECOND SQUARED")
-                           .build();
+                           .build(), Acceleration.class);
 
         public Unit<Area>              SQUARE_METER =
-                UnitBuilder.<Area>fromAny(METRE.multiply(METRE))
+                addUnit(UnitBuilder.<Area>fromAny(METRE.multiply(METRE))
                            .withSymbol("m²")
                            .withName("SQUARE METER")
-                           .build();
+                           .build(), Area.class);
 
         public Unit<Volume>            CUBIC_METER  =
-                UnitBuilder.<Volume>fromAny(SQUARE_METER.multiply(METRE))
+                addUnit(UnitBuilder.<Volume>fromAny(SQUARE_METER.multiply(METRE))
                         .withSymbol("m³")
                         .withName("CUBIC METER")
-                        .build();
+                        .build(), Volume.class);
 
         public Unit<Force>             NEWTON   =
-                UnitBuilder.<Force>fromAny(KILOGRAM.multiply(METRE).divide(SECOND.pow(2)))
+                addUnit(UnitBuilder.<Force>fromAny(KILOGRAM.multiply(METRE).divide(SECOND.pow(2)))
                            .withSymbol("N")
                            .withName("NEWTON")
-                           .build();
+                           .build(), Force.class);
 
         public Unit<Pressure>          PASCAL   =
-                UnitBuilder.<Pressure>fromAny(NEWTON.divide(SQUARE_METER))
+                addUnit(UnitBuilder.<Pressure>fromAny(NEWTON.divide(SQUARE_METER))
                         .withSymbol("Pa")
                         .withName("PASCAL")
-                        .build();
+                        .build(), Pressure.class);
 
-        public Unit<Energy>            JOULE  = UnitBuilder.<Energy>fromAny(NEWTON.multiply(METRE)) .withSymbol("J").withName("JOULE").build();
-        public Unit<Power>             WATT   = UnitBuilder.<Power>fromAny (JOULE.divide(SECOND))   .withSymbol("W").withName("WATT") .build();
+        public Unit<Energy>            JOULE  = addUnit(UnitBuilder.<Energy>fromAny(NEWTON.multiply(METRE)) .withSymbol("J").withName("JOULE").build(), Energy.class);
+        public Unit<Power>             WATT   = addUnit(UnitBuilder.<Power>fromAny (JOULE.divide(SECOND))   .withSymbol("W").withName("WATT") .build(), Power.class);
 
         public Unit<ElectricCharge>    COULOMB =
-                UnitBuilder.<ElectricCharge>fromAny   (AMPERE.multiply(SECOND))
+                addUnit(UnitBuilder.<ElectricCharge>fromAny   (AMPERE.multiply(SECOND))
                            .withSymbol("C")
                            .withName("COULOMB")
-                           .build();
+                           .build(), ElectricCharge.class);
 
         public Unit<ElectricPotential> VOLT    =
-                UnitBuilder.<ElectricPotential>fromAny(JOULE.divide(COULOMB))
+                addUnit(UnitBuilder.<ElectricPotential>fromAny(JOULE.divide(COULOMB))
                            .withSymbol("V")
                            .withName("VOLT")
-                           .build();
+                           .build(), ElectricPotential.class);
 
         public Unit<ElectricCapacitance> FARAD =
-                UnitBuilder.<ElectricCapacitance>fromAny(COULOMB.divide(VOLT))
+                addUnit(UnitBuilder.<ElectricCapacitance>fromAny(COULOMB.divide(VOLT))
                         .withSymbol("F")
                         .withName("FARAD")
-                        .build();
+                        .build(), ElectricCapacitance.class);
 
         // Constants expressed in SI units.
         public final Unit<Speed>       C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
@@ -161,12 +174,9 @@ public final class Units {
     /**
      * The CGS system of units.
      */
-    public static class CGS implements SystemOfUnits {
-        private CGS() {}
-
-        @Override
-        public Type getType() {
-            return Type.CGS;
+    public static class CGS extends AbstractSystemOfUnits {
+        private CGS() {
+            super("CGS");
         }
 
         public Unit<Length> CENTIMETRE = buildFrom(SI.METRE)   .multipliedBy(1, 100) .withSymbol("cm").withName("CENTIMETER").build();
@@ -189,12 +199,9 @@ public final class Units {
     /**
      * The IMPERIAL system of units.
      */
-    public static class Imperial implements SystemOfUnits {
-        private Imperial() {}
-
-        @Override
-        public Type getType() {
-            return Type.IMPERIAL;
+    public static class Imperial extends AbstractSystemOfUnits {
+        private Imperial() {
+            super("Imperial");
         }
 
         // length units
@@ -221,12 +228,9 @@ public final class Units {
     /**
      * Any other units not directly linked to a specific system of units.
      */
-    public static class Other implements SystemOfUnits {
-        private Other() {}
-
-        @Override
-        public Type getType() {
-            return Type.NONE;
+    public static class Other extends AbstractSystemOfUnits {
+        private Other() {
+            super("Other");
         }
 
         // time units
