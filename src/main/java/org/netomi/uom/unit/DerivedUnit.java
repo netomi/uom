@@ -40,10 +40,11 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     private static final Map<UnitElementWrapper, WeakReference<DerivedUnit<?>>> unitCache =
             Collections.synchronizedMap(new WeakHashMap<>());
 
-    private final UnitElement[] unitElements;
-    private final String        cachedSymbol;
-    private final Dimension     cachedDimension;
-    private final UnitConverter cachedSystemConverter;
+    private final UnitElement[]          unitElements;
+    private final String                 cachedSymbol;
+    private final Dimension              cachedDimension;
+    private final UnitConverter          cachedSystemConverter;
+    private final Map<Unit<?>, Fraction> cachedBaseUnitMap;
 
     public static Unit<?> ofProduct(Unit<?> unit, Fraction fraction) {
         return ofProduct(unit, fraction, null, null);
@@ -122,7 +123,12 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     protected DerivedUnit() {
-        this(new UnitElement[0]);
+        this.unitElements = new UnitElement[0];
+
+        this.cachedSymbol          = EMPTY_SYMBOL;
+        this.cachedDimension       = Dimensions.NONE;
+        this.cachedSystemConverter = UnitConverters.identity();
+        this.cachedBaseUnitMap     = Collections.emptyMap();
     }
 
     protected DerivedUnit(UnitElement... elements) {
@@ -130,6 +136,15 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         this.cachedSymbol          = calculateSymbol();
         this.cachedDimension       = calculateDimension();
         this.cachedSystemConverter = calculateSystemConverter();
+        this.cachedBaseUnitMap     = calculateBaseUnitMap();
+    }
+
+    protected DerivedUnit(DerivedUnit<Q> other) {
+        this.unitElements          = other.unitElements;
+        this.cachedSymbol          = other.cachedSymbol;
+        this.cachedDimension       = other.cachedDimension;
+        this.cachedSystemConverter = other.cachedSystemConverter;
+        this.cachedBaseUnitMap     = other.cachedBaseUnitMap;
     }
 
     UnitElement[] getUnitElements() {
@@ -137,10 +152,6 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     private String calculateSymbol() {
-        if (unitElements.length == 0) {
-            return EMPTY_SYMBOL;
-        }
-
         StringBuilder numerator   = new StringBuilder();
         StringBuilder denominator = new StringBuilder();
 
@@ -197,8 +208,10 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public String getName() {
-        // TODO: implement
-        return null;
+        // Does not really make sense to return a name concatenated
+        // from each unit element, return a string identifying the unit
+        // as unnamed.
+        return "UNNAMED";
     }
 
     @Override
@@ -216,7 +229,8 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         Unit<?> systemUnit = Units.ONE;
         for (UnitElement element : unitElements) {
             Unit unit = element.getUnit().getSystemUnit();
-            unit = unit.pow(element.getFraction().getNumerator());
+            unit = unit.pow(element.getFraction().getNumerator())
+                       .root(element.getFraction().getDenominator());
             systemUnit = systemUnit.multiply(unit);
         }
 
@@ -266,6 +280,10 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     @Override
     public Map<? extends Unit<?>, Fraction> getBaseUnits() {
+        return cachedBaseUnitMap;
+    }
+
+    private Map<Unit<?>, Fraction> calculateBaseUnitMap() {
         Map<Unit<?>, Fraction> baseUnitMap = new LinkedHashMap<>();
 
         for (UnitElement e : unitElements) {

@@ -257,12 +257,19 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
             if (prefix != null) {
                 sb.append(prefix.getSymbol());
+                if (symbol == null) {
+                    sb.append('(');
+                }
             }
 
             if (symbol != null) {
                 sb.append(symbol);
             } else {
                 sb.append(super.getSymbol());
+            }
+
+            if (prefix != null && symbol == null) {
+                sb.append(')');
             }
 
             return sb.toString();
@@ -274,12 +281,19 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
             if (prefix != null) {
                 sb.append(prefix.getName());
+                if (name == null) {
+                    sb.append('(');
+                }
             }
 
             if (name != null) {
                 sb.append(name);
             } else {
                 sb.append(super.getName());
+            }
+
+            if (prefix != null && name == null) {
+                sb.append(')');
             }
 
             return sb.toString();
