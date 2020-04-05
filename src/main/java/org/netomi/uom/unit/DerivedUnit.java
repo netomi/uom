@@ -20,6 +20,7 @@ import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.StringUtil;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 
 /**
@@ -30,6 +31,14 @@ import java.util.*;
 class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     private static final String EMPTY_SYMBOL = "1";
+
+    /**
+     * A cache for {@link DerivedUnit} instances. Wrap values into a weak
+     * reference as the keys are contained in the values, creating a
+     * circular reference which would prevent the keys from being collected.
+     */
+    private static final Map<UnitElementWrapper, WeakReference<DerivedUnit<?>>> unitCache =
+            Collections.synchronizedMap(new WeakHashMap<>());
 
     private final UnitElement[] unitElements;
     private final String        cachedSymbol;
@@ -80,7 +89,14 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             return newElements[0].getUnit();
         }
 
-        return new DerivedUnit<>(newElements);
+        DerivedUnit<?> cachedUnit = getCachedUnit(newElements);
+        if (cachedUnit != null) {
+            return cachedUnit;
+        } else {
+            DerivedUnit<?> unit = new DerivedUnit<>(newElements);
+            putUnitIntoCache(unit);
+            return unit;
+        }
     }
 
     private static void collectElements(Unit<?>           unit,
@@ -94,6 +110,15 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         } else {
             elements.add(new UnitElement(unit, fraction));
         }
+    }
+
+    private static DerivedUnit<?> getCachedUnit(UnitElement[] elements) {
+        WeakReference<DerivedUnit<?>> reference = unitCache.get(UnitElementWrapper.of(elements));
+        return reference != null ? reference.get() : null;
+    }
+
+    private static void putUnitIntoCache(DerivedUnit<?> unit) {
+        unitCache.put(UnitElementWrapper.of(unit.unitElements), new WeakReference<>(unit));
     }
 
     protected DerivedUnit() {
@@ -125,6 +150,10 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             } else {
                 appendUnitElementAsString(element.getUnit(), element.getFraction().negate(), denominator);
             }
+        }
+
+        if (numerator.length() == 0) {
+            numerator.append('1');
         }
 
         StringBuilder sb = new StringBuilder();
@@ -313,6 +342,37 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         @Override
         public String toString() {
             return String.format("%s=%s", unit, fraction);
+        }
+    }
+
+    static class UnitElementWrapper {
+        private final UnitElement[] elements;
+
+        static UnitElementWrapper of (UnitElement[] elements) {
+            return new UnitElementWrapper(elements);
+        }
+
+        private UnitElementWrapper(UnitElement[] elements) {
+            this.elements = elements;
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(elements);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UnitElementWrapper other = (UnitElementWrapper) o;
+            return Arrays.equals(elements, other.elements);
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(elements);
         }
     }
 }
