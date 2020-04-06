@@ -389,45 +389,4 @@ public final class Prefixes {
             return UnitConverters.pow(getBase(), getExponent());
         }
     }
-
-    /**
-     * Private helper class to represent a generic non-named prefix.
-     */
-    private static class GenericPrefixImpl implements Prefix {
-
-        private final Prefix reference;
-        private final int    base;
-        private final int    exponent;
-
-        private GenericPrefixImpl(Prefix reference, int base, int exponent) {
-            this.reference = reference;
-            this.base      = base;
-            this.exponent  = exponent;
-        }
-
-        @Override
-        public String getName() {
-            return String.format("%d^%d*", base, exponent);
-        }
-
-        @Override
-        public String getSymbol() {
-            return getName();
-        }
-
-        @Override
-        public int getBase() {
-            return base;
-        }
-
-        @Override
-        public int getExponent() {
-            return exponent;
-        }
-
-        @Override
-        public UnitConverter getUnitConverter() {
-            return UnitConverters.pow(getBase(), getExponent());
-        }
-    }
 }
