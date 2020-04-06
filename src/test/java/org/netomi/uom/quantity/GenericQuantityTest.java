@@ -18,6 +18,7 @@ package org.netomi.uom.quantity;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import org.netomi.uom.IncommensurableException;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
@@ -28,7 +29,7 @@ import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Generic test cases for quantities.
@@ -111,6 +112,219 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         // generic quantity do not implement the specific quantity interface.
         assertFalse(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void compareTo(Class<Number> numberClass) {
+        assertThrows(IncommensurableException.class, () -> {
+            Q q1 = createQuantity(10, numberClass);
+            q1.compareTo((Quantity) Quantities.createQuantity(1, testUnit));
+        });
+
+        // 10 < 20
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, numberClass);
+
+        assertTrue(q1.compareTo(q2) < 0);
+        assertTrue(q2.compareTo(q1) > 0);
+
+        // 100 = 100
+        q1 = createQuantity(100, numberClass);
+        q2 = createQuantity(100, numberClass);
+
+        assertTrue(q1.compareTo(q2) == 0);
+        assertTrue(q2.compareTo(q1) == 0);
+
+        // 100 > 100milli
+        q1 = createQuantity(100, numberClass);
+        q2 = createQuantity(100, getMilliUnit(), numberClass);
+
+        assertTrue(q1.compareTo(q2) > 0);
+        assertTrue(q2.compareTo(q1) < 0);
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void isGreaterThan(Class<Number> numberClass) {
+        assertThrows(IncommensurableException.class, () -> {
+            Q q1 = createQuantity(10, numberClass);
+            q1.isGreaterThan((Quantity) Quantities.createQuantity(1, testUnit));
+        });
+
+        // 10 < 20
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, numberClass);
+
+        assertFalse(q1.isGreaterThan(q2));
+        assertTrue(q2.isGreaterThan(q1));
+
+        // 100 = 100
+        q1 = createQuantity(100, numberClass);
+        q2 = createQuantity(100, numberClass);
+
+        assertFalse(q1.isGreaterThan(q2));
+        assertFalse(q2.isGreaterThan(q1));
+
+        // 100 > 100milli
+        q1 = createQuantity(100, numberClass);
+        q2 = createQuantity(100, getMilliUnit(), numberClass);
+
+        assertTrue(q1.isGreaterThan(q2));
+        assertFalse(q2.isGreaterThan(q1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void isLessThan(Class<Number> numberClass) {
+        assertThrows(IncommensurableException.class, () -> {
+            Q q1 = createQuantity(10, numberClass);
+            q1.isLessThan((Quantity) Quantities.createQuantity(1, testUnit));
+        });
+
+        // 10 < 20
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, numberClass);
+
+        assertTrue(q1.isLessThan(q2));
+        assertFalse(q2.isLessThan(q1));
+
+        // 100 = 100
+        q1 = createQuantity(100, numberClass);
+        q2 = createQuantity(100, numberClass);
+
+        assertFalse(q1.isLessThan(q2));
+        assertFalse(q2.isLessThan(q1));
+
+        // 100 > 100milli
+        q1 = createQuantity(100, numberClass);
+        q2 = createQuantity(100, getMilliUnit(), numberClass);
+
+        assertFalse(q1.isLessThan(q2));
+        assertTrue(q2.isLessThan(q1));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void isEqual(Class<Number> numberClass) {
+        assertThrows(IncommensurableException.class, () -> {
+            Q q1 = createQuantity(10, numberClass);
+            q1.isEqual((Quantity) Quantities.createQuantity(1, testUnit), eps);
+        });
+
+        // 10 < 20
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, numberClass);
+
+        assertFalse(q1.isEqual(q2, eps));
+        assertFalse(q2.isEqual(q1, eps));
+
+        // 100 = 100
+        q1 = createQuantity(100, numberClass);
+        q2 = createQuantity(100, numberClass);
+
+        assertTrue(q1.isEqual(q2, eps));
+        assertTrue(q2.isEqual(q1, eps));
+
+        // 1 = 1000milli
+        q1 = createQuantity(1, numberClass);
+        q2 = createQuantity(1000, getMilliUnit(), numberClass);
+
+        assertTrue(q1.isEqual(q2, eps));
+        assertTrue(q2.isEqual(q1, eps));
+
+        // 100 != 100 + 1 micro with eps > 1-e6
+        q1 = createQuantity(100, numberClass);
+        q2 = (Q) createQuantity(100, numberClass).add(createQuantity(0.001, getMilliUnit(), numberClass));
+
+        assertTrue(q1.isEqual(q2, eps));
+        assertTrue(q2.isEqual(q1, eps));
+
+        assertFalse(q1.isEqual(q2, 1e-12));
+        assertFalse(q2.isEqual(q1, 1e-12));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void isZero(Class<Number> numberClass) {
+        // 10
+        Q q1 = createQuantity(10, numberClass);
+
+        assertFalse(q1.isZero(eps));
+
+        // 10 milli
+        q1 = createQuantity(10, getMilliUnit(), numberClass);
+
+        assertFalse(q1.isZero(eps));
+
+        // 10 - (10 + 1e-7))
+          q1 = createQuantity(10, numberClass);
+        Q q2 = (Q) createQuantity(10, numberClass).add(createQuantity(0.0001, getMilliUnit(), numberClass));
+
+        q1 = (Q) q1.subtract(q2);
+
+        assertTrue(q1.isZero(eps));
+        assertFalse(q1.isZero(1e-12));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void isZeroInUnit(Class<Number> numberClass) {
+        assertThrows(IncommensurableException.class, () -> {
+            Q q1 = createQuantity(10, numberClass);
+            q1.isZero((Unit) testUnit, eps);
+        });
+
+        // 10
+        Q q1 = createQuantity(10, numberClass);
+
+        assertFalse(q1.isZero(getSystemUnit(), eps));
+
+        // 10 milli
+        q1 = createQuantity(10, getMilliUnit(), numberClass);
+
+        assertFalse(q1.isZero(getSystemUnit(), eps));
+        assertTrue(q1.isZero(getSystemUnit(), 1e-2));
+
+        // 10 - (10 + 1e-7))
+        q1 = createQuantity(10, numberClass);
+        Q q2 = (Q) createQuantity(10, numberClass).add(createQuantity(0.0001, getMilliUnit(), numberClass));
+
+        q1 = (Q) q1.subtract(q2);
+
+        assertTrue(q1.isZero(getSystemUnit(), eps));
+        assertFalse(q1.isZero(getSystemUnit(), 1e-12));
+        assertTrue(q1.isZero(getKiloUnit(), 1e-6));
+        assertFalse(q1.isZero(getKiloUnit(), 1e-12));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void isStrictlyZero(Class<Number> numberClass) {
+        // 10
+        Q q1 = createQuantity(10, numberClass);
+
+        assertFalse(q1.isStrictlyZero());
+
+        // 10 milli
+        q1 = createQuantity(10, getMilliUnit(), numberClass);
+
+        assertFalse(q1.isStrictlyZero());
+
+        // 10 - (10 + 1e-7))
+        q1 = createQuantity(10, numberClass);
+        Q q2 = (Q) createQuantity(10, numberClass).add(createQuantity(0.0001, getMilliUnit(), numberClass));
+
+        q1 = (Q) q1.subtract(q2);
+
+        assertFalse(q1.isStrictlyZero());
+
+        q1 = createQuantity(2, numberClass);
+        q2 = createQuantity(2000, getMilliUnit(), numberClass);
+
+        q1 = (Q) q1.subtract(q2);
+
+        assertTrue(q1.isStrictlyZero());
     }
 
     @ParameterizedTest
@@ -314,4 +528,7 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         assertSame(getSystemUnit(), quantity.getUnit());
         assertEquals(20, quantity.doubleValue(), eps);
     }
+
+    private static interface TestQuantity extends Quantity<TestQuantity> {}
+    private static Unit<TestQuantity> testUnit = Units.baseUnitForDimension("test", "TEST", Dimensions.ofName("TEST"));
 }

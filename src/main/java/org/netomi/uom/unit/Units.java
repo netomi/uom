@@ -90,6 +90,10 @@ public final class Units {
         return UnitBuilder.from(unit);
     }
 
+    public static <Q extends Quantity<Q>> Unit<Q> baseUnitForDimension(String symbol, String name, Dimension dimension) {
+        return new BaseUnit<>(symbol, name, dimension);
+    }
+
     /**
      * The SI system of units.
      */

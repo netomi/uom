@@ -24,7 +24,7 @@ import java.math.BigDecimal;
  *
  * @author Thomas Neidhart
  */
-public interface Quantity<Q extends Quantity<Q>> {
+public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>> {
 
     /**
      * Returns the value of this quantity expressed in its {@link Unit}.
@@ -65,6 +65,90 @@ public interface Quantity<Q extends Quantity<Q>> {
      * @return a new {@link Quantity} with this value expressed in the corresponding system unit.
      */
     Quantity<Q> toSystemUnit();
+
+    /**
+     * Compares this {@link Quantity} to another quantity of the same quantity type. If the two
+     * quantities are expressed in the same unit, their raw values are compared, otherwise the
+     * other quantity is converted to the unit of this quantity before comparison.
+     * <p>
+     * Note: when comparing a large number of quantities it is advised to convert them first to
+     * the same unit.
+     *
+     * @param other the other quantity to compare to.
+     * @return a negative integer, zero, or a positive integer as this quantity is less than, equal to,
+     *         or greater than the specified quantity.
+     * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
+     */
+    @Override
+    int compareTo(Quantity<Q> other);
+
+    /**
+     * Returns whether this {@link Quantity} is strictly greater in value than the other quantity.
+     * If the two quantities are expressed in the same unit, their raw values are used, otherwise the
+     * other quantity is converted to the unit of this quantity before comparison.
+     *
+     * @param other the other quantity to compare to.
+     * @return {@code true} if this quantity is strictly greater than the other quantity.
+     * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
+     */
+    default boolean isGreaterThan(Quantity<Q> other) {
+        return this.compareTo(other) > 0;
+    }
+
+    /**
+     * Returns whether this {@link Quantity} is strictly smaller in value than the other quantity.
+     * If the two quantities are expressed in the same unit, their raw values are used, otherwise the
+     * other quantity is converted to the unit of this quantity before comparison.
+     *
+     * @param other the other quantity to compare to.
+     * @return {@code true} if this quantity is strictly less than the other quantity.
+     * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
+     */
+    default boolean isLessThan(Quantity<Q> other) {
+        return this.compareTo(other) < 0;
+    }
+
+    /**
+     * Returns whether this {@link Quantity} is equal compared to the other quantity taking some
+     * error into account such that two quantities are considered equal when their value expressed
+     * in the same unit satisfies the condition: {@code Math.abs(thisValue, thatValue) <= epsilon}.
+     * <p>
+     * If the two quantities are expressed in the same unit, their raw values are used, otherwise the
+     * other quantity is converted to the unit of this quantity before comparison.
+     *
+     * @param other   the other quantity to compare to.
+     * @param epsilon the maximum allowed error when checking for equality.
+     * @return {@code true} if this quantity is equal to the other quantity taking some error into account.
+     * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
+     */
+    boolean isEqual(Quantity<Q> other, double epsilon);
+
+    /**
+     * Returns whether this {@link Quantity} expressed in its system unit is equal to zero such that the
+     * following condition is satisfied: {@code Math.abs(thisValue, 0) <= epsilon}.
+     *
+     * @param epsilon the maximum allowed error when checking for equality.
+     * @return {@code true} if this quantity is equal to zero taking some error into account.
+     */
+    boolean isZero(double epsilon);
+
+    /**
+     * Returns whether this {@link Quantity} converted to the specified unit is equal to zero such that the
+     * following condition is satisfied: {@code Math.abs(thisValue, 0) <= epsilon}.
+     *
+     * @param inUnit  the unit to which this quantity should be converted before comparison.
+     * @param epsilon the maximum allowed error when checking for equality.
+     * @return {@code true} if this quantity is equal to zero taking some error into account.
+     * @throws IncommensurableException if the dimension of the specified unit is not compatible to this quantity.
+     */
+    boolean isZero(Unit<Q> inUnit, double epsilon);
+
+    /**
+     * Returns whether this {@link Quantity} expressed in its system unit is strictly equal to zero.
+     *
+     * @return {@code true} if this quantity is equal to zero taking some error into account.
+     */
+    boolean isStrictlyZero();
 
     /**
      * Returns a new {@link Quantity} that is the result of adding the given quantity

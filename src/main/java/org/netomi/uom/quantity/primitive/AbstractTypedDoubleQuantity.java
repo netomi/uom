@@ -56,6 +56,64 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
     }
 
     @Override
+    public int compareTo(Quantity<Q> other) {
+        if (this.unit.equals(other.getUnit())) {
+            return Double.compare(this.value, other.doubleValue());
+        } else {
+            UnitConverter converter = other.getUnit().getConverterTo(this.unit);
+
+            return Double.compare(this.value, converter.convert(other.doubleValue()));
+        }
+    }
+
+    @Override
+    public boolean isEqual(Quantity<Q> other, double epsilon) {
+        double otherValue;
+
+        if (this.unit.equals(other.getUnit())) {
+            otherValue = other.doubleValue();
+        } else {
+            UnitConverter converter = other.getUnit().getConverterTo(this.unit);
+            otherValue = converter.convert(other.doubleValue());
+        }
+
+        return Math.abs(otherValue - this.value) <= epsilon;
+    }
+
+    @Override
+    public boolean isZero(double epsilon) {
+        double thisValue;
+
+        if (this.unit.isSystemUnit()) {
+            thisValue = value;
+        } else {
+            UnitConverter converter = unit.getSystemConverter();
+            thisValue = converter.convert(value);
+        }
+
+        return Math.abs(thisValue) <= epsilon;
+    }
+
+    @Override
+    public boolean isZero(Unit<Q> inUnit, double epsilon) {
+        double thisValue;
+
+        if (this.unit.equals(inUnit)) {
+            thisValue = value;
+        } else {
+            UnitConverter converter = unit.getConverterTo(inUnit);
+            thisValue = converter.convert(value);
+        }
+
+        return Math.abs(thisValue) <= epsilon;
+    }
+
+    @Override
+    public boolean isStrictlyZero() {
+        return toSystemUnit().doubleValue() == 0;
+    }
+
+    @Override
     public P add(Quantity<Q> addend) {
         Quantity<Q> scaledQuantity = addend.to(unit);
         return with(value + scaledQuantity.doubleValue(), unit);

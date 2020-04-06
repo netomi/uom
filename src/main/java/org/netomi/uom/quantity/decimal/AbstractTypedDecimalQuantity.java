@@ -47,16 +47,76 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
         return mathContext;
     }
 
+    @Override
     public double doubleValue() {
         return value.doubleValue();
     }
 
+    @Override
     public BigDecimal decimalValue() {
         return value;
     }
 
+    @Override
     public Unit<Q> getUnit() {
         return unit;
+    }
+
+    @Override
+    public int compareTo(Quantity<Q> other) {
+        if (this.unit.equals(other.getUnit())) {
+            return this.value.compareTo(other.decimalValue());
+        } else {
+            UnitConverter converter = other.getUnit().getConverterTo(this.getUnit());
+            return this.value.compareTo(converter.convert(other.decimalValue(), mathContext));
+        }
+    }
+
+    @Override
+    public boolean isEqual(Quantity<Q> other, double epsilon) {
+        BigDecimal otherValue;
+
+        if (this.unit.equals(other.getUnit())) {
+            otherValue = other.decimalValue();
+        } else {
+            UnitConverter converter = other.getUnit().getConverterTo(this.getUnit());
+            otherValue = converter.convert(other.decimalValue(), mathContext);
+        }
+
+        return otherValue.subtract(this.value, mathContext).abs(mathContext).doubleValue() <= epsilon;
+    }
+
+    @Override
+    public boolean isZero(double epsilon) {
+        BigDecimal thisValue;
+
+        if (this.unit.isSystemUnit()) {
+            thisValue = value;
+        } else {
+            UnitConverter converter = unit.getSystemConverter();
+            thisValue = converter.convert(value, mathContext);
+        }
+
+        return thisValue.abs().doubleValue() <= epsilon;
+    }
+
+    @Override
+    public boolean isZero(Unit<Q> inUnit, double epsilon) {
+        BigDecimal thisValue;
+
+        if (this.unit.equals(inUnit)) {
+            thisValue = value;
+        } else {
+            UnitConverter converter = unit.getConverterTo(inUnit);
+            thisValue = converter.convert(value, mathContext);
+        }
+
+        return thisValue.abs().doubleValue() <= epsilon;
+    }
+
+    @Override
+    public boolean isStrictlyZero() {
+        return BigDecimal.ZERO.compareTo(toSystemUnit().decimalValue()) == 0;
     }
 
     @Override
