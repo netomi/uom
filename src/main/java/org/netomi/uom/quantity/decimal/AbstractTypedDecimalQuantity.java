@@ -110,7 +110,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
 
     @Override
     public DecimalQuantity<?> reciprocal() {
-        return genericDecimalQuantity(BigDecimal.ONE.divide(value, mathContext), unit);
+        return genericDecimalQuantity(BigDecimal.ONE.divide(value, mathContext), unit.inverse());
     }
 
     @Override

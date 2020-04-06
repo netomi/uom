@@ -16,6 +16,8 @@
 package org.netomi.uom.quantity;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
@@ -35,6 +37,8 @@ import static org.junit.Assert.*;
  */
 public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
 
+    private static final double eps = 1e-6;
+
     protected abstract Class<T> getQuantityClass();
 
     protected abstract Unit<Q> getSystemUnit();
@@ -43,20 +47,46 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
 
     protected abstract Function<Double, T> getFactoryMethodForSystemUnit();
 
+    protected Q createQuantity(double value, Class<Number> numberClass) {
+        if (Double.class.equals(numberClass)) {
+            return Quantities.createQuantity(value, getSystemUnit(), getQuantityClass());
+        } else if (BigDecimal.class.equals(numberClass)) {
+            return Quantities.createQuantity(BigDecimal.valueOf(value), getSystemUnit(), getQuantityClass());
+        }
+        throw new AssertionError("unexpected number class " + numberClass);
+    }
+
     protected Q createQuantity(double value) {
         return Quantities.createQuantity(value, getSystemUnit(), getQuantityClass());
+    }
+
+    protected Q createQuantity(double value, Unit<Q> unit, Class<Number> numberClass) {
+        if (Double.class.equals(numberClass)) {
+            return Quantities.createQuantity(value, unit, getQuantityClass());
+        } else if (BigDecimal.class.equals(numberClass)) {
+            return Quantities.createQuantity(BigDecimal.valueOf(value), unit, getQuantityClass());
+        }
+        throw new AssertionError("unexpected number class " + numberClass);
     }
 
     protected Q createQuantity(double value, Unit<Q> unit) {
         return Quantities.createQuantity(value, unit, getQuantityClass());
     }
 
+    protected Unit<Q> getMilliUnit() {
+        return getSystemUnit().withPrefix(Prefixes.Metric.MILLI);
+    }
+
+    protected Unit<Q> getKiloUnit() {
+        return getSystemUnit().withPrefix(Prefixes.Metric.KILO);
+    }
+
     @Test
     public void typedQuantityCreation() {
         Q quantity = createQuantity(10);
 
-        assertEquals(10, quantity.doubleValue(), 1e-6);
-        assertEquals(BigDecimal.valueOf(10).doubleValue(), quantity.decimalValue().doubleValue(), 1e-12);
+        assertEquals(10, quantity.doubleValue(), eps);
+        assertEquals(BigDecimal.valueOf(10).doubleValue(), quantity.decimalValue().doubleValue(), eps);
 
         assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
@@ -66,8 +96,8 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
     public void genericQuantityCreation() {
         Quantity<Q> quantity = Quantities.createQuantity(100, getSystemUnit());
 
-        assertEquals(100, quantity.doubleValue(), 1e-6);
-        assertEquals(BigDecimal.valueOf(100).doubleValue(), quantity.decimalValue().doubleValue(), 1e-12);
+        assertEquals(100, quantity.doubleValue(), eps);
+        assertEquals(BigDecimal.valueOf(100).doubleValue(), quantity.decimalValue().doubleValue(), eps);
 
         // generic quantity do not implement the specific quantity interface.
         assertFalse(getQuantityClass().isAssignableFrom(quantity.getClass()));
@@ -75,122 +105,200 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
 
         quantity = DoubleQuantity.<Q>of(200, getSystemUnit());
 
-        assertEquals(200, quantity.doubleValue(), 1e-6);
-        assertEquals(BigDecimal.valueOf(200).doubleValue(), quantity.decimalValue().doubleValue(), 1e-12);
+        assertEquals(200, quantity.doubleValue(), eps);
+        assertEquals(BigDecimal.valueOf(200).doubleValue(), quantity.decimalValue().doubleValue(), eps);
 
         // generic quantity do not implement the specific quantity interface.
         assertFalse(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
     }
 
-    @Test
-    public void add() {
-        Q q1 = createQuantity(10);
-        Q q2 = createQuantity(20);
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void add(Class<Number> numberClass) {
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, numberClass);
 
         Quantity<Q> sum = q1.add(q2);
 
-        assertEquals(30, sum.doubleValue(), 1e-6);
+        assertEquals(30, sum.doubleValue(), eps);
+        assertEquals(30, sum.decimalValue().doubleValue(), eps);
+
+        assertSame(q1.getUnit(), sum.getUnit());
+
+        // adding quantities in different units.
+        q1 = createQuantity(10);
+        q2 = createQuantity(20, getMilliUnit());
+
+        sum = q1.add(q2);
+
+        assertEquals(10.020, sum.doubleValue(), eps);
+        assertEquals(10.020, sum.decimalValue().doubleValue(), eps);
+
         assertSame(q1.getUnit(), sum.getUnit());
     }
 
-    @Test
-    public void subtract() {
-        Q q1 = createQuantity(10);
-        Q q2 = createQuantity(20);
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void addWithUnit(Class<Number> numberClass) {
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, getMilliUnit(), numberClass);
+
+        Quantity<Q> sum = q1.add(q2, getKiloUnit());
+
+        assertEquals(0.01002, sum.doubleValue(), eps);
+        assertEquals(0.01002, sum.decimalValue().doubleValue(), eps);
+
+        assertEquals(getKiloUnit(), sum.getUnit());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void subtract(Class<Number> numberClass) {
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, numberClass);
 
         Quantity<Q> diff = q1.subtract(q2);
 
-        assertEquals(-10, diff.doubleValue(), 1e-6);
+        assertEquals(-10, diff.doubleValue(), eps);
+        assertEquals(-10, diff.decimalValue().doubleValue(), eps);
+
+        assertSame(q1.getUnit(), diff.getUnit());
+
+        // subtracting quantities in different units.
+        q1 = createQuantity(10);
+        q2 = createQuantity(20, getMilliUnit());
+
+        diff = q1.subtract(q2);
+
+        assertEquals(9.98, diff.doubleValue(), eps);
+        assertEquals(9.98, diff.decimalValue().doubleValue(), eps);
+
         assertSame(q1.getUnit(), diff.getUnit());
     }
 
-    @Test
-    public void negate() {
-        Q quantity = createQuantity(10);
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void subtractWithUnit(Class<Number> numberClass) {
+        Q q1 = createQuantity(10, numberClass);
+        Q q2 = createQuantity(20, getMilliUnit(), numberClass);
 
-        assertEquals(-10, quantity.negate().doubleValue(), 1e-6);
+        Quantity<Q> diff = q1.subtract(q2, getKiloUnit());
+
+        assertEquals(0.00998, diff.doubleValue(), eps);
+        assertEquals(0.00998, diff.decimalValue().doubleValue(), eps);
+
+        assertEquals(getKiloUnit(), diff.getUnit());
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void negate(Class<Number> numberClass) {
+        Q quantity = createQuantity(10, numberClass);
+
+        assertEquals(-10, quantity.negate().doubleValue(), eps);
+        assertEquals(-10, quantity.negate().decimalValue().doubleValue(), eps);
+
         assertSame(quantity.getUnit(), quantity.negate().getUnit());
     }
 
-    @Test
-    public void multiply() {
-        Q q1 = createQuantity(25);
-        Q q2 = createQuantity(0.005);
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void multiply(Class<Number> numberClass) {
+        Q q1 = createQuantity(25, numberClass);
+        Q q2 = createQuantity(0.005, numberClass);
 
         // convert to milli unit.
         q2 = (Q) q2.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
 
         // make sure the q2 value is correctly expressed in milli unit.
-        assertEquals(5, q2.doubleValue(), 1e-6);
+        assertEquals(5, q2.doubleValue(), eps);
+        assertEquals(5, q2.decimalValue().doubleValue(), eps);
+
 
         Q result = (Q) q1.multiply(q2);
 
-        assertEquals(25. * 0.005, result.doubleValue(), 1e-6);
+        assertEquals(25. * 0.005, result.doubleValue(), eps);
+        assertEquals(25. * 0.005, result.decimalValue().doubleValue(), eps);
 
         if (getSystemUnit().getDimension() != Dimensions.NONE) {
             assertSame(getSystemUnit().multiply(getSystemUnit()), result.getUnit());
         }
     }
 
-    @Test
-    public void divide() {
-        Q q1 = createQuantity(100);
-        Q q2 = createQuantity(2);
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void divide(Class<Number> numberClass) {
+        Q q1 = createQuantity(100, numberClass);
+        Q q2 = createQuantity(2, numberClass);
 
         // convert to milli unit.
         q2 = (Q) q2.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
 
         // make sure the q2 value is correctly expressed in milli unit.
-        assertEquals(2000, q2.doubleValue(), 1e-6);
+        assertEquals(2000, q2.doubleValue(), eps);
+        assertEquals(2000, q2.decimalValue().doubleValue(), eps);
 
         Q result = (Q) q1.divide(q2);
 
-        assertEquals(100. / 2., result.doubleValue(), 1e-6);
+        assertEquals(100. / 2., result.doubleValue(), eps);
+        assertEquals(100. / 2., result.decimalValue().doubleValue(), eps);
 
         if (getSystemUnit().getDimension() != Dimensions.NONE) {
             assertSame(getSystemUnit().divide(getSystemUnit()), result.getUnit());
         }
     }
 
-    @Test
-    public void reciprocal() {
-        Q quantity = createQuantity(100);
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void reciprocal(Class<Number> numberClass) {
+        Q quantity = createQuantity(100, numberClass);
 
         Q result = (Q) quantity.reciprocal();
 
-        assertEquals(1. / 100., result.doubleValue(), 1e-6);
+        assertEquals(1. / 100., result.doubleValue(), eps);
+        assertEquals(1. / 100., result.decimalValue().doubleValue(), eps);
+
         assertSame(Units.ONE.divide(getSystemUnit()), result.getUnit());
 
         // convert to milli unit.
         Q quantityInMilli = (Q) quantity.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
 
         // make sure the q2 value is correctly expressed in milli unit.
-        assertEquals(100000, quantityInMilli.doubleValue(), 1e-6);
+        assertEquals(100000, quantityInMilli.doubleValue(), eps);
+        assertEquals(100000, quantityInMilli.decimalValue().doubleValue(), eps);
 
         Q resultInMilli = (Q) quantityInMilli.reciprocal();
 
-        assertEquals(1. / 100000., resultInMilli.doubleValue(), 1e-6);
+        assertEquals(1. / 100000., resultInMilli.doubleValue(), eps);
+        assertEquals(1. / 100000., resultInMilli.decimalValue().doubleValue(), eps);
+
         assertSame(Units.ONE.divide(getSystemUnit().withPrefix(Prefixes.Metric.MILLI)), resultInMilli.getUnit());
     }
 
-    @Test
-    public void to() {
-        Q quantity = createQuantity(123);
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void to(Class<Number> numberClass) {
+        Q quantity = createQuantity(123, numberClass);
 
         Unit<Q> milliUnit = getSystemUnit().withPrefix(Prefixes.Metric.MILLI);
         UnitConverter converter = Prefixes.Metric.MILLI.getUnitConverter().inverse();
-        assertEquals(converter.convert(123), quantity.to(milliUnit).doubleValue(), 1e-6);
+        assertEquals(converter.convert(123), quantity.to(milliUnit).doubleValue(), eps);
+        assertEquals(converter.convert(123), quantity.to(milliUnit).decimalValue().doubleValue(), eps);
     }
 
-    @Test
-    public void toSystemUnit() {
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void toSystemUnit(Class<Number> numberClass) {
         Unit<Q> kiloUnit = getSystemUnit().withPrefix(Prefixes.Metric.KILO);
-        Q quantity = createQuantity(123, kiloUnit);
+        Q quantity = createQuantity(123, kiloUnit, numberClass);
 
         Quantity<Q> result = quantity.toSystemUnit();
 
-        assertEquals(Prefixes.Metric.KILO.getUnitConverter().convert(123), result.doubleValue(), 1e-6);
+        assertEquals(Prefixes.Metric.KILO.getUnitConverter().convert(123), result.doubleValue(), eps);
+        assertEquals(Prefixes.Metric.KILO.getUnitConverter().convert(BigDecimal.valueOf(123)).doubleValue(),
+                     result.decimalValue().doubleValue(), eps);
+
         assertSame(getSystemUnit(), result.getUnit());
     }
 
@@ -199,11 +307,11 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         T quantity = getFactoryMethod().apply(10.0, getSystemUnit());
 
         assertSame(getSystemUnit(), quantity.getUnit());
-        assertEquals(10, quantity.doubleValue(), 1e-6);
+        assertEquals(10, quantity.doubleValue(), eps);
 
         quantity = getFactoryMethodForSystemUnit().apply(20.0);
 
         assertSame(getSystemUnit(), quantity.getUnit());
-        assertEquals(20, quantity.doubleValue(), 1e-6);
+        assertEquals(20, quantity.doubleValue(), eps);
     }
 }
