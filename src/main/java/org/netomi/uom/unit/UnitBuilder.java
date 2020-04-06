@@ -17,10 +17,8 @@ package org.netomi.uom.unit;
 
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
-import org.netomi.uom.math.Fraction;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 /**
  * A builder class to construct new {@link Unit} instances from existing
@@ -62,27 +60,18 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
         // if the unit to build from does not have a prefix yet,
         // we can more efficiently build the new unit instead of
         // creating a delegate to a delegate.
-        if (unit instanceof UnitImpl) {
-            UnitImpl impl = (UnitImpl) unit;
+        if (unit instanceof UnitWrapper<?> &&
+            // always wrap dimensionless units, otherwise getSystemUnit() returns NONE.
+            unit.getDimension() != Dimensions.NONE) {
+            UnitWrapper<?> wrapper = (UnitWrapper<?>) unit;
 
-            delegateHasPrefix = impl.prefix != null;
+            delegateHasPrefix = wrapper.prefix != null;
             if (!delegateHasPrefix) {
-                this.delegateUnit        = impl.delegateUnit;
-                this.converterToDelegate = impl.converterToDelegate;
+                this.delegateUnit        = wrapper.getDelegateUnit();
+                this.converterToDelegate = wrapper.converterToDelegate;
 
-                this.symbol = impl.symbol;
-                this.name   = impl.name;
-            }
-        } else if (unit instanceof DerivedUnitImpl) {
-            DerivedUnitImpl impl = (DerivedUnitImpl) unit;
-
-            delegateHasPrefix = impl.prefix != null;
-            if (!delegateHasPrefix) {
-                this.delegateUnit        = impl;
-                this.converterToDelegate = impl.converterToDelegate;
-
-                this.symbol = impl.symbol;
-                this.name   = impl.name;
+                this.symbol = wrapper.symbol;
+                this.name   = wrapper.name;
             }
         }
     }
@@ -218,37 +207,38 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
      * @return a new {@link Unit} instance.
      */
     public Unit<Q> build() {
+        UnitWrapper<Q> wrapper;
+
         if (delegateUnit instanceof DerivedUnit<?>) {
-            DerivedUnitImpl impl = new DerivedUnitImpl((DerivedUnit<?>) delegateUnit, converterToDelegate);
-
-            impl.symbol = symbol;
-            impl.name   = name;
-            impl.prefix = prefix;
-
-            return impl;
+            wrapper = new CompositeUnitWrapper((DerivedUnit<?>) delegateUnit, converterToDelegate);
         } else {
-            UnitImpl impl = new UnitImpl(delegateUnit, converterToDelegate);
-
-            impl.symbol = symbol;
-            impl.name   = name;
-            impl.prefix = prefix;
-
-            return impl;
+            wrapper = new SimpleUnitWrapper(delegateUnit, converterToDelegate);
         }
+
+        wrapper.symbol = symbol;
+        wrapper.name   = name;
+        wrapper.prefix = prefix;
+
+        return wrapper;
     }
 
-    static class DerivedUnitImpl<Q extends Quantity<Q>> extends DerivedUnit<Q> {
+    /**
+     * Wrapper implementation for composite units.
+     *
+     * @param <Q> the quantity type
+     */
+    static class CompositeUnitWrapper<Q extends Quantity<Q>> extends UnitWrapper<Q> implements CompositeUnit {
 
-        private final UnitConverter converterToDelegate;
+        private final DerivedUnit<Q> derivedUnit;
 
-        String  symbol;
-        String  name;
-        Prefix  prefix;
+        CompositeUnitWrapper(DerivedUnit<Q> derivedUnit, UnitConverter converterToDelegate) {
+            super(derivedUnit, converterToDelegate);
+            this.derivedUnit = derivedUnit;
+        }
 
-        DerivedUnitImpl(DerivedUnit<?> derivedUnit, UnitConverter converterToDelegate) {
-            super(derivedUnit.getUnitElements());
-
-            this.converterToDelegate = converterToDelegate;
+        @Override
+        public UnitElementWrapper getUnitElements() {
+            return derivedUnit.getUnitElements();
         }
 
         @Override
@@ -265,7 +255,7 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
             if (symbol != null) {
                 sb.append(symbol);
             } else {
-                sb.append(super.getSymbol());
+                sb.append(getDelegateUnit().getSymbol());
             }
 
             if (prefix != null && symbol == null) {
@@ -289,7 +279,7 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
             if (name != null) {
                 sb.append(name);
             } else {
-                sb.append(super.getName());
+                sb.append(getDelegateUnit().getName());
             }
 
             if (prefix != null && name == null) {
@@ -298,27 +288,17 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
 
             return sb.toString();
         }
-
-        @Override
-        public UnitConverter getSystemConverter() {
-            return converterToDelegate.isIdentity() ?
-                    super.getSystemConverter() :
-                    converterToDelegate.andThen(super.getSystemConverter());
-        }
     }
 
-    static class UnitImpl<Q extends Quantity<Q>> extends AbstractUnit<Q> {
+    /**
+     * Wrapper implementation for simple units, i.e. units that are not composed of multiple units.
+     *
+     * @param <Q> the quantity type
+     */
+    static class SimpleUnitWrapper<Q extends Quantity<Q>> extends UnitWrapper<Q> {
 
-        private final Unit<Q>       delegateUnit;
-        private final UnitConverter converterToDelegate;
-
-        String  symbol;
-        String  name;
-        Prefix  prefix;
-
-        private UnitImpl(Unit<Q> delegateUnit, UnitConverter converterToDelegate) {
-            this.delegateUnit        = delegateUnit;
-            this.converterToDelegate = converterToDelegate;
+        private SimpleUnitWrapper(Unit<Q> delegateUnit, UnitConverter converterToDelegate) {
+            super(delegateUnit, converterToDelegate);
         }
 
         @Override
@@ -332,7 +312,7 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
             if (symbol != null) {
                 sb.append(symbol);
             } else {
-                sb.append(delegateUnit.getSymbol());
+                sb.append(getDelegateUnit().getSymbol());
             }
 
             return sb.toString();
@@ -349,32 +329,41 @@ public final class UnitBuilder<Q extends Quantity<Q>> {
             if (name != null) {
                 sb.append(name);
             } else {
-                sb.append(delegateUnit.getName());
+                sb.append(getDelegateUnit().getName());
             }
 
             return sb.toString();
         }
+    }
 
-        @Override
-        public Dimension getDimension() {
-            return delegateUnit.getDimension();
-        }
+    /**
+     * Base class for unit wrapper implementations.
+     *
+     * @param <Q> the quantity type
+     */
+    static abstract class UnitWrapper<Q extends Quantity<Q>> extends DelegateUnit<Q> {
 
-        @Override
-        public Unit<Q> getSystemUnit() {
-            return delegateUnit.getSystemUnit();
+        private final UnitConverter converterToDelegate;
+
+        String  symbol;
+        String  name;
+        Prefix  prefix;
+
+        UnitWrapper(Unit<Q> delegateUnit, UnitConverter converterToDelegate) {
+            super(delegateUnit);
+            this.converterToDelegate = converterToDelegate;
         }
 
         @Override
         public UnitConverter getSystemConverter() {
             return converterToDelegate.isIdentity() ?
-                    delegateUnit.getSystemConverter() :
-                    converterToDelegate.andThen(delegateUnit.getSystemConverter());
+                    getDelegateUnit().getSystemConverter() :
+                    converterToDelegate.andThen(getDelegateUnit().getSystemConverter());
         }
 
         @Override
-        public Map<? extends Unit<?>, Fraction> getBaseUnits() {
-            return delegateUnit.getBaseUnits();
+        public Unit<Q> getSystemUnit() {
+            return isSystemUnit() ? this : getDelegateUnit().getSystemUnit();
         }
     }
 }

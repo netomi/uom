@@ -19,9 +19,10 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
-import org.netomi.uom.unit.Prefixes;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.quantity.primitive.DoubleQuantity;
+import org.netomi.uom.unit.*;
 
+import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -46,9 +47,16 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         return Quantities.createQuantity(value, getSystemUnit(), getQuantityClass());
     }
 
+    protected Q createQuantity(double value, Unit<Q> unit) {
+        return Quantities.createQuantity(value, unit, getQuantityClass());
+    }
+
     @Test
     public void typedQuantityCreation() {
         Q quantity = createQuantity(10);
+
+        assertEquals(10, quantity.doubleValue(), 1e-6);
+        assertEquals(BigDecimal.valueOf(10).doubleValue(), quantity.decimalValue().doubleValue(), 1e-12);
 
         assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
@@ -56,7 +64,19 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
 
     @Test
     public void genericQuantityCreation() {
-        Quantity<Q> quantity = Quantities.createQuantity(0, getSystemUnit());
+        Quantity<Q> quantity = Quantities.createQuantity(100, getSystemUnit());
+
+        assertEquals(100, quantity.doubleValue(), 1e-6);
+        assertEquals(BigDecimal.valueOf(100).doubleValue(), quantity.decimalValue().doubleValue(), 1e-12);
+
+        // generic quantity do not implement the specific quantity interface.
+        assertFalse(getQuantityClass().isAssignableFrom(quantity.getClass()));
+        assertSame(getSystemUnit(), quantity.getUnit());
+
+        quantity = DoubleQuantity.<Q>of(200, getSystemUnit());
+
+        assertEquals(200, quantity.doubleValue(), 1e-6);
+        assertEquals(BigDecimal.valueOf(200).doubleValue(), quantity.decimalValue().doubleValue(), 1e-12);
 
         // generic quantity do not implement the specific quantity interface.
         assertFalse(getQuantityClass().isAssignableFrom(quantity.getClass()));
@@ -94,12 +114,84 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
     }
 
     @Test
+    public void multiply() {
+        Q q1 = createQuantity(25);
+        Q q2 = createQuantity(0.005);
+
+        // convert to milli unit.
+        q2 = (Q) q2.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
+
+        // make sure the q2 value is correctly expressed in milli unit.
+        assertEquals(5, q2.doubleValue(), 1e-6);
+
+        Q result = (Q) q1.multiply(q2);
+
+        assertEquals(25. * 0.005, result.doubleValue(), 1e-6);
+
+        if (getSystemUnit().getDimension() != Dimensions.NONE) {
+            assertSame(getSystemUnit().multiply(getSystemUnit()), result.getUnit());
+        }
+    }
+
+    @Test
+    public void divide() {
+        Q q1 = createQuantity(100);
+        Q q2 = createQuantity(2);
+
+        // convert to milli unit.
+        q2 = (Q) q2.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
+
+        // make sure the q2 value is correctly expressed in milli unit.
+        assertEquals(2000, q2.doubleValue(), 1e-6);
+
+        Q result = (Q) q1.divide(q2);
+
+        assertEquals(100. / 2., result.doubleValue(), 1e-6);
+
+        if (getSystemUnit().getDimension() != Dimensions.NONE) {
+            assertSame(getSystemUnit().divide(getSystemUnit()), result.getUnit());
+        }
+    }
+
+    @Test
+    public void reciprocal() {
+        Q quantity = createQuantity(100);
+
+        Q result = (Q) quantity.reciprocal();
+
+        assertEquals(1. / 100., result.doubleValue(), 1e-6);
+        assertSame(Units.ONE.divide(getSystemUnit()), result.getUnit());
+
+        // convert to milli unit.
+        Q quantityInMilli = (Q) quantity.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
+
+        // make sure the q2 value is correctly expressed in milli unit.
+        assertEquals(100000, quantityInMilli.doubleValue(), 1e-6);
+
+        Q resultInMilli = (Q) quantityInMilli.reciprocal();
+
+        assertEquals(1. / 100000., resultInMilli.doubleValue(), 1e-6);
+        assertSame(Units.ONE.divide(getSystemUnit().withPrefix(Prefixes.Metric.MILLI)), resultInMilli.getUnit());
+    }
+
+    @Test
     public void to() {
         Q quantity = createQuantity(123);
 
         Unit<Q> milliUnit = getSystemUnit().withPrefix(Prefixes.Metric.MILLI);
         UnitConverter converter = Prefixes.Metric.MILLI.getUnitConverter().inverse();
         assertEquals(converter.convert(123), quantity.to(milliUnit).doubleValue(), 1e-6);
+    }
+
+    @Test
+    public void toSystemUnit() {
+        Unit<Q> kiloUnit = getSystemUnit().withPrefix(Prefixes.Metric.KILO);
+        Q quantity = createQuantity(123, kiloUnit);
+
+        Quantity<Q> result = quantity.toSystemUnit();
+
+        assertEquals(Prefixes.Metric.KILO.getUnitConverter().convert(123), result.doubleValue(), 1e-6);
+        assertSame(getSystemUnit(), result.getUnit());
     }
 
     @Test

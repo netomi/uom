@@ -28,7 +28,7 @@ import java.util.*;
  *
  * @author Thomas Neidhart
  */
-class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
+class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements CompositeUnit {
 
     private static final String EMPTY_SYMBOL = "1";
 
@@ -40,7 +40,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     private static final Map<UnitElementWrapper, WeakReference<DerivedUnit<?>>> unitCache =
             Collections.synchronizedMap(new WeakHashMap<>());
 
-    private final UnitElement[]          unitElements;
+    private final UnitElementWrapper     unitElements;
     private final String                 cachedSymbol;
     private final Dimension              cachedDimension;
     private final UnitConverter          cachedSystemConverter;
@@ -95,7 +95,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         if (cachedUnit != null) {
             return Units.getNamedUnitIfPresent(cachedUnit);
         } else {
-            DerivedUnit<?> unit = new DerivedUnit<>(newElements);
+            DerivedUnit<?> unit = new DerivedUnit<>(UnitElementWrapper.of(newElements));
             putUnitIntoCache(unit);
             return unit;
         }
@@ -105,8 +105,8 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
                                         Fraction          fraction,
                                         List<UnitElement> elements) {
 
-        if (unit instanceof DerivedUnit<?>) {
-            for (UnitElement e : ((DerivedUnit<?>) unit).unitElements) {
+        if (unit instanceof CompositeUnit) {
+            for (UnitElement e : ((CompositeUnit) unit).getUnitElements().elements) {
                 elements.add(e.multiply(fraction));
             }
         } else {
@@ -120,11 +120,11 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     private static void putUnitIntoCache(DerivedUnit<?> unit) {
-        unitCache.put(UnitElementWrapper.of(unit.unitElements), new WeakReference<>(unit));
+        unitCache.put(unit.unitElements, new WeakReference<>(unit));
     }
 
     protected DerivedUnit() {
-        this.unitElements = new UnitElement[0];
+        this.unitElements = UnitElementWrapper.of(new UnitElement[0]);
 
         this.cachedSymbol          = EMPTY_SYMBOL;
         this.cachedDimension       = Dimensions.NONE;
@@ -132,8 +132,8 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         this.cachedBaseUnitMap     = Collections.emptyMap();
     }
 
-    protected DerivedUnit(UnitElement... elements) {
-        this.unitElements          = elements;
+    protected DerivedUnit(UnitElementWrapper unitElements) {
+        this.unitElements          = unitElements;
         this.cachedSymbol          = calculateSymbol();
         this.cachedDimension       = calculateDimension();
         this.cachedSystemConverter = calculateSystemConverter();
@@ -142,24 +142,16 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
         this.cachedSystemUnit      = null;
     }
 
-    protected DerivedUnit(DerivedUnit<Q> other) {
-        this.unitElements          = other.unitElements;
-        this.cachedSymbol          = other.cachedSymbol;
-        this.cachedDimension       = other.cachedDimension;
-        this.cachedSystemConverter = other.cachedSystemConverter;
-        this.cachedBaseUnitMap     = other.cachedBaseUnitMap;
-        this.cachedSystemUnit      = other.cachedSystemUnit;
-    }
-
-    UnitElement[] getUnitElements() {
-        return Arrays.copyOf(unitElements, unitElements.length);
+    @Override
+    public UnitElementWrapper getUnitElements() {
+        return unitElements;
     }
 
     private String calculateSymbol() {
         StringBuilder numerator   = new StringBuilder();
         StringBuilder denominator = new StringBuilder();
 
-        for (UnitElement element : unitElements) {
+        for (UnitElement element : unitElements.elements) {
             if (element.getFraction().signum() > 0) {
                 appendUnitElementAsString(element.getUnit(), element.getFraction(), numerator);
             } else {
@@ -196,7 +188,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     private Dimension calculateDimension() {
         Dimension combinedDimension = Dimensions.NONE;
-        for (UnitElement element : unitElements) {
+        for (UnitElement element : unitElements.elements) {
             Dimension dimension = element.getUnit().getDimension();
             dimension = dimension.pow(element.getFraction().getNumerator())
                                  .root(element.getFraction().getDenominator());
@@ -235,15 +227,8 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     }
 
     private Unit<Q> calculateSystemUnit() {
-        // Shortcut: if the system converter is an identity
-        //           converter, the current unit is equal to the
-        //           system unit.
-        if (getSystemConverter().isIdentity()) {
-            return this;
-        }
-
         Unit<?> systemUnit = Units.ONE;
-        for (UnitElement element : unitElements) {
+        for (UnitElement element : unitElements.elements) {
             Unit unit = element.getUnit().getSystemUnit();
             unit = unit.pow(element.getFraction().getNumerator())
                        .root(element.getFraction().getDenominator());
@@ -264,7 +249,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
 
     private UnitConverter calculateSystemConverter() {
         UnitConverter systemConverter = UnitConverters.identity();
-        for (UnitElement e : unitElements) {
+        for (UnitElement e : unitElements.elements) {
             UnitConverter converter = e.getUnit().getSystemConverter();
             int pow  = e.getFraction().getNumerator();
             int root = e.getFraction().getDenominator();
@@ -302,7 +287,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
     private Map<Unit<?>, Fraction> calculateBaseUnitMap() {
         Map<Unit<?>, Fraction> baseUnitMap = new LinkedHashMap<>();
 
-        for (UnitElement e : unitElements) {
+        for (UnitElement e : unitElements.elements) {
             Map<? extends Unit<?>, Fraction> currentMap = e.getUnit().getBaseUnits();
 
             int pow  = e.getFraction().getNumerator();
@@ -328,85 +313,5 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> {
             }
         }
         return baseUnitMap;
-    }
-
-    /**
-     * Internal class representing a unit element raised to a specific
-     * power/root fraction.
-     */
-    static class UnitElement {
-        private final Unit<?>  unit;
-        private final Fraction fraction;
-
-        UnitElement(Unit<?> unit, Fraction fraction) {
-            Objects.requireNonNull(unit);
-            Objects.requireNonNull(fraction);
-
-            this.unit     = unit;
-            this.fraction = fraction;
-        }
-
-        Unit<?> getUnit() {
-            return unit;
-        }
-
-        Fraction getFraction() {
-            return fraction;
-        }
-
-        UnitElement multiply(Fraction multiplicand) {
-            return new UnitElement(unit, fraction.multiply(multiplicand));
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(unit, fraction);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UnitElement element = (UnitElement) o;
-            return Objects.equals(unit,     element.unit) &&
-                   Objects.equals(fraction, element.fraction);
-        }
-
-        @Override
-        public String toString() {
-            return String.format("%s=%s", unit, fraction);
-        }
-    }
-
-    static class UnitElementWrapper {
-        private final UnitElement[] elements;
-
-        static UnitElementWrapper of (UnitElement[] elements) {
-            return new UnitElementWrapper(elements);
-        }
-
-        private UnitElementWrapper(UnitElement[] elements) {
-            this.elements = elements;
-        }
-
-        @Override
-        public int hashCode() {
-            return Arrays.hashCode(elements);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            if (o == null || getClass() != o.getClass()) return false;
-
-            UnitElementWrapper other = (UnitElementWrapper) o;
-            return Arrays.equals(elements, other.elements);
-        }
-
-        @Override
-        public String toString() {
-            return Arrays.toString(elements);
-        }
     }
 }

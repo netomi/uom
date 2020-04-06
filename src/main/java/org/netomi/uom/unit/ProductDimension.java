@@ -47,26 +47,26 @@ class ProductDimension extends Dimension {
         Dimension physicalDimension = Dimensions.NONE;
         for (DimensionElement element : physicalElements) {
             Dimension dimension =
-                    element.getDimension()
-                           .pow(element.getFraction().getNumerator())
-                           .root(element.getFraction().getDenominator());
+                    element.dimension
+                           .pow(element.fraction.getNumerator())
+                           .root(element.fraction.getDenominator());
 
             physicalDimension = physicalDimension.multiply(dimension);
         }
 
         Map<Dimension, Fraction> map = new LinkedHashMap<>();
         for (DimensionElement element : elements) {
-            Fraction fraction = map.get(element.getDimension());
+            Fraction fraction = map.get(element.dimension);
             if (fraction != null) {
-                fraction = fraction.add(element.getFraction());
+                fraction = fraction.add(element.fraction);
             } else {
-                fraction = element.getFraction();
+                fraction = element.fraction;
             }
 
             if (Fraction.ZERO.compareTo(fraction) == 0) {
-                map.remove(element.getDimension());
+                map.remove(element.dimension);
             } else {
-                map.put(element.getDimension(), fraction);
+                map.put(element.dimension, fraction);
             }
         }
 
@@ -83,8 +83,8 @@ class ProductDimension extends Dimension {
         // If only one element with exponent 1 is left, return it.
         if (physicalDimension  == Dimensions.NONE &&
             newElements.length == 1               &&
-            newElements[0].getFraction().compareTo(Fraction.ONE) == 0) {
-            return newElements[0].getDimension();
+            newElements[0].fraction.compareTo(Fraction.ONE) == 0) {
+            return newElements[0].dimension;
         }
 
         return new ProductDimension(physicalDimension, newElements);
@@ -142,10 +142,10 @@ class ProductDimension extends Dimension {
         baseDimensionMap.putAll(physicalDimension.getBaseDimensions());
 
         for (DimensionElement element : dimensionElements) {
-            Map<Dimension, Fraction> currentMap = element.getDimension().getBaseDimensions();
+            Map<Dimension, Fraction> currentMap = element.dimension.getBaseDimensions();
 
-            int pow  = element.getFraction().getNumerator();
-            int root = element.getFraction().getDenominator();
+            int pow  = element.fraction.getNumerator();
+            int root = element.fraction.getDenominator();
 
             for (Map.Entry<Dimension, Fraction> entry : currentMap.entrySet()) {
                 Dimension dimension = entry.getKey();
@@ -194,8 +194,8 @@ class ProductDimension extends Dimension {
         }
 
         for (DimensionElement element : dimensionElements) {
-            sb.append(element.getDimension());
-            Fraction fraction = element.getFraction();
+            sb.append(element.dimension);
+            Fraction fraction = element.fraction;
             if (Fraction.ONE.compareTo(fraction) != 0) {
                 StringUtil.appendUnicodeString(fraction, sb);
             }
@@ -212,8 +212,8 @@ class ProductDimension extends Dimension {
      * power/root fraction.
      */
     static class DimensionElement {
-        private final Dimension dimension;
-        private final Fraction  fraction;
+        final Dimension dimension;
+        final Fraction  fraction;
 
         DimensionElement(Dimension dimension, Fraction fraction) {
             Objects.requireNonNull(dimension);
@@ -221,14 +221,6 @@ class ProductDimension extends Dimension {
 
             this.dimension = dimension;
             this.fraction  = fraction;
-        }
-
-        Dimension getDimension() {
-            return dimension;
-        }
-
-        Fraction getFraction() {
-            return fraction;
         }
 
         DimensionElement multiply(Fraction multiplicand) {

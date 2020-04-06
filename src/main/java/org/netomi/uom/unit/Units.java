@@ -109,7 +109,7 @@ public final class Units {
 
         public Unit<Temperature>       CELSIUS  = addUnit(buildFrom(KELVIN).shiftedBy(273.15).withSymbol("°C").withName("DEGREE CELSIUS").build(), Temperature.class);
 
-        public Unit<Angle>             RADIAN   = addUnit(UnitBuilder.<Angle>fromAny    (ONE)               .withSymbol("rad").withName("RADIAN").build(), Angle.class);
+        public Unit<Angle>             RADIAN   = addUnit(UnitBuilder.<Angle>fromAny(ONE).withSymbol("rad").withName("RADIAN").build(), Angle.class);
         public Unit<Frequency>         HERTZ    = addUnit(UnitBuilder.<Frequency>fromAny(ONE.divide(SECOND)).withSymbol("Hz") .withName("HERTZ") .build(), Frequency.class);
 
         public Unit<Speed>             METER_PER_SECOND =
