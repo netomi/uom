@@ -82,16 +82,7 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
 
     @Override
     public boolean isZero(double epsilon) {
-        double thisValue;
-
-        if (this.unit.isSystemUnit()) {
-            thisValue = value;
-        } else {
-            UnitConverter converter = unit.getSystemConverter();
-            thisValue = converter.convert(value);
-        }
-
-        return Math.abs(thisValue) <= epsilon;
+        return Math.abs(value) <= epsilon;
     }
 
     @Override
@@ -110,7 +101,7 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
 
     @Override
     public boolean isStrictlyZero() {
-        return toSystemUnit().doubleValue() == 0;
+        return value == 0;
     }
 
     @Override

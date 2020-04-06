@@ -27,14 +27,14 @@ import java.math.BigDecimal;
 public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>> {
 
     /**
-     * Returns the value of this quantity expressed in its {@link Unit}.
+     * Returns the raw value of this quantity expressed in its {@link Unit}.
      *
      * @return the value of this quantity expressed in its {@link Unit}.
      */
     double doubleValue();
 
     /**
-     * Returns the value of this quantity with as {@link BigDecimal} expressed
+     * Returns the raw value of this quantity with as {@link BigDecimal} expressed
      * in its {@link Unit}.
      *
      * @return the decimal value of this quantity expressed in its {@link Unit}.
@@ -117,34 +117,34 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * other quantity is converted to the unit of this quantity before comparison.
      *
      * @param other   the other quantity to compare to.
-     * @param epsilon the maximum allowed error when checking for equality.
+     * @param epsilon the maximum allowed relative error when checking for equality.
      * @return {@code true} if this quantity is equal to the other quantity taking some error into account.
      * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
      */
     boolean isEqual(Quantity<Q> other, double epsilon);
 
     /**
-     * Returns whether this {@link Quantity} expressed in its system unit is equal to zero such that the
+     * Returns whether the raw value of this {@link Quantity} is equal to zero such that the
      * following condition is satisfied: {@code Math.abs(thisValue, 0) <= epsilon}.
      *
-     * @param epsilon the maximum allowed error when checking for equality.
+     * @param epsilon the maximum allowed relative error when checking for equality.
      * @return {@code true} if this quantity is equal to zero taking some error into account.
      */
     boolean isZero(double epsilon);
 
     /**
-     * Returns whether this {@link Quantity} converted to the specified unit is equal to zero such that the
-     * following condition is satisfied: {@code Math.abs(thisValue, 0) <= epsilon}.
+     * Returns whether the raw value of this {@link Quantity} converted to the specified unit is equal
+     * to zero such that the following condition is satisfied: {@code Math.abs(thisValue, 0) <= epsilon}.
      *
      * @param inUnit  the unit to which this quantity should be converted before comparison.
-     * @param epsilon the maximum allowed error when checking for equality.
+     * @param epsilon the maximum allowed relative error when checking for equality.
      * @return {@code true} if this quantity is equal to zero taking some error into account.
      * @throws IncommensurableException if the dimension of the specified unit is not compatible to this quantity.
      */
     boolean isZero(Unit<Q> inUnit, double epsilon);
 
     /**
-     * Returns whether this {@link Quantity} expressed in its system unit is strictly equal to zero.
+     * Returns whether the raw value of this {@link Quantity} is strictly equal to zero.
      *
      * @return {@code true} if this quantity is equal to zero taking some error into account.
      */

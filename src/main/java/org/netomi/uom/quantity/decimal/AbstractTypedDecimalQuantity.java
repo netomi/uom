@@ -88,16 +88,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
 
     @Override
     public boolean isZero(double epsilon) {
-        BigDecimal thisValue;
-
-        if (this.unit.isSystemUnit()) {
-            thisValue = value;
-        } else {
-            UnitConverter converter = unit.getSystemConverter();
-            thisValue = converter.convert(value, mathContext);
-        }
-
-        return thisValue.abs().doubleValue() <= epsilon;
+        return value.abs().doubleValue() <= epsilon;
     }
 
     @Override
@@ -116,7 +107,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
 
     @Override
     public boolean isStrictlyZero() {
-        return BigDecimal.ZERO.compareTo(toSystemUnit().decimalValue()) == 0;
+        return BigDecimal.ZERO.compareTo(value) == 0;
     }
 
     @Override
