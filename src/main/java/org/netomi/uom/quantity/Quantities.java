@@ -15,7 +15,6 @@
  */
 package org.netomi.uom.quantity;
 
-import org.netomi.uom.IncommensurableException;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
@@ -55,6 +54,7 @@ public class Quantities {
 
         // quantities for synonyms.
         registerInternalQuantityFactory(Distance.class,      DoubleDistance.factory(),      DecimalDistance.factory());
+        registerInternalQuantityFactory(Duration.class,      DoubleDuration.factory(),      DecimalDuration.factory());
 
         // quantities for derives units.
         registerInternalQuantityFactory(Angle.class,         DoubleAngle.factory(),         DecimalAngle.factory());
@@ -72,15 +72,13 @@ public class Quantities {
         registerInternalQuantityFactory(ElectricCharge.class,      DoubleElectricCharge.factory(),      DecimalElectricCharge.factory());
         registerInternalQuantityFactory(ElectricCapacitance.class, DoubleElectricCapacitance.factory(), DecimalElectricCapacitance.factory());
 
-        genericQuantityFactory =
-                DelegateQuantityFactory.of(AbstractTypedDoubleQuantity.GenericImpl.factory(),
-                                           AbstractTypedDecimalQuantity.GenericImpl.factory());
+        genericQuantityFactory = DelegateQuantityFactory.of(DoubleQuantity.factory(), DecimalQuantity.factory());
     }
 
     private static <T extends Q, Q extends Quantity<Q>>
-        void registerInternalQuantityFactory(Class<T> quantityClass,
-                                             DoubleQuantityFactory<?, ?>  doubleFactory,
-                                             DecimalQuantityFactory<?, ?> decimalFactory) {
+        void registerInternalQuantityFactory(Class<T>           quantityClass,
+                                             QuantityFactory<Q> doubleFactory,
+                                             QuantityFactory<Q> decimalFactory) {
         factoryMap.put(quantityClass,
                        DelegateQuantityFactory.of(doubleFactory, decimalFactory));
     }
@@ -181,16 +179,16 @@ public class Quantities {
 
     static class DelegateQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
 
-        private final DoubleQuantityFactory<?, Q>  doubleQuantityFactory;
-        private final DecimalQuantityFactory<?, Q> decimalQuantityFactory;
+        private final QuantityFactory<Q> doubleQuantityFactory;
+        private final QuantityFactory<Q> decimalQuantityFactory;
 
         static <Q extends Quantity<Q>> DelegateQuantityFactory<Q>
-            of(DoubleQuantityFactory doubleFactory, DecimalQuantityFactory decimalFactory) {
-            return new DelegateQuantityFactory<>(doubleFactory, decimalFactory);
+            of(QuantityFactory<?> doubleFactory, QuantityFactory<?> decimalFactory) {
+            return new DelegateQuantityFactory(doubleFactory, decimalFactory);
         }
 
-        private DelegateQuantityFactory(DoubleQuantityFactory<?, Q>  doubleQuantityFactory,
-                                        DecimalQuantityFactory<?, Q> decimalQuantityFactory) {
+        private DelegateQuantityFactory(QuantityFactory<Q> doubleQuantityFactory,
+                                        QuantityFactory<Q> decimalQuantityFactory) {
             Objects.requireNonNull(doubleQuantityFactory);
             Objects.requireNonNull(decimalQuantityFactory);
 

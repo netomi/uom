@@ -38,7 +38,7 @@ public final class DoubleElectricCapacitance
     }
 
     public static DoubleQuantityFactory<DoubleElectricCapacitance, ElectricCapacitance> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleElectricCapacitance::of;
     }
 
     private DoubleElectricCapacitance(double value, Unit<ElectricCapacitance> unit) {

@@ -38,7 +38,7 @@ public final class DoubleFrequency
     }
 
     public static DoubleQuantityFactory<DoubleFrequency, Frequency> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleFrequency::of;
     }
 
     private DoubleFrequency(double value, Unit<Frequency> unit) {

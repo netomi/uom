@@ -49,7 +49,7 @@ public final class DecimalPower extends AbstractTypedDecimalQuantity<DecimalPowe
     }
 
     public static DecimalQuantityFactory<DecimalPower, Power> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalPower::of;
     }
 
     public static DecimalQuantityFactory<DecimalPower, Power> factory(MathContext mathContext) {

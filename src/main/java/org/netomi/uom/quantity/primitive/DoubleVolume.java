@@ -38,7 +38,7 @@ public final class DoubleVolume
     }
 
     public static DoubleQuantityFactory<DoubleVolume, Volume> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleVolume::of;
     }
 
     private DoubleVolume(double value, Unit<Volume> unit) {

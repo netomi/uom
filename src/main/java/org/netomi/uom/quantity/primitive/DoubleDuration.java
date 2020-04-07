@@ -16,37 +16,40 @@
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.ElectricCharge;
+import org.netomi.uom.quantity.Distance;
+import org.netomi.uom.quantity.Duration;
+import org.netomi.uom.quantity.Length;
+import org.netomi.uom.quantity.Time;
 import org.netomi.uom.unit.Units;
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link ElectricCharge} with double precision.
+ * {@link Duration} with double precision.
  *
  * @author Thomas Neidhart
  */
-public final class DoubleElectricCharge
-        extends    AbstractTypedDoubleQuantity<DoubleElectricCharge, ElectricCharge>
-        implements ElectricCharge {
+public final class DoubleDuration
+        extends    AbstractTypedDoubleQuantity<DoubleDuration, Time>
+        implements Duration {
 
-    public static DoubleElectricCharge of(double value, Unit<ElectricCharge> unit) {
-        return new DoubleElectricCharge(value, unit);
+    public static DoubleDuration of(double value, Unit<Time> unit) {
+        return new DoubleDuration(value, unit);
     }
 
-    public static DoubleElectricCharge ofCoulomb(double value) {
-        return of(value, Units.SI.COULOMB);
+    public static DoubleDuration ofSecond(double value) {
+        return of(value, Units.SI.SECOND);
     }
 
-    public static DoubleQuantityFactory<DoubleElectricCharge, ElectricCharge> factory() {
-        return DoubleElectricCharge::of;
+    public static DoubleQuantityFactory<DoubleDuration, Time> factory() {
+        return DoubleDuration::of;
     }
 
-    private DoubleElectricCharge(double value, Unit<ElectricCharge> unit) {
+    private DoubleDuration(double value, Unit<Time> unit) {
         super(value, unit);
     }
 
     @Override
-    public DoubleElectricCharge with(double value, Unit<ElectricCharge> unit) {
+    public DoubleDuration with(double value, Unit<Time> unit) {
         return of(value, unit);
     }
 }

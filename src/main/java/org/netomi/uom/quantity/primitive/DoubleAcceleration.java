@@ -38,7 +38,7 @@ public final class DoubleAcceleration
     }
 
     public static DoubleQuantityFactory<DoubleAcceleration, Acceleration> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleAcceleration::of;
     }
 
     private DoubleAcceleration(double value, Unit<Acceleration> unit) {

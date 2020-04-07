@@ -206,7 +206,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
         return String.format("%f %s", value, unit.getSymbol());
     }
 
-    public static class GenericImpl extends AbstractTypedDecimalQuantity {
+    static class GenericImpl extends AbstractTypedDecimalQuantity {
 
         public static DecimalQuantityFactory factory() {
             return GenericImpl::new;

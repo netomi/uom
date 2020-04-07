@@ -188,13 +188,13 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
         return String.format("%e %s", doubleValue(), getUnit().getSymbol());
     }
 
-    public static class GenericImpl extends AbstractTypedDoubleQuantity {
+    static class GenericImpl extends AbstractTypedDoubleQuantity {
 
         public static DoubleQuantityFactory factory() {
             return GenericImpl::new;
         }
 
-        private GenericImpl(double value, Unit<?> unit) {
+        GenericImpl(double value, Unit<?> unit) {
             super(value, unit);
         }
 

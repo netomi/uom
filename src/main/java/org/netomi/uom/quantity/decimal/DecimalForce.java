@@ -49,7 +49,7 @@ public final class DecimalForce extends AbstractTypedDecimalQuantity<DecimalForc
     }
 
     public static DecimalQuantityFactory<DecimalForce, Force> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalForce::of;
     }
 
     public static DecimalQuantityFactory<DecimalForce, Force> factory(MathContext mathContext) {

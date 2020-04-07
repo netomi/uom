@@ -36,7 +36,7 @@ public final class DoubleTime extends AbstractTypedDoubleQuantity<DoubleTime, Ti
     }
 
     public static DoubleQuantityFactory<DoubleTime, Time> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleTime::of;
     }
 
     private DoubleTime(double value, Unit<Time> unit) {

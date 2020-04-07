@@ -51,7 +51,7 @@ public final class DecimalVolume
     }
 
     public static DecimalQuantityFactory<DecimalVolume, Volume> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalVolume::of;
     }
 
     public static DecimalQuantityFactory<DecimalVolume, Volume> factory(MathContext mathContext) {

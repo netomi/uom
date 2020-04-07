@@ -38,7 +38,7 @@ public final class DoubleAngle
     }
 
     public static DoubleQuantityFactory<DoubleAngle, Angle> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleAngle::of;
     }
 
     private DoubleAngle(double value, Unit<Angle> unit) {

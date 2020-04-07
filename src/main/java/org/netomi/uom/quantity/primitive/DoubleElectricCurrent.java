@@ -38,7 +38,7 @@ public final class DoubleElectricCurrent
     }
 
     public static DoubleQuantityFactory<DoubleElectricCurrent, ElectricCurrent> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleElectricCurrent::of;
     }
 
     private DoubleElectricCurrent(double value, Unit<ElectricCurrent> unit) {

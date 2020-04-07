@@ -51,7 +51,7 @@ public final class DecimalLuminousIntensity
     }
 
     public static DecimalQuantityFactory<DecimalLuminousIntensity, LuminousIntensity> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalLuminousIntensity::of;
     }
 
     public static DecimalQuantityFactory<DecimalLuminousIntensity, LuminousIntensity> factory(MathContext mathContext) {

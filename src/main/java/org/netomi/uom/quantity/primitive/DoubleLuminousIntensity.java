@@ -38,7 +38,7 @@ public final class DoubleLuminousIntensity
     }
 
     public static DoubleQuantityFactory<DoubleLuminousIntensity, LuminousIntensity> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleLuminousIntensity::of;
     }
 
     private DoubleLuminousIntensity(double value, Unit<LuminousIntensity> unit) {

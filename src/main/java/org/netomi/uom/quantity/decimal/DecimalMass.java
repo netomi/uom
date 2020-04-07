@@ -51,7 +51,7 @@ public final class DecimalMass
     }
 
     public static DecimalQuantityFactory<DecimalMass, Mass> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalMass::of;
     }
 
     public static DecimalQuantityFactory<DecimalMass, Mass> factory(MathContext mathContext) {

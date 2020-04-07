@@ -38,7 +38,7 @@ public final class DoubleArea
     }
 
     public static DoubleQuantityFactory<DoubleArea, Area> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleArea::of;
     }
 
     private DoubleArea(double value, Unit<Area> unit) {

@@ -25,7 +25,9 @@ import org.netomi.uom.unit.Units;
  *
  * @author Thomas Neidhart
  */
-public final class DoubleForce extends AbstractTypedDoubleQuantity<DoubleForce, Force> implements Force {
+public final class DoubleForce
+        extends    AbstractTypedDoubleQuantity<DoubleForce, Force>
+        implements Force {
 
     public static DoubleForce of(double value, Unit<Force> unit) {
         return new DoubleForce(value, unit);
@@ -36,7 +38,7 @@ public final class DoubleForce extends AbstractTypedDoubleQuantity<DoubleForce, 
     }
 
     public static DoubleQuantityFactory<DoubleForce, Force> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleForce::of;
     }
 
     private DoubleForce(double value, Unit<Force> unit) {

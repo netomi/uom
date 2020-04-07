@@ -39,7 +39,7 @@ public final class DoubleDistance
     }
 
     public static DoubleQuantityFactory<DoubleDistance, Length> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleDistance::of;
     }
 
     private DoubleDistance(double value, Unit<Length> unit) {

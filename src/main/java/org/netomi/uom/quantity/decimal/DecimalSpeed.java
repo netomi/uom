@@ -51,7 +51,7 @@ public final class DecimalSpeed
     }
 
     public static DecimalQuantityFactory<DecimalSpeed, Speed> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalSpeed::of;
     }
 
     public static DecimalQuantityFactory<DecimalSpeed, Speed> factory(MathContext mathContext) {

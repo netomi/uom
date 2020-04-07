@@ -51,7 +51,7 @@ public final class DecimalArea
     }
 
     public static DecimalQuantityFactory<DecimalArea, Area> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalArea::of;
     }
 
     public static DecimalQuantityFactory<DecimalArea, Area> factory(MathContext mathContext) {

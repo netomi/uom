@@ -49,7 +49,7 @@ public final class DecimalLength extends AbstractTypedDecimalQuantity<DecimalLen
     }
 
     public static DecimalQuantityFactory<DecimalLength, Length> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalLength::of;
     }
 
     public static DecimalQuantityFactory<DecimalLength, Length> factory(MathContext mathContext) {

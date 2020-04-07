@@ -51,7 +51,7 @@ public final class DecimalAmountOfSubstance
     }
 
     public static DecimalQuantityFactory<DecimalAmountOfSubstance, AmountOfSubstance> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalAmountOfSubstance::of;
     }
 
     public static DecimalQuantityFactory<DecimalAmountOfSubstance, AmountOfSubstance> factory(MathContext mathContext) {

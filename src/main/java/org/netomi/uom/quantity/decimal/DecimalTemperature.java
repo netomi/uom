@@ -51,7 +51,7 @@ public final class DecimalTemperature
     }
 
     public static DecimalQuantityFactory<DecimalTemperature, Temperature> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalTemperature::of;
     }
 
     public static DecimalQuantityFactory<DecimalTemperature, Temperature> factory(MathContext mathContext) {

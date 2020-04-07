@@ -38,7 +38,7 @@ public final class DoubleAmountOfSubstance
     }
 
     public static DoubleQuantityFactory<DoubleAmountOfSubstance, AmountOfSubstance> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleAmountOfSubstance::of;
     }
 
     private DoubleAmountOfSubstance(double value, Unit<AmountOfSubstance> unit) {

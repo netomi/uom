@@ -51,7 +51,7 @@ public final class DecimalElectricCurrent
     }
 
     public static DecimalQuantityFactory<DecimalElectricCurrent, ElectricCurrent> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalElectricCurrent::of;
     }
 
     public static DecimalQuantityFactory<DecimalElectricCurrent, ElectricCurrent> factory(MathContext mathContext) {

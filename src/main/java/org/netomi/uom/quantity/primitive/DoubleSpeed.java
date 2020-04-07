@@ -25,7 +25,9 @@ import org.netomi.uom.unit.Units;
  *
  * @author Thomas Neidhart
  */
-public final class DoubleSpeed extends AbstractTypedDoubleQuantity<DoubleSpeed, Speed> implements Speed {
+public final class DoubleSpeed
+        extends    AbstractTypedDoubleQuantity<DoubleSpeed, Speed>
+        implements Speed {
 
     public static DoubleSpeed of(double value, Unit<Speed> unit) {
         return new DoubleSpeed(value, unit);
@@ -36,7 +38,7 @@ public final class DoubleSpeed extends AbstractTypedDoubleQuantity<DoubleSpeed, 
     }
 
     public static DoubleQuantityFactory<DoubleSpeed, Speed> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleSpeed::of;
     }
 
     private DoubleSpeed(double value, Unit<Speed> unit) {

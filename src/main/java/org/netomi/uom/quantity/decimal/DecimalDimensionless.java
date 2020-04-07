@@ -51,7 +51,7 @@ public final class DecimalDimensionless
     }
 
     public static DecimalQuantityFactory<DecimalDimensionless, Dimensionless> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalDimensionless::of;
     }
 
     public static DecimalQuantityFactory<DecimalDimensionless, Dimensionless> factory(MathContext mathContext) {

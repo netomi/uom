@@ -22,6 +22,15 @@ import org.netomi.uom.Unit;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+/**
+ * A {@link QuantityFactory} that generates quantity instance for a specific quantity type
+ * with decimal precision.
+ *
+ * @param <T> the specific quantity type (e.g. Length)
+ * @param <Q> the quantity type parameter
+ *
+ * @author Thomas Neidhart
+ */
 public interface DecimalQuantityFactory<T extends Q, Q extends Quantity<Q>> extends QuantityFactory<Q> {
 
     MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL128;

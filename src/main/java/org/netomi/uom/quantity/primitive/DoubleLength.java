@@ -25,7 +25,9 @@ import org.netomi.uom.unit.Units;
  *
  * @author Thomas Neidhart
  */
-public final class DoubleLength extends AbstractTypedDoubleQuantity<DoubleLength, Length> implements Length {
+public final class DoubleLength
+        extends    AbstractTypedDoubleQuantity<DoubleLength, Length>
+        implements Length {
 
     public static DoubleLength of(double value, Unit<Length> unit) {
         return new DoubleLength(value, unit);
@@ -36,7 +38,7 @@ public final class DoubleLength extends AbstractTypedDoubleQuantity<DoubleLength
     }
 
     public static DoubleQuantityFactory<DoubleLength, Length> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleLength::of;
     }
 
     private DoubleLength(double value, Unit<Length> unit) {

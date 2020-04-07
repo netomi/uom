@@ -51,7 +51,7 @@ public final class DecimalPressure
     }
 
     public static DecimalQuantityFactory<DecimalPressure, Pressure> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalPressure::of;
     }
 
     public static DecimalQuantityFactory<DecimalPressure, Pressure> factory(MathContext mathContext) {

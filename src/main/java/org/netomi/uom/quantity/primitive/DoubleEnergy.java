@@ -25,7 +25,9 @@ import org.netomi.uom.unit.Units;
  *
  * @author Thomas Neidhart
  */
-public final class DoubleEnergy extends AbstractTypedDoubleQuantity<DoubleEnergy, Energy> implements Energy {
+public final class DoubleEnergy
+        extends    AbstractTypedDoubleQuantity<DoubleEnergy, Energy>
+        implements Energy {
 
     public static DoubleEnergy of(double value, Unit<Energy> unit) {
         return new DoubleEnergy(value, unit);
@@ -36,7 +38,7 @@ public final class DoubleEnergy extends AbstractTypedDoubleQuantity<DoubleEnergy
     }
 
     public static DoubleQuantityFactory<DoubleEnergy, Energy> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleEnergy::of;
     }
 
     private DoubleEnergy(double value, Unit<Energy> unit) {

@@ -51,7 +51,7 @@ public final class DecimalAngle
     }
 
     public static DecimalQuantityFactory<DecimalAngle, Angle> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalAngle::of;
     }
 
     public static DecimalQuantityFactory<DecimalAngle, Angle> factory(MathContext mathContext) {

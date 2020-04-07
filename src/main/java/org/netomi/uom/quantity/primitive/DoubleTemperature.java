@@ -38,7 +38,7 @@ public final class DoubleTemperature
     }
 
     public static DoubleQuantityFactory<DoubleTemperature, Temperature> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleTemperature::of;
     }
 
     private DoubleTemperature(double value, Unit<Temperature> unit) {

@@ -52,7 +52,7 @@ public final class DecimalDistance
     }
 
     public static DecimalQuantityFactory<DecimalDistance, Length> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalDistance::of;
     }
 
     public static DecimalQuantityFactory<DecimalDistance, Length> factory(MathContext mathContext) {

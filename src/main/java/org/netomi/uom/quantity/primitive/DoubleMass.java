@@ -25,7 +25,9 @@ import org.netomi.uom.unit.Units;
  *
  * @author Thomas Neidhart
  */
-public final class DoubleMass extends AbstractTypedDoubleQuantity<DoubleMass, Mass> implements Mass {
+public final class DoubleMass
+        extends    AbstractTypedDoubleQuantity<DoubleMass, Mass>
+        implements Mass {
 
     public static DoubleMass of(double value, Unit<Mass> unit) {
         return new DoubleMass(value, unit);
@@ -36,7 +38,7 @@ public final class DoubleMass extends AbstractTypedDoubleQuantity<DoubleMass, Ma
     }
 
     public static DoubleQuantityFactory<DoubleMass, Mass> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleMass::of;
     }
 
     private DoubleMass(double value, Unit<Mass> unit) {

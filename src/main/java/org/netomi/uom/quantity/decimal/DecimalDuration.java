@@ -16,7 +16,8 @@
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.Energy;
+import org.netomi.uom.quantity.Duration;
+import org.netomi.uom.quantity.Time;
 import org.netomi.uom.unit.Units;
 
 import java.math.BigDecimal;
@@ -26,42 +27,44 @@ import static org.netomi.uom.quantity.decimal.DecimalQuantityFactory.DEFAULT_MAT
 
 /**
  * A concrete {@link org.netomi.uom.Quantity} implementation for the quantity type
- * {@link Energy} with decimal precision.
+ * {@link Duration} with decimal precision.
  *
  * @author Thomas Neidhart
  */
-public final class DecimalEnergy extends AbstractTypedDecimalQuantity<DecimalEnergy, Energy> implements Energy {
+public final class DecimalDuration
+        extends    AbstractTypedDecimalQuantity<DecimalDuration, Time>
+        implements Duration {
 
-    public static DecimalEnergy of(BigDecimal value, Unit<Energy> unit) {
+    public static DecimalDuration of(BigDecimal value, Unit<Time> unit) {
         return of(value, DEFAULT_MATH_CONTEXT, unit);
     }
 
-    public static DecimalEnergy of(BigDecimal value, MathContext mathContext, Unit<Energy> unit) {
-        return new DecimalEnergy(value, mathContext, unit);
+    public static DecimalDuration of(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
+        return new DecimalDuration(value, mathContext, unit);
     }
 
-    public static DecimalEnergy ofJoule(BigDecimal value) {
-        return ofJoule(value, DEFAULT_MATH_CONTEXT);
+    public static DecimalDuration ofSecond(BigDecimal value) {
+        return ofSecond(value, DEFAULT_MATH_CONTEXT);
     }
 
-    public static DecimalEnergy ofJoule(BigDecimal value, MathContext mathContext) {
-        return of(value, mathContext, Units.SI.JOULE);
+    public static DecimalDuration ofSecond(BigDecimal value, MathContext mathContext) {
+        return of(value, mathContext, Units.SI.SECOND);
     }
 
-    public static DecimalQuantityFactory<DecimalEnergy, Energy> factory() {
-        return DecimalEnergy::of;
+    public static DecimalQuantityFactory<DecimalDuration, Time> factory() {
+        return DecimalDuration::of;
     }
 
-    public static DecimalQuantityFactory<DecimalEnergy, Energy> factory(MathContext mathContext) {
+    public static DecimalQuantityFactory<DecimalDuration, Time> factory(MathContext mathContext) {
         return (value, context, unit) -> of(value, mathContext, unit);
     }
 
-    private DecimalEnergy(BigDecimal value, MathContext mathContext, Unit<Energy> unit) {
+    private DecimalDuration(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
         super(value, mathContext, unit);
     }
 
     @Override
-    public DecimalEnergy with(BigDecimal value, MathContext mathContext, Unit<Energy> unit) {
-        return new DecimalEnergy(value, mathContext, unit);
+    public DecimalDuration with(BigDecimal value, MathContext mathContext, Unit<Time> unit) {
+        return new DecimalDuration(value, mathContext, unit);
     }
 }

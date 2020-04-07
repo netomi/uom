@@ -51,7 +51,7 @@ public final class DecimalTime
     }
 
     public static DecimalQuantityFactory<DecimalTime, Time> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalTime::of;
     }
 
     public static DecimalQuantityFactory<DecimalTime, Time> factory(MathContext mathContext) {

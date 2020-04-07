@@ -51,7 +51,7 @@ public final class DecimalFrequency
     }
 
     public static DecimalQuantityFactory<DecimalFrequency, Frequency> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalFrequency::of;
     }
 
     public static DecimalQuantityFactory<DecimalFrequency, Frequency> factory(MathContext mathContext) {

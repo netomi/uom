@@ -38,7 +38,7 @@ public final class DoublePressure
     }
 
     public static DoubleQuantityFactory<DoublePressure, Pressure> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoublePressure::of;
     }
 
     private DoublePressure(double value, Unit<Pressure> unit) {

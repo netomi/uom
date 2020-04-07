@@ -51,7 +51,7 @@ public final class DecimalElectricCharge
     }
 
     public static DecimalQuantityFactory<DecimalElectricCharge, ElectricCharge> factory() {
-        return (value, context, unit) -> of(value, context, unit);
+        return DecimalElectricCharge::of;
     }
 
     public static DecimalQuantityFactory<DecimalElectricCharge, ElectricCharge> factory(MathContext mathContext) {

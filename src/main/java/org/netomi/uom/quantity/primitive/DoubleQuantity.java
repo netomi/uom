@@ -16,7 +16,9 @@
 package org.netomi.uom.quantity.primitive;
 
 import org.netomi.uom.Quantity;
+import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
+import org.netomi.uom.quantity.Pressure;
 import org.netomi.uom.quantity.Quantities;
 
 /**
@@ -30,6 +32,10 @@ public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <P extends Quantity<P>> DoubleQuantity<P> of(double value, Unit<P> unit) {
         return Quantities.createQuantity(value, unit, null);
+    }
+
+    static <Q extends Quantity<Q>> QuantityFactory<Q> factory() {
+        return AbstractTypedDoubleQuantity.GenericImpl.factory();
     }
 
     DoubleQuantity<Q> with(double value, Unit<Q> unit);

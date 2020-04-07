@@ -38,7 +38,7 @@ public final class DoubleDimensionless
     }
 
     public static DoubleQuantityFactory<DoubleDimensionless, Dimensionless> factory() {
-        return (value, unit) -> of(value, unit);
+        return DoubleDimensionless::of;
     }
 
     private DoubleDimensionless(double value, Unit<Dimensionless> unit) {

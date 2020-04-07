@@ -16,8 +16,11 @@
 package org.netomi.uom.quantity.decimal;
 
 import org.netomi.uom.Quantity;
+import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.Quantities;
+import org.netomi.uom.quantity.primitive.AbstractTypedDoubleQuantity;
+import org.netomi.uom.quantity.primitive.DoubleQuantityFactory;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -37,6 +40,10 @@ public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <P extends Quantity<P>> DecimalQuantity<P> of(BigDecimal value, MathContext mathContext, Unit<P> unit) {
         return Quantities.createQuantity(value, mathContext, unit, null);
+    }
+
+    static <Q extends Quantity<Q>> QuantityFactory<Q> factory() {
+        return AbstractTypedDecimalQuantity.GenericImpl.factory();
     }
 
     MathContext getMathContext();
