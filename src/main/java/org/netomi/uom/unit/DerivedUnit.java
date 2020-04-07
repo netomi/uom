@@ -28,7 +28,7 @@ import java.util.*;
  *
  * @author Thomas Neidhart
  */
-class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements CompositeUnit {
+class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements CompositeUnit<Q> {
 
     private static final String EMPTY_SYMBOL = "1";
 
@@ -59,7 +59,11 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
             collectElements(right, rightFraction, elements);
         }
 
-        Map<Unit<?>, Fraction> map = new LinkedHashMap<>();
+        // create a canonical representation of the elements which is required
+        // for the cache to work properly, otherwise the same elements are not
+        // equal to each other.
+        SortedMap<Unit<?>, Fraction> map = new TreeMap<>(Comparator.comparing(Unit::getSymbol));
+
         for (UnitElement element : elements) {
             Fraction fraction = map.get(element.getUnit());
             if (fraction != null) {
