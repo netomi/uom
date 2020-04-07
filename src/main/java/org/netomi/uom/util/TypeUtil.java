@@ -19,6 +19,11 @@ import org.netomi.uom.IncommensurableException;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 
+/**
+ * A utility to perform type / dimension checks between entities like {@link Quantity} and {@link Unit}.
+ *
+ * @author Thomas Neidhart
+ */
 public class TypeUtil {
 
     /** Error message for units whose dimensions does not match. */
@@ -30,6 +35,14 @@ public class TypeUtil {
     // hide constructor
     private TypeUtil() {}
 
+    /**
+     * Checks if the two provided {@link Unit}'s are compatible. If not,
+     * an {@link IncommensurableException} is thrown.
+     *
+     * @param unit       the unit to check for compatibility.
+     * @param otherUnit  the other unit to check for compatibility.
+     * @throws IncommensurableException if the two units are not compatible.
+     */
     public static void requireCommensurable(Unit<?> unit, Unit<?> otherUnit) {
         if (!unit.isCompatible(otherUnit)) {
             throw new IncommensurableException(ERROR_UNIT_DIMENSION_MISMATCH,
@@ -40,6 +53,14 @@ public class TypeUtil {
         }
     }
 
+    /**
+     * Checks if the provided {@link Unit} is compatible with the given
+     * {@link Quantity}. If not, an {@link IncommensurableException} is thrown.
+     *
+     * @param quantity   the quantity to check for compatibility.
+     * @param unit       the unit to check for compatibility.
+     * @throws IncommensurableException if the two objects are not compatible.
+     */
     public static void requireCommensurable(Quantity<?> quantity, Unit<?> unit) {
         if (!quantity.isCompatible(unit)) {
             throw new IncommensurableException(ERROR_UNIT_QUANTITY_DIMENSION_MISMATCH,

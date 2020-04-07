@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom.unit;
 
 import org.netomi.uom.Quantity;
@@ -25,6 +24,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
+ * A simple implementation of a container of units.
+ *
  * @author Thomas Neidhart
  */
 abstract class AbstractSystemOfUnits implements SystemOfUnits {
@@ -43,7 +44,7 @@ abstract class AbstractSystemOfUnits implements SystemOfUnits {
     }
 
     @Override
-    public Set<Unit<?>> getUnits() {
+    public Iterable<Unit<?>> getUnits() {
         return Collections.unmodifiableSet(units);
     }
 

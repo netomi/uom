@@ -31,9 +31,6 @@ class UnitElement {
     private final Fraction fraction;
 
     UnitElement(Unit<?> unit, Fraction fraction) {
-        Objects.requireNonNull(unit);
-        Objects.requireNonNull(fraction);
-
         this.unit     = unit;
         this.fraction = fraction;
     }

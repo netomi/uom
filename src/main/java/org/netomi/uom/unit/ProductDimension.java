@@ -216,9 +216,6 @@ class ProductDimension extends Dimension {
         final Fraction  fraction;
 
         DimensionElement(Dimension dimension, Fraction fraction) {
-            Objects.requireNonNull(dimension);
-            Objects.requireNonNull(fraction);
-
             this.dimension = dimension;
             this.fraction  = fraction;
         }

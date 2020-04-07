@@ -18,7 +18,6 @@ package org.netomi.uom.unit;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.SystemOfUnits;
 import org.netomi.uom.Unit;
-import org.netomi.uom.math.Fraction;
 import org.netomi.uom.quantity.*;
 
 import java.math.BigDecimal;
@@ -30,8 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class Units {
 
-    private static Map<Unit<?>, Unit<?>>                           namedUnits       = new ConcurrentHashMap<>();
-    private static Map<Class<? extends Quantity<?>>, Set<Unit<?>>> unitsPerQuantity = new ConcurrentHashMap<>();
+    private static Map<Unit<?>, Unit<?>> namedUnits = new ConcurrentHashMap<>();
 
     // Some globally unique units / constants.
     public static final Unit<Dimensionless> ONE = new DerivedUnit<>();
@@ -45,41 +43,19 @@ public final class Units {
 
     static {
         for (SystemOfUnits system : Arrays.asList(SI, CGS, Imperial, Other)) {
-            Set<Unit<?>> units = system.getUnits();
-
-            for (Unit<?> unit : units) {
-                namedUnits.putIfAbsent(unit, unit);
+            for (Unit<?> unit : system.getUnits()) {
+                // do not use putIfAbsent to be compatible with android
+                // as much as possible.
+                if (!namedUnits.containsKey(unit)) {
+                    namedUnits.put(unit, unit);
+                }
             }
         }
     }
-//    private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<Q> unit, Class<Q> quantityClass) {
-//        Set<Unit<?>> knownUnits = unitsPerQuantity.get(quantityClass);
-//
-//        if (knownUnits == null) {
-//            knownUnits = new LinkedHashSet<>();
-//            unitsPerQuantity.put(quantityClass, knownUnits);
-//        }
-//
-//        knownUnits.add(unit);
-//
-//        namedUnits.put(unit, unit);
-//
-//        return unit;
-//    }
 
     static <Q extends Quantity<Q>> Unit<Q> getNamedUnitIfPresent(Unit<Q> unit) {
         Unit<?> namedUnit = namedUnits.get(unit);
         return namedUnit != null ? (Unit<Q>) namedUnit : unit;
-    }
-
-    public static <Q extends Quantity<Q>> Set<? extends Unit<Q>> unitsForQuantity(Class<Q> quantityClass) {
-        Set<Unit<?>> knownUnits = unitsPerQuantity.get(quantityClass);
-
-        if (knownUnits == null) {
-            return Collections.emptySet();
-        } else {
-            return (Set) Collections.unmodifiableSet(knownUnits);
-        }
     }
 
     public static <Q extends Quantity<Q>> UnitBuilder<Q> buildFromAny(Unit<?> unit) {

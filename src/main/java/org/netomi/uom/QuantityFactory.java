@@ -13,15 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package org.netomi.uom;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
+ * A factory interface to be able to create quantities of a specified quantity type.
  *
- * @param <Q>
+ * @param <Q> the quantity type
  *
  * @author Thomas Neidhart
  */

@@ -47,6 +47,9 @@ class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q>
     private final Map<Unit<Q>, Fraction> baseUnitMap;
 
     BaseUnit(String symbol, String name, Dimension dimension) {
+        Objects.requireNonNull(symbol);
+        Objects.requireNonNull(dimension);
+
         this.symbol      = symbol;
         this.name        = name;
         this.dimension   = dimension;

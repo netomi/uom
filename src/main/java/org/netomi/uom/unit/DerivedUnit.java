@@ -205,9 +205,8 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
     @Override
     public String getName() {
         // Does not really make sense to return a name concatenated
-        // from each unit element, return a string identifying the unit
-        // as unnamed.
-        return "UNNAMED";
+        // from each unit element, return an empty string.
+        return "";
     }
 
     @Override

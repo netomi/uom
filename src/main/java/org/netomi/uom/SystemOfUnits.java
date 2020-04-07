@@ -15,10 +15,22 @@
  */
 package org.netomi.uom;
 
-import java.util.Set;
-
+/**
+ * A {@link SystemOfUnits} is basically a container for a set of {@link Unit}'s.
+ */
 public interface SystemOfUnits {
+
+    /**
+     * Returns the name of the container.
+     *
+     * @return the name of the container.
+     */
     String getName();
 
-    Set<Unit<?>> getUnits();
+    /**
+     * Returns an {@link Iterable} containing all the units of this container.
+     *
+     * @return an iterable of all units contained in this container.
+     */
+    Iterable<Unit<?>> getUnits();
 }
