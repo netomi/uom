@@ -89,8 +89,6 @@ public class Quantities {
         @SuppressWarnings("unchecked")
         QuantityFactory<Q> quantityFactory = (QuantityFactory<Q>) factoryMap.get(quantityClass);
 
-        System.out.println("requesting quantity class " + quantityClass);
-
         return quantityFactory != null ?
                 quantityFactory :
                 (QuantityFactory<Q>) genericQuantityFactory;
