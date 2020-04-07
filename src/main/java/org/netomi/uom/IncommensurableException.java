@@ -29,6 +29,9 @@ import java.text.MessageFormat;
  */
 public class IncommensurableException extends RuntimeException {
 
+    /** Error message for overflow during conversion. */
+    public static final String ERROR_UNIT_DIMENSION_MISMATCH = "Dimension mismatch for units {0} and {1}.";
+
     /** Serializable version identifier. */
     private static final long serialVersionUID = 202003202132L;
 

@@ -17,7 +17,6 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Units;
 
 /**
@@ -47,11 +46,6 @@ public interface Area extends Quantity<Area> {
 
     static Area ofSquareMeter(double value) {
         return of(value, Units.SI.SQUARE_METER);
-    }
-
-    @Override
-    default Dimension getDimension() {
-        return Units.SI.SQUARE_METER.getDimension();
     }
 
     @Override

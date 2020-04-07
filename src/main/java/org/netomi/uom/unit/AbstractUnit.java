@@ -18,8 +18,6 @@ package org.netomi.uom.unit;
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.quantity.Quantities;
-import org.netomi.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -32,7 +30,9 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
 
     @Override
     public UnitConverter getConverterTo(Unit<Q> unit) {
-        TypeUtil.requireCommensurable(this, unit);
+        if (!isCompatible(unit)) {
+            throw new IncommensurableException(IncommensurableException.ERROR_UNIT_DIMENSION_MISMATCH, this, unit);
+        }
 
         UnitConverter thisConverter = getSystemConverter();
         UnitConverter thatConverter = unit.getSystemConverter().inverse();
@@ -121,13 +121,8 @@ abstract class AbstractUnit<Q extends Quantity<Q>> implements Unit<Q> {
     }
 
     @Override
-    public <T extends Quantity<T>> Unit<T> forQuantity(Class<T> quantityClass) {
-        // try to create a quantity of the requested type with this unit.
-        // if it works, we can safely cast.
-        Quantities.createQuantity(0, (Unit) this, quantityClass);
-        @SuppressWarnings("unchecked")
-        Unit<T> castUnit = (Unit<T>) this;
-        return castUnit;
+    public <T extends Quantity<T>> Unit<T> asType(Class<T> clazz) {
+        return (Unit<T>) this;
     }
 
     @Override

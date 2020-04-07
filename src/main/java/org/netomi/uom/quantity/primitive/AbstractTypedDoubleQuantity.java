@@ -191,7 +191,7 @@ public abstract class AbstractTypedDoubleQuantity<P extends DoubleQuantity<Q>, Q
     public static class GenericImpl extends AbstractTypedDoubleQuantity {
 
         public static DoubleQuantityFactory factory() {
-            return GenericImpl::new;
+            return (value, unit) -> new GenericImpl(value, unit);
         }
 
         private GenericImpl(double value, Unit<?> unit) {
