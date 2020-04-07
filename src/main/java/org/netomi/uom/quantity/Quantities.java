@@ -71,6 +71,7 @@ public class Quantities {
         registerInternalQuantityFactory(ElectricPotential.class,   DoubleElectricPotential.factory(),   DecimalElectricPotential.factory());
         registerInternalQuantityFactory(ElectricCharge.class,      DoubleElectricCharge.factory(),      DecimalElectricCharge.factory());
         registerInternalQuantityFactory(ElectricCapacitance.class, DoubleElectricCapacitance.factory(), DecimalElectricCapacitance.factory());
+        registerInternalQuantityFactory(ElectricResistance.class,  DoubleElectricResistance.factory(),  DecimalElectricResistance.factory());
 
         genericQuantityFactory = DelegateQuantityFactory.of(DoubleQuantity.factory(), DecimalQuantity.factory());
     }

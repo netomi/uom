@@ -146,6 +146,12 @@ public final class Units {
                                    .withName("FARAD")
                                    .build(), ElectricCapacitance.class);
 
+        public Unit<ElectricResistance> OHM =
+                addUnit(UnitBuilder.<ElectricResistance>fromAny(VOLT.divide(AMPERE))
+                                   .withSymbol("Ω")
+                                   .withName("OHM")
+                                   .build(), ElectricResistance.class);
+
         // Constants expressed in SI units.
         public final Unit<Speed>       C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
         public final Unit<?>           COULOMB_CONSTANT = buildFrom(VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND))).multipliedBy(8.987551787368176E9).withName("COULOMB CONSTANT").build();

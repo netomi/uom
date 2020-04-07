@@ -21,16 +21,16 @@ import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Units;
 
 /**
- * A {@link Quantity} representing a measure of an electric potential.
+ * A {@link Quantity} representing a measure of an electric resistance.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Electric_potential">Wikipedia: Electric potential</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Electrical_resistance_and_conductance">Wikipedia: Electric resistance</a>
  *
  * @author Thomas Neidhart
  */
-public interface ElectricPotential extends Quantity<ElectricPotential> {
+public interface ElectricResistance extends Quantity<ElectricResistance> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link ElectricPotential}.
+     * Convenience method to create a {@link Quantity} of type {@link ElectricResistance}.
      * <p>
      * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -39,34 +39,30 @@ public interface ElectricPotential extends Quantity<ElectricPotential> {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link ElectricPotential} instance for the given value.
+     * @return a new {@link ElectricResistance} instance for the given value.
      */
-    static ElectricPotential of(double value, Unit<ElectricPotential> unit) {
-        return Quantities.createQuantity(value, unit, ElectricPotential.class);
+    static ElectricResistance of(double value, Unit<ElectricResistance> unit) {
+        return Quantities.createQuantity(value, unit, ElectricResistance.class);
     }
 
-    static ElectricPotential ofVolt(double value) {
-        return of(value, Units.SI.VOLT);
+    static ElectricResistance ofOhm(double value) {
+        return of(value, Units.SI.OHM);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.VOLT.getDimension();
+        return Units.SI.OHM.getDimension();
     }
 
     @Override
-    ElectricPotential to(Unit<ElectricPotential> unit);
+    ElectricResistance to(Unit<ElectricResistance> unit);
 
     @Override
-    ElectricPotential add(Quantity<ElectricPotential> addend);
+    ElectricResistance add(Quantity<ElectricResistance> addend);
 
     @Override
-    ElectricPotential subtract(Quantity<ElectricPotential> subtrahend);
+    ElectricResistance subtract(Quantity<ElectricResistance> subtrahend);
 
     @Override
-    ElectricPotential negate();
-
-    default ElectricResistance divideByElectricCurrent(Quantity<ElectricCurrent> currentQuantity) {
-        return divide(currentQuantity).asTypedQuantity(ElectricResistance.class);
-    }
+    ElectricResistance negate();
 }
