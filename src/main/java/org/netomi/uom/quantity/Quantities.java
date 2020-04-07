@@ -72,6 +72,7 @@ public class Quantities {
         registerInternalQuantityFactory(ElectricCharge.class,      DoubleElectricCharge.factory(),      DecimalElectricCharge.factory());
         registerInternalQuantityFactory(ElectricCapacitance.class, DoubleElectricCapacitance.factory(), DecimalElectricCapacitance.factory());
         registerInternalQuantityFactory(ElectricResistance.class,  DoubleElectricResistance.factory(),  DecimalElectricResistance.factory());
+        registerInternalQuantityFactory(ElectricConductance.class, DoubleElectricConductance.factory(), DecimalElectricConductance.factory());
 
         genericQuantityFactory = DelegateQuantityFactory.of(DoubleQuantity.factory(), DecimalQuantity.factory());
     }
@@ -87,6 +88,8 @@ public class Quantities {
     public static <T extends Q, Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<T> quantityClass) {
         @SuppressWarnings("unchecked")
         QuantityFactory<Q> quantityFactory = (QuantityFactory<Q>) factoryMap.get(quantityClass);
+
+        System.out.println("requesting quantity class " + quantityClass);
 
         return quantityFactory != null ?
                 quantityFactory :

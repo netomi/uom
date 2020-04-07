@@ -28,7 +28,7 @@ import java.util.*;
  *
  * @author Thomas Neidhart
  */
-class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements CompositeUnit<Q> {
+class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements CompositeUnit {
 
     private static final String EMPTY_SYMBOL = "1";
 
