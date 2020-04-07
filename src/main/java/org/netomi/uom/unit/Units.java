@@ -152,6 +152,12 @@ public final class Units {
                                    .withName("OHM")
                                    .build(), ElectricResistance.class);
 
+        public Unit<ElectricConductance> SIEMENS =
+                addUnit(UnitBuilder.<ElectricConductance>fromAny(ONE.divide(OHM))
+                                   .withSymbol("S")
+                                   .withName("SIEMENS")
+                                   .build(), ElectricConductance.class);
+
         // Constants expressed in SI units.
         public final Unit<Speed>       C                = buildFrom(METER_PER_SECOND).multipliedBy(299792458, 1).withName("SPEED OF LIGHT").build();
         public final Unit<?>           COULOMB_CONSTANT = buildFrom(VOLT.multiply(METRE).divide(AMPERE.multiply(SECOND))).multipliedBy(8.987551787368176E9).withName("COULOMB CONSTANT").build();
