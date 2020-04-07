@@ -15,6 +15,10 @@
  */
 package org.netomi.uom;
 
+import org.netomi.uom.quantity.Quantities;
+import org.netomi.uom.unit.Dimension;
+import org.netomi.uom.util.TypeUtil;
+
 import java.math.BigDecimal;
 
 /**
@@ -213,10 +217,60 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
 
     Quantity<?> reciprocal();
 
-    default <R extends Quantity<R>> Quantity<R> asQuantity(Class<R> quantityClass) {
-        // TODO: implement dimension check
-        return (Quantity<R>) this;
+    /**
+     * Returns the dimension of this quantity.
+     * <p>
+     * The default implementation returns the dimension of the unit in which this quantity
+     * is expressed. For full type-safety when using custom quantities, overwrite this method
+     * to return the supported dimension of this quantity.
+     * <p>Built-in quantities return the compatible dimension for this quantity.
+     *
+     * @return the {@link Dimension} representing this quantity.
+     */
+    default Dimension getDimension() {
+        return getUnit().getDimension();
     }
 
+    /**
+     * Returns if the given unit is compatible with the dimension of this quantity.
+     *
+     * @param unit  the unit to check for compatibility.
+     * @return {@code true} if the unit is compatible, {@code false} otherwise.
+     */
+    default boolean isCompatible(Unit<?> unit) {
+        return getDimension().equals(unit.getDimension());
+    }
+
+    /**
+     * Performs a cast of this quantity to the specified generic quantity.
+     * <p>
+     * If a typed factory for the requested quantity type is registered,
+     * it is verified that this quantity is compatible the specified quantityClass.
+     * If no concrete quantity factory is registered for this quantityClass, no
+     * check can be performed.
+     *
+     * @param quantityClass the quantity class to which this quantity should be cast.
+     * @param <R> the quantity type
+     * @return this quantity cast as the requested quantity type.
+     * @throws IncommensurableException if this quantity is not compatible with the requested quantity type.
+     */
+    default <R extends Quantity<R>> Quantity<R> asQuantity(Class<R> quantityClass) {
+        Quantity<R> quantity = Quantities.createQuantity(doubleValue(), (Unit) getUnit(), quantityClass);
+        TypeUtil.requireCommensurable(quantity, getUnit());
+        return quantity;
+    }
+
+    /**
+     * Performs a cast of this quantity to the specified typed quantity.
+     * <p>
+     * If no typed factory is registered for requested quantity type, a
+     * {@link ClassCastException} is thrown.
+     *
+     * @param quantityClass the quantity class to which this quantity should be cast.
+     * @param <T> the quantity type
+     * @return this quantity cast as the requested quantity type.
+     * @throws IncommensurableException if this quantity is not compatible with the requested quantity type.
+     * @throws ClassCastException if no concrete quantity class is registered for the specified quantity class.
+     */
     <T extends R, R extends Quantity<R>> T asTypedQuantity(Class<T> quantityClass);
 }

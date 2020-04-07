@@ -63,7 +63,7 @@ public interface Unit<Q extends Quantity<Q>> {
 
     boolean isCompatible(Unit<?> unit);
 
-    <T extends Quantity<T>> Unit<T> asType(Class<T> clazz);
+    <T extends Quantity<T>> Unit<T> forQuantity(Class<T> quantityClass);
 
     Unit<Q> withSymbol(String symbol);
 

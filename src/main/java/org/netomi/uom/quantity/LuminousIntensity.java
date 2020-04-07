@@ -17,6 +17,7 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Units;
 
 /**
@@ -46,6 +47,11 @@ public interface LuminousIntensity extends Quantity<LuminousIntensity> {
 
     static LuminousIntensity ofCandela(double value) {
         return of(value, Units.SI.CANDELA);
+    }
+
+    @Override
+    default Dimension getDimension() {
+        return Units.SI.CANDELA.getDimension();
     }
 
     @Override

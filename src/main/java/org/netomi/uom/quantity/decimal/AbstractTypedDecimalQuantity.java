@@ -209,7 +209,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
     public static class GenericImpl extends AbstractTypedDecimalQuantity {
 
         public static DecimalQuantityFactory factory() {
-            return (value, context, unit) -> new GenericImpl(value, context, unit);
+            return GenericImpl::new;
         }
 
         public GenericImpl(BigDecimal value, MathContext mathContext, Unit<?> unit) {

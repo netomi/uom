@@ -15,11 +15,13 @@
  */
 package org.netomi.uom.quantity;
 
+import org.netomi.uom.IncommensurableException;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.decimal.*;
 import org.netomi.uom.quantity.primitive.*;
+import org.netomi.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -84,15 +86,12 @@ public class Quantities {
     }
 
     public static <T extends Q, Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<T> quantityClass) {
-        QuantityFactory<?> factory = null;
+        @SuppressWarnings("unchecked")
+        QuantityFactory<Q> quantityFactory = (QuantityFactory<Q>) factoryMap.get(quantityClass);
 
-        if (quantityClass != null) {
-            factory = factoryMap.get(quantityClass);
-        }
-
-        return factory == null ?
-                (QuantityFactory<Q>) genericQuantityFactory :
-                (QuantityFactory<Q>) factory;
+        return quantityFactory != null ?
+                quantityFactory :
+                (QuantityFactory<Q>) genericQuantityFactory;
     }
 
     public static <T extends Q, Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
@@ -103,36 +102,81 @@ public class Quantities {
     // hide constructor.
     private Quantities() {}
 
-    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(double value, Unit<Q> unit) {
-        return (Quantity<Q>) getQuantityFactory(null).create(value, (Unit) unit);
+    // create methods for generic quantities.
+
+    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(double  value,
+                                                                     Unit<Q> unit) {
+        @SuppressWarnings("unchecked")
+        Quantity<Q> quantity = ((QuantityFactory<Q>) genericQuantityFactory).create(value, unit);
+        return quantity;
     }
 
-    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(double value, Unit<Q> unit, Class<T> quantity) {
-        return (T) getQuantityFactory(quantity).create(value, (Unit) unit);
+    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal value,
+                                                                     Unit<Q>    unit) {
+        @SuppressWarnings("unchecked")
+        Quantity<Q> quantity = ((QuantityFactory<Q>) genericQuantityFactory).create(value, unit);
+        return quantity;
     }
 
-    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal value, Unit<Q> unit) {
-        return (Quantity<Q>) getQuantityFactory(null).create(value, (Unit) unit);
+    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal  value,
+                                                                     MathContext mathContext,
+                                                                     Unit<Q>     unit) {
+        @SuppressWarnings("unchecked")
+        Quantity<Q> quantity = ((QuantityFactory<Q>) genericQuantityFactory).create(value, mathContext, unit);
+        return quantity;
     }
 
-    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
-        return (Quantity<Q>) getQuantityFactory(null).create(value, mathContext, (Unit) unit);
+    // create method for typed quantities.
+
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(double   value,
+                                                                        Unit<Q>  unit,
+                                                                        Class<T> quantityClass) {
+        @SuppressWarnings("unchecked")
+        T quantity = (T) getQuantityFactory(quantityClass).create(value, unit);
+        TypeUtil.requireCommensurable(quantity, unit);
+        return quantity;
     }
 
-    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, Unit<Q> unit, Class<T> quantity) {
-        return (T) getQuantityFactory(quantity).create(value, (Unit) unit);
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value,
+                                                                        Unit<Q>    unit,
+                                                                        Class<T>   quantityClass) {
+        @SuppressWarnings("unchecked")
+        T quantity = (T) getQuantityFactory(quantityClass).create(value, unit);
+        TypeUtil.requireCommensurable(quantity, unit);
+        return quantity;
     }
 
-    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal value, MathContext mathContext, Unit<Q> unit, Class<T> quantity) {
-        return (T) getQuantityFactory(quantity).create(value, mathContext, (Unit) unit);
+    public static <T extends Q, Q extends Quantity<Q>> T createQuantity(BigDecimal  value,
+                                                                        MathContext mathContext,
+                                                                        Unit<Q>     unit,
+                                                                        Class<T>    quantityClass) {
+        @SuppressWarnings("unchecked")
+        T quantity = (T) getQuantityFactory(quantityClass).create(value, mathContext, unit);
+        TypeUtil.requireCommensurable(quantity, unit);
+        return quantity;
     }
 
-    public static <T extends Q, Q extends Quantity<Q>> T getQuantityAsType(Quantity<?> quantity, Class<T> clazz) {
+    public static <T extends Q, Q extends Quantity<Q>> T getQuantityAsType(Quantity<?> quantity, Class<T> quantityClass) {
         if (quantity instanceof DoubleQuantity<?>) {
-            return (T) createQuantity(quantity.doubleValue(), quantity.getUnit(), (Class) clazz);
-        } else {
-            return (T) createQuantity(quantity.decimalValue(), ((DecimalQuantity) quantity).getMathContext(), quantity.getUnit(), (Class) clazz);
+            @SuppressWarnings("unchecked")
+            T typedQuantity = (T) createQuantity(quantity.doubleValue(), (Unit<Q>) quantity.getUnit(), quantityClass);
+
+            TypeUtil.requireCommensurable(typedQuantity, quantity.getUnit());
+            return typedQuantity;
+        } else if (quantity instanceof DecimalQuantity<?>) {
+            DecimalQuantity<?> decimalQuantity = (DecimalQuantity<?>) quantity;
+
+            @SuppressWarnings("unchecked")
+            T typedQuantity = (T) createQuantity(quantity.decimalValue(),
+                                                 decimalQuantity.getMathContext(),
+                                                 (Unit<Q>) quantity.getUnit(),
+                                                 quantityClass);
+
+            TypeUtil.requireCommensurable(typedQuantity, quantity.getUnit());
+            return typedQuantity;
         }
+
+        throw new AssertionError("unknown quantity class");
     }
 
     static class DelegateQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
