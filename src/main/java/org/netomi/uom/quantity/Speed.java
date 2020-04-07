@@ -17,6 +17,7 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Units;
 
 /**
@@ -46,6 +47,11 @@ public interface Speed extends Quantity<Speed> {
 
     static Speed ofMeterPerSecond(double value) {
         return of(value, Units.SI.METER_PER_SECOND);
+    }
+
+    @Override
+    default Dimension getDimension() {
+        return Units.SI.METER_PER_SECOND.getDimension();
     }
 
     @Override

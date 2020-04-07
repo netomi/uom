@@ -17,6 +17,7 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Units;
 
 /**
@@ -46,6 +47,11 @@ public interface ElectricCurrent extends Quantity<ElectricCurrent> {
 
     static ElectricCurrent ofAmpere(double value) {
         return of(value, Units.SI.AMPERE);
+    }
+
+    @Override
+    default Dimension getDimension() {
+        return Units.SI.AMPERE.getDimension();
     }
 
     @Override
