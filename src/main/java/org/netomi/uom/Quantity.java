@@ -223,7 +223,8 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * The default implementation returns the dimension of the unit in which this quantity
      * is expressed. For full type-safety when using custom quantities, overwrite this method
      * to return the supported dimension of this quantity.
-     * <p>Built-in quantities return the compatible dimension for this quantity.
+     * <p>
+     * All built-in quantities return the compatible dimension for this quantity.
      *
      * @return the {@link Dimension} representing this quantity.
      */
