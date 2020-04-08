@@ -38,7 +38,7 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q> {
+class BaseUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     private final String    symbol;
     private final String    name;
@@ -89,6 +89,11 @@ class BaseUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q>
     @Override
     public Map<? extends Unit<?>, Fraction> getBaseUnits() {
         return baseUnitMap;
+    }
+
+    @Override
+    public UnitElement[] getUnitElements() {
+        return new UnitElement[] { new UnitElement(this, Fraction.ONE) };
     }
 
     @Override

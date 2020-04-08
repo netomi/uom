@@ -25,8 +25,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.function.UnaryOperator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for the {@link Prefixes.Metric} class.
@@ -55,6 +54,18 @@ public class MetricPrefixTest {
         checkFactoryMethod(Prefixes.Metric::ATTO , Prefixes.Metric.ATTO , 1e-18);
         checkFactoryMethod(Prefixes.Metric::ZEPTO, Prefixes.Metric.ZEPTO, 1e-21);
         checkFactoryMethod(Prefixes.Metric::YOCTO, Prefixes.Metric.YOCTO, 1e-24);
+    }
+
+    @Test
+    public void withExponent() {
+        assertSame(Prefixes.Metric.KILO, Prefixes.Metric.MILLI.withExponent(3));
+
+        assertEquals(10,    Prefixes.Metric.MILLI.withExponent(4).getBase());
+        assertEquals(4,     Prefixes.Metric.MILLI.withExponent(4).getExponent());
+        assertEquals("10⁴", Prefixes.Metric.MILLI.withExponent(4).getSymbol());
+
+        assertEquals(UnitConverters.pow(10, 4), Prefixes.Metric.MILLI.withExponent(4).getUnitConverter());
+        assertSame(Prefixes.Metric.KILO, Prefixes.Metric.MILLI.withExponent(4).withExponent(3));
     }
 
     private static void checkFactoryMethod(UnaryOperator<Unit<?>> factoryMethod, Prefix prefix, double multiplier) {

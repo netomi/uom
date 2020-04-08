@@ -436,7 +436,7 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         assertEquals(25. * 0.005, result.decimalValue().doubleValue(), eps);
 
         if (getSystemUnit().getDimension() != Dimensions.NONE) {
-            assertSame(getSystemUnit().multiply(getSystemUnit()), result.getUnit());
+            assertEquals(getSystemUnit().multiply(getSystemUnit()), result.getUnit());
         }
     }
 
@@ -473,7 +473,7 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         assertEquals(1. / 100., result.doubleValue(), eps);
         assertEquals(1. / 100., result.decimalValue().doubleValue(), eps);
 
-        assertSame(Units.ONE.divide(getSystemUnit()), result.getUnit());
+        assertEquals(Units.ONE.divide(getSystemUnit()), result.getUnit());
 
         // convert to milli unit.
         Q quantityInMilli = (Q) quantity.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
@@ -487,7 +487,7 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         assertEquals(1. / 100000., resultInMilli.doubleValue(), eps);
         assertEquals(1. / 100000., resultInMilli.decimalValue().doubleValue(), eps);
 
-        assertSame(Units.ONE.divide(getSystemUnit().withPrefix(Prefixes.Metric.MILLI)), resultInMilli.getUnit());
+        assertEquals(Units.ONE.divide(getSystemUnit().withPrefix(Prefixes.Metric.MILLI)), resultInMilli.getUnit());
     }
 
     @ParameterizedTest

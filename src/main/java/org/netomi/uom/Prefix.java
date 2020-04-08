@@ -49,6 +49,14 @@ public interface Prefix {
     int getExponent();
 
     /**
+     * Returns a prefix with the same base but given exponent.
+     *
+     * @param exponent the exponent of the prefix.
+     * @return a {@link Prefix} with the specified exponent.
+     */
+    Prefix withExponent(int exponent);
+
+    /**
      * Returns a {@link UnitConverter} instance representing this prefix.
      *
      * @return a unit converter representing this prefix.

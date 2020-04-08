@@ -21,6 +21,7 @@ import org.netomi.uom.UnitConverter;
 import org.netomi.uom.math.Fraction;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * A {@link Unit} implementation that delegates relevant calls to a delegate unit.
@@ -29,11 +30,12 @@ import java.util.Map;
  *
  * @author Thomas Neidhart
  */
-abstract class DelegateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Unit<Q> {
+abstract class DelegateUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     private final Unit<Q> delegateUnit;
 
     protected DelegateUnit(Unit<Q> delegateUnit) {
+        Objects.requireNonNull(delegateUnit);
         this.delegateUnit = delegateUnit;
     }
 
@@ -58,7 +60,9 @@ abstract class DelegateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> imple
 
     @Override
     public Unit<Q> getSystemUnit() {
-        return delegateUnit.getSystemUnit();
+        return isSystemUnit() ?
+                this :
+                delegateUnit.getSystemUnit();
     }
 
     @Override
@@ -69,5 +73,10 @@ abstract class DelegateUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> imple
     @Override
     public Map<? extends Unit<?>, Fraction> getBaseUnits() {
         return delegateUnit.getBaseUnits();
+    }
+
+    @Override
+    public UnitElement[] getUnitElements() {
+        return delegateUnit.getUnitElements();
     }
 }

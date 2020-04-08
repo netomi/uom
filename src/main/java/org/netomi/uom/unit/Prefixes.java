@@ -17,6 +17,8 @@ package org.netomi.uom.unit;
 
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
+import org.netomi.uom.math.Fraction;
+import org.netomi.uom.util.StringUtil;
 
 /**
  * A utility class to provide access to different {@link Prefix} implementations.
@@ -264,6 +266,17 @@ public final class Prefixes {
         }
 
         @Override
+        public Prefix withExponent(int exponent) {
+            for (Metric m : values()) {
+                if (m.getExponent() == exponent) {
+                    return m;
+                }
+            }
+
+            return new GenericPrefix(this, getBase(), exponent);
+        }
+
+        @Override
         public UnitConverter getUnitConverter() {
             return UnitConverters.pow(getBase(), getExponent());
         }
@@ -385,8 +398,62 @@ public final class Prefixes {
         }
 
         @Override
+        public Prefix withExponent(int exponent) {
+            for (Binary m : values()) {
+                if (m.getExponent() == exponent) {
+                    return m;
+                }
+            }
+
+            return new GenericPrefix(this, getBase(), exponent);
+        }
+
+        @Override
         public UnitConverter getUnitConverter() {
             return UnitConverters.pow(getBase(), getExponent());
+        }
+    }
+
+    private static class GenericPrefix implements Prefix {
+
+        private final Prefix prototype;
+        private final int    base;
+        private final int    exponent;
+
+        GenericPrefix(Prefix prototype, int base, int exponent) {
+            this.prototype = prototype;
+            this.base      = base;
+            this.exponent  = exponent;
+        }
+
+        @Override
+        public String getName() {
+            return getSymbol();
+        }
+
+        @Override
+        public String getSymbol() {
+            return String.format("%d%s", base, StringUtil.toUnicodeString(Fraction.of(exponent)));
+        }
+
+        @Override
+        public int getBase() {
+            return base;
+        }
+
+        @Override
+        public int getExponent() {
+            return exponent;
+        }
+
+        @Override
+        public Prefix withExponent(int exponent) {
+            return prototype.withExponent(exponent);
+        }
+
+        @Override
+        public UnitConverter getUnitConverter() {
+            return UnitConverters.pow(base, exponent);
         }
     }
 }

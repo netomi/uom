@@ -19,9 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.SystemOfUnits;
 import org.netomi.uom.Unit;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * A simple implementation of a container of units.
@@ -30,22 +28,26 @@ import java.util.Set;
  */
 abstract class AbstractSystemOfUnits implements SystemOfUnits {
 
-    private final String       name;
-    private final Set<Unit<?>> units;
+    private final String              name;
+    private final Collection<Unit<?>> units;
 
     protected AbstractSystemOfUnits(String name) {
         this.name  = name;
-        this.units = new HashSet<>();
+        this.units = new ArrayList<>();
     }
 
-    protected <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<Q> unit, Class<Q> quantityClass) {
+    protected <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<?> unit, Class<Q> quantityClass) {
         this.units.add(unit);
-        return unit;
+        return (Unit<Q>) unit;
+    }
+
+    protected <Q extends Quantity<Q>> Unit<Q> buildUnit(Unit<?> unit, Class<Q> quantityClass) {
+        return (Unit<Q>) unit;
     }
 
     @Override
     public Iterable<Unit<?>> getUnits() {
-        return Collections.unmodifiableSet(units);
+        return Collections.unmodifiableCollection(units);
     }
 
     @Override

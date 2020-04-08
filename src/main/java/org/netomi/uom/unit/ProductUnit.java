@@ -28,16 +28,16 @@ import java.util.*;
  *
  * @author Thomas Neidhart
  */
-class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements CompositeUnit {
+public class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     private static final String EMPTY_SYMBOL = "1";
 
     /**
-     * A cache for {@link DerivedUnit} instances. Wrap values into a weak
+     * A cache for {@link ProductUnit} instances. Wrap values into a weak
      * reference as the keys are contained in the values, creating a
      * circular reference which would prevent the keys from being collected.
      */
-    private static final Map<UnitElementWrapper, WeakReference<DerivedUnit<?>>> unitCache =
+    private static final Map<UnitElementWrapper, WeakReference<ProductUnit<?>>> unitCache =
             Collections.synchronizedMap(new WeakHashMap<>());
 
     private final UnitElementWrapper     unitElements;
@@ -95,12 +95,16 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
             return newElements[0].getUnit();
         }
 
-        DerivedUnit<?> cachedUnit = getCachedUnit(newElements);
+        ProductUnit<?> cachedUnit = getCachedUnit(newElements);
         if (cachedUnit != null) {
-            return Units.getNamedUnitIfPresent(cachedUnit);
+            return cachedUnit;
         } else {
-            DerivedUnit<?> unit = new DerivedUnit<>(UnitElementWrapper.of(newElements));
-            putUnitIntoCache(unit);
+            ProductUnit<?> unit = new ProductUnit<>(UnitElementWrapper.of(newElements));
+            // do not cache dimensionless units, currently they are equal to each other
+            // if they have a unit system converter ("1" == "rad").
+            if (unit.getDimension() != Dimensions.NONE) {
+                putUnitIntoCache(unit);
+            }
             return unit;
         }
     }
@@ -108,26 +112,21 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
     private static void collectElements(Unit<?>           unit,
                                         Fraction          fraction,
                                         List<UnitElement> elements) {
-
-        if (unit instanceof CompositeUnit) {
-            for (UnitElement e : ((CompositeUnit) unit).getUnitElements().elements) {
-                elements.add(e.multiply(fraction));
-            }
-        } else {
-            elements.add(new UnitElement(unit, fraction));
+        for (UnitElement e : unit.getUnitElements()) {
+            elements.add(e.multiply(fraction));
         }
     }
 
-    private static DerivedUnit<?> getCachedUnit(UnitElement[] elements) {
-        WeakReference<DerivedUnit<?>> reference = unitCache.get(UnitElementWrapper.of(elements));
+    private static ProductUnit<?> getCachedUnit(UnitElement[] elements) {
+        WeakReference<ProductUnit<?>> reference = unitCache.get(UnitElementWrapper.of(elements));
         return reference != null ? reference.get() : null;
     }
 
-    private static void putUnitIntoCache(DerivedUnit<?> unit) {
+    private static void putUnitIntoCache(ProductUnit<?> unit) {
         unitCache.put(unit.unitElements, new WeakReference<>(unit));
     }
 
-    protected DerivedUnit() {
+    protected ProductUnit() {
         this.unitElements = UnitElementWrapper.of(new UnitElement[0]);
 
         this.cachedSymbol          = EMPTY_SYMBOL;
@@ -136,7 +135,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
         this.cachedBaseUnitMap     = Collections.emptyMap();
     }
 
-    protected DerivedUnit(UnitElementWrapper unitElements) {
+    protected ProductUnit(UnitElementWrapper unitElements) {
         this.unitElements          = unitElements;
         this.cachedSymbol          = calculateSymbol();
         this.cachedDimension       = calculateDimension();
@@ -147,8 +146,8 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
     }
 
     @Override
-    public UnitElementWrapper getUnitElements() {
-        return unitElements;
+    public UnitElement[] getUnitElements() {
+        return unitElements.elements;
     }
 
     private String calculateSymbol() {
@@ -163,6 +162,15 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
             }
         }
 
+        // remove final bullet char.
+        if (numerator.length() > 0) {
+            numerator.deleteCharAt(numerator.length() - 1);
+        }
+
+        if (denominator.length() > 0) {
+            denominator.deleteCharAt(denominator.length() - 1);
+        }
+
         if (numerator.length() == 0) {
             numerator.append('1');
         }
@@ -172,7 +180,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
             sb.append(numerator);
 
             if (denominator.length() > 0) {
-                sb.append('/');
+                sb.append('\u2215');
             }
         }
 
@@ -188,6 +196,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
         if (Fraction.ONE.compareTo(fraction) != 0) {
             StringUtil.appendUnicodeString(fraction, stringBuilder);
         }
+        stringBuilder.append('\u2219');
     }
 
     private Dimension calculateDimension() {
@@ -242,7 +251,7 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
             throw new AssertionError(String.format("system unit dimension != this dimension: %s, %s", systemUnit, this));
         }
 
-        return (Unit<Q>) systemUnit;
+        return (Unit<Q>) Units.getNamedUnitIfPresent(systemUnit);
     }
 
     @Override
@@ -316,5 +325,45 @@ class DerivedUnit<Q extends Quantity<Q>> extends AbstractUnit<Q> implements Comp
             }
         }
         return baseUnitMap;
+    }
+
+    /**
+     * Internal class used by {@link Unit} implementations to return an
+     * array of {@link UnitElement}'s this unit is composed of.
+     * <p>
+     * The only reason such a wrapper has been created is because plain arrays can
+     * not be put into a {@link java.util.WeakHashMap} as {@link #hashCode()} and
+     * {@link #equals(Object)} do not take such arrays into account. The wrapper
+     * correctly implements these methods.
+     */
+    static class UnitElementWrapper {
+        final UnitElement[] elements;
+
+        static UnitElementWrapper of(UnitElement[] elements) {
+            return new UnitElementWrapper(elements);
+        }
+
+        private UnitElementWrapper(UnitElement[] elements) {
+            this.elements = elements;
+        }
+
+        @Override
+        public int hashCode() {
+            return Arrays.hashCode(elements);
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            UnitElementWrapper other = (UnitElementWrapper) o;
+            return Arrays.equals(elements, other.elements);
+        }
+
+        @Override
+        public String toString() {
+            return Arrays.toString(elements);
+        }
     }
 }

@@ -15,11 +15,15 @@
  */
 package org.netomi.uom;
 
+import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.unit.Dimension;
+import org.netomi.uom.quantity.Quantities;
+import org.netomi.uom.unit.*;
+import org.netomi.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Represents a unit of measurement to express the magnitude of a quantity.
@@ -30,21 +34,21 @@ import java.util.Map;
  *
  * @author Thomas Neidhart
  */
-public interface Unit<Q extends Quantity<Q>> {
+public abstract class Unit<Q extends Quantity<Q>> {
 
     /**
      * Returns the symbol associated with this unit.
      *
      * @return the symbol of the unit.
      */
-    String getSymbol();
+    public abstract String getSymbol();
 
     /**
      * Returns the name associated with this unit, optional.
      *
      * @return the name of the unit.
      */
-    String getName();
+    public abstract String getName();
 
     /**
      * Returns the {@link Dimension} of this unit.
@@ -57,7 +61,7 @@ public interface Unit<Q extends Quantity<Q>> {
      *
      * @return the dimension associated with this unit.
      */
-    Dimension getDimension();
+    public abstract Dimension getDimension();
 
     /**
      * Returns whether this unit is compatible with the provided unit.
@@ -65,13 +69,107 @@ public interface Unit<Q extends Quantity<Q>> {
      * Two units are considered to be compatible if they have the same
      * dimension.
      *
-     * @param unit the unit to check for compatibility.
+     * @param that the unit to check for compatibility.
      * @return {@code true} if the two units are compatible, {@code false} otherwise.
      */
-    boolean isCompatible(Unit<?> unit);
+    public boolean isCompatible(Unit<?> that) {
+        // Two units are compatible if their dimensions are equal.
+        Dimension thisDimension = this.getDimension();
+        Dimension thatDimension = that.getDimension();
+
+        return thisDimension.equals(thatDimension);
+    }
+
+    public boolean isSystemUnit() {
+        return getSystemConverter().isIdentity();
+    }
+
+    public abstract Unit<Q> getSystemUnit();
+
+    public abstract UnitConverter getSystemConverter();
+
+    public UnitConverter getConverterTo(Unit<Q> unit) {
+        TypeUtil.requireCommensurable(this, unit);
+
+        UnitConverter thisConverter = getSystemConverter();
+        UnitConverter thatConverter = unit.getSystemConverter().inverse();
+
+        return thisConverter.andThen(thatConverter);
+    }
+
+    public UnitConverter getConverterToAny(Unit<?> unit) {
+        return getConverterTo((Unit) unit);
+    }
+
+    public abstract Map<? extends Unit<?>, Fraction> getBaseUnits();
+
+    // builder methods thats return a new unit.
+
+    public Unit<Q> shift(double offset) {
+        return transform(UnitConverters.shift(offset));
+    }
+
+    public Unit<Q> multiply(double multiplier) {
+        return transform(UnitConverters.multiply(multiplier));
+    }
+
+    public Unit<Q> multiply(BigDecimal multiplier) {
+        return transform(UnitConverters.multiply(multiplier));
+    }
+
+    public Unit<Q> multiply(long numerator, long denominator) {
+        return transform(UnitConverters.multiply(numerator, denominator));
+    }
+
+    public Unit<Q> transform(UnitConverter converter) {
+        return TransformedUnit.of(this, converter);
+    }
+
+    public Unit<?> multiply(Unit<?> that) {
+        return this == Units.ONE ? that :
+               that == Units.ONE ? this :
+                       ProductUnit.ofProduct(this, Fraction.ONE, that, Fraction.ONE);
+    }
+
+    public Unit<?> divide(Unit<?> that) {
+        return that == Units.ONE ? this :
+               ProductUnit.ofProduct(this, Fraction.ONE, that, Fraction.of(-1));
+    }
+
+    public Unit<?> pow(int n) {
+        return n == 0 ? Units.ONE :
+               n == 1 ? this      :
+                        ProductUnit.ofProduct(this, Fraction.of(n));
+    }
+
+    public Unit<?> root(int n) {
+        if (n <= 0) {
+            throw new IllegalArgumentException("n must be a positive integer.");
+        }
+
+        return n == 1 ? this :
+               ProductUnit.ofProduct(this, Fraction.of(1, n));
+    }
+
+    public Unit<?> inverse() {
+        return this == Units.ONE ? this :
+               ProductUnit.ofProduct(Units.ONE, Fraction.ONE, this, Fraction.of(-1));
+    }
+
+    public Unit<Q> withSymbol(String symbol) {
+        return NamedUnit.withSymbol(this, symbol);
+    }
+
+    public Unit<Q> withName(String name) {
+        return NamedUnit.withName(this, name);
+    }
+
+    public Unit<Q> withPrefix(Prefix prefix) {
+        return PrefixedUnit.withPrefix(this, prefix);
+    }
 
     /**
-     * Casts this unit to the specified quantity type if compatible.
+     * Casts this unit to the specified quantity type if it is compatible.
      *
      * @param quantityClass the class of the quantity type to cast to.
      * @param <T> the quantity type.
@@ -79,43 +177,38 @@ public interface Unit<Q extends Quantity<Q>> {
      * @throws IncommensurableException if the dimension of this unit does
      * not match the dimension of the quantity.
      */
-    <T extends Quantity<T>> Unit<T> forQuantity(Class<T> quantityClass);
+    public <T extends Quantity<T>> Unit<T> forQuantity(Class<T> quantityClass) {
+        // try to create a quantity of the requested type with this unit.
+        // if it works, we can safely cast.
+        Quantities.createQuantity(0, (Unit) this, quantityClass);
+        @SuppressWarnings("unchecked")
+        Unit<T> castUnit = (Unit<T>) this;
+        return castUnit;
+    }
 
-    boolean isSystemUnit();
+    // for internal use only.
 
-    Unit<Q> getSystemUnit();
+    public abstract UnitElement[] getUnitElements();
 
-    UnitConverter getSystemConverter();
+    @Override
+    public int hashCode() {
+        return Objects.hash(getDimension(), getSystemConverter());
+    }
 
-    UnitConverter getConverterTo(Unit<Q> unit);
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Unit)) return false;
 
-    UnitConverter getConverterToAny(Unit<?> unit);
+        // TODO: implement a meaningful equals also for dimensionless units.
 
-    Unit<Q> shift(double offset);
+        Unit<?> otherUnit = (Unit<?>) o;
+        return Objects.equals(getDimension(),       otherUnit.getDimension()) &&
+               Objects.equals(getSystemConverter(), otherUnit.getSystemConverter());
+    }
 
-    Unit<Q> multiply(double multiplier);
-
-    Unit<Q> multiply(BigDecimal multiplier);
-
-    Unit<Q> multiply(long numerator, long denominator);
-
-    Unit<Q> transform(UnitConverter converter);
-
-    Unit<?> multiply(Unit<?> that);
-
-    Unit<?> divide(Unit<?> that);
-
-    Unit<?> pow(int n);
-
-    Unit<?> root(int n);
-
-    Unit<?> inverse();
-
-    Map<? extends Unit<?>, Fraction> getBaseUnits();
-
-    Unit<Q> withSymbol(String symbol);
-
-    Unit<Q> withName(String name);
-
-    Unit<Q> withPrefix(Prefix prefix);
+    @Override
+    public String toString() {
+        return String.format("%s{%s}", getSymbol(), getDimension());
+    }
 }

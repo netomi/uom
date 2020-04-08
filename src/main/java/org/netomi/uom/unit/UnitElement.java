@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-class UnitElement {
+public class UnitElement {
     private final Unit<?>  unit;
     private final Fraction fraction;
 

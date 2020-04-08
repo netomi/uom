@@ -25,8 +25,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.function.UnaryOperator;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
  * Unit tests for the {@link Prefixes.Binary} class.
@@ -43,6 +43,18 @@ public class BinaryPrefixTest {
         checkFactoryMethod(Prefixes.Binary::EXBI, Prefixes.Binary.EXBI, Math.pow(1024, 6));
         checkFactoryMethod(Prefixes.Binary::ZEBI, Prefixes.Binary.ZEBI, Math.pow(1024, 7));
         checkFactoryMethod(Prefixes.Binary::YOBI, Prefixes.Binary.YOBI, Math.pow(1024, 8));
+    }
+
+    @Test
+    public void withExponent() {
+        assertSame(Prefixes.Binary.GIBI, Prefixes.Binary.KIBI.withExponent(3));
+
+        assertEquals(1024,    Prefixes.Binary.KIBI.withExponent(-1).getBase());
+        assertEquals(-1,      Prefixes.Binary.KIBI.withExponent(-1).getExponent());
+        assertEquals("1024⁻¹", Prefixes.Binary.KIBI.withExponent(-1).getSymbol());
+
+        assertEquals(UnitConverters.pow(1024, -1), Prefixes.Binary.KIBI.withExponent(-1).getUnitConverter());
+        assertSame(Prefixes.Binary.GIBI, Prefixes.Binary.KIBI.withExponent(-1).withExponent(3));
     }
 
     private static void checkFactoryMethod(UnaryOperator<Unit<?>> factoryMethod, Prefix prefix, double multiplier) {
