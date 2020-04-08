@@ -19,7 +19,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 
 /**
- * A factory interface to be able to create quantities of a specified quantity type.
+ * A factory interface to be able to create quantities of a specific quantity type.
  *
  * @param <Q> the quantity type
  *
