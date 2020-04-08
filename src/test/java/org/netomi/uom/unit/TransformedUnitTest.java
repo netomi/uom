@@ -41,7 +41,7 @@ public class TransformedUnitTest {
                      unit.getConverterToAny(Units.Imperial.YARD));
 
         // m + 200.23
-        unit = from(parentUnit).shiftedBy(BigDecimal.valueOf(200.23)).build();
+        unit = TransformedUnit.of(parentUnit, UnitConverters.shift(BigDecimal.valueOf(200.23)));
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
@@ -62,7 +62,7 @@ public class TransformedUnitTest {
                      unit.getConverterToAny(Units.Imperial.YARD));
 
         // m * 2.5
-        unit = from(parentUnit).multipliedBy(BigDecimal.valueOf(2.5)).build();
+        unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(BigDecimal.valueOf(2.5)));
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
@@ -70,7 +70,7 @@ public class TransformedUnitTest {
                      unit.getConverterToAny(Units.Imperial.YARD));
 
         // m * 5/9
-        unit = from(parentUnit).multipliedBy(5, 9).build();
+        unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(5, 9));
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
