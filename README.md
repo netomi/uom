@@ -10,19 +10,19 @@ The design goal of the library is to include the following:
 
 * fully typed quantities:
   ```java
-  Length l1 = Length.of(1, Units.METER);
+  Length l1 = Length.of(1, SI.METER);
   Length l2 = Length.ofMeter(2);          // convenience factory method for SI unit 
   ```
 * support for double and arbitrary decimal precision quantities (BigDecimal):
   ```java
-  DoubleLength  l1 = DoubleLength.of(1, Units.METER);
-  DecimalLength l2 = DecimalLength.of(BigDecimal.ONE, Units.YARD);
+  DoubleLength  l1 = DoubleLength.of(1, SI.METER);
+  DecimalLength l2 = DecimalLength.of(BigDecimal.ONE, Imperial.YARD);
   
   Length l3 = l1.add(l2);
   ```
 * support for generic quantities:
   ```java
-    Quantity<Speed> speed = Quantities.create(1, Units.SI.METER_PER_SECOND);
+    Quantity<Speed> speed = Quantities.create(1, SI.METER_PER_SECOND);
   
     System.out.println(speed.add(Speed.ofMeterPerSecond(2))); // -> prints 3 m/s
   ```
@@ -30,7 +30,7 @@ The design goal of the library is to include the following:
   ```java
     QuantityFactory<Length> factory = DoubleLength.factory();
   
-    Length l1 = factory.create(1, Units.SI.METRE);
+    Length l1 = factory.create(1, SI.METRE);
   
     // default factories can be replaced
     // use decimal precision for every quantity of type Lengh:
@@ -43,7 +43,7 @@ The design goal of the library is to include the following:
 * unit conversions can be performed with user-defined precision if needed
   ```java
   DecimalLength l1 = ...
-  DecimalLength l2 = l1.to(Units.YARD, MathContext.DECIMAL128);
+  DecimalLength l2 = l1.to(Imperial.YARD, MathContext.DECIMAL128);
   ```
 * support for the standard unit manipulations as defined by [JSR-385](https://www.jcp.org/en/jsr/detail?id=385) et al
 * support for as many units as possible, the amazing [GNU units](https://www.gnu.org/software/units/) library is the reference to compare to
@@ -53,8 +53,8 @@ The design goal of the library is to include the following:
 Conversion of units between different system of units, e.g. SI and CGS
 
 ```java
-DoubleQuantity<ElectricCharge> e1 = DoubleQuantity.of(1, Units.SI.COULOMB);
-DoubleQuantity<ElectricCharge> e2 = e1.to(Units.CGS.STATCOULOMB);
+DoubleQuantity<ElectricCharge> e1 = DoubleQuantity.of(1, SI.COULOMB);
+DoubleQuantity<ElectricCharge> e2 = e1.to(CGS.STATCOULOMB);
 
 System.out.println(e2);
 ```
@@ -71,7 +71,7 @@ Custom quantities and units:
 
     ...
 
-    final Unit<Bmi> bmiUnit = UnitBuilder.<Bmi>fromAny(Units.SI.KILOGRAM.divide(Units.SI.METRE.pow(2))).withSymbol("B").build();
+    final Unit<Bmi> bmiUnit = UnitBuilder.<Bmi>fromAny(SI.KILOGRAM.divide(SI.METRE.pow(2))).withSymbol("B").build();
     Quantity<Bmi> bmiDouble  = Quantities.createQuantity(19, bmiUnit);
     Quantity<Bmi> bmiDecimal = Quantities.createQuantity(BigDecimal.valueOf(21), bmiUnit);
 
