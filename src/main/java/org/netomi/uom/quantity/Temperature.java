@@ -18,6 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
+import org.netomi.uom.unit.Dimensions;
 import org.netomi.uom.unit.Units;
 
 /**
@@ -51,7 +52,7 @@ public interface Temperature extends Quantity<Temperature> {
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.KELVIN.getDimension();
+        return Dimensions.TEMPERATURE;
     }
 
     @Override

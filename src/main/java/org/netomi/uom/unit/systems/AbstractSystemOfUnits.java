@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.unit;
+package org.netomi.uom.unit.systems;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.SystemOfUnits;
@@ -26,7 +26,7 @@ import java.util.*;
  *
  * @author Thomas Neidhart
  */
-abstract class AbstractSystemOfUnits implements SystemOfUnits {
+public abstract class AbstractSystemOfUnits implements SystemOfUnits {
 
     private final String              name;
     private final Collection<Unit<?>> units;
@@ -36,13 +36,13 @@ abstract class AbstractSystemOfUnits implements SystemOfUnits {
         this.units = new ArrayList<>();
     }
 
-    protected <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<?> unit, Class<Q> quantityClass) {
+    protected <Q extends Quantity<Q>> Unit<Q> addUnitForQuantity(Unit<?> unit, Class<Q> quantityClass) {
         this.units.add(unit);
         return (Unit<Q>) unit;
     }
 
     protected <Q extends Quantity<Q>> Unit<Q> buildUnit(Unit<?> unit, Class<Q> quantityClass) {
-        return (Unit<Q>) unit;
+        return unit.forQuantity(quantityClass);
     }
 
     @Override

@@ -20,6 +20,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
 import org.netomi.uom.quantity.Quantities;
+import org.netomi.uom.unit.Units;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -177,7 +178,10 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
     @Override
     public P toSystemUnit(MathContext mathContext) {
         if (unit.isSystemUnit()) {
-            return (P) this;
+            Unit<Q> namedUnit = Units.getNamedUnitIfPresent(unit);
+            return namedUnit == unit ?
+                    (P) this :
+                    with(value, namedUnit);
         }
 
         UnitConverter converter = unit.getSystemConverter();

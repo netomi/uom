@@ -17,6 +17,7 @@ package org.netomi.uom.unit;
 
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.Unit;
+import org.netomi.uom.unit.systems.Imperial;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -33,7 +34,7 @@ public class NamedUnitTest {
 
         assertEquals("sym", unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
-        assertEquals(parentUnit.getConverterToAny(Units.Imperial.YARD), unit.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(parentUnit.getConverterToAny(Imperial.YARD), unit.getConverterToAny(Imperial.YARD));
     }
 
     @Test
@@ -44,6 +45,6 @@ public class NamedUnitTest {
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals("MY METER", unit.getName());
-        assertEquals(parentUnit.getConverterToAny(Units.Imperial.YARD), unit.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(parentUnit.getConverterToAny(Imperial.YARD), unit.getConverterToAny(Imperial.YARD));
     }
 }

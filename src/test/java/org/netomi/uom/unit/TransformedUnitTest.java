@@ -18,6 +18,7 @@ package org.netomi.uom.unit;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.Unit;
 import org.netomi.uom.function.UnitConverters;
+import org.netomi.uom.unit.systems.Imperial;
 
 import java.math.BigDecimal;
 
@@ -37,16 +38,16 @@ public class TransformedUnitTest {
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
-        assertEquals(UnitConverters.shift(100).andThen(parentUnit.getConverterToAny(Units.Imperial.YARD)),
-                     unit.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(UnitConverters.shift(100).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
+                     unit.getConverterToAny(Imperial.YARD));
 
         // m + 200.23
         unit = TransformedUnit.of(parentUnit, UnitConverters.shift(BigDecimal.valueOf(200.23)));
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
-        assertEquals(UnitConverters.shift(BigDecimal.valueOf(200.23)).andThen(parentUnit.getConverterToAny(Units.Imperial.YARD)),
-                     unit.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(UnitConverters.shift(BigDecimal.valueOf(200.23)).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
+                     unit.getConverterToAny(Imperial.YARD));
     }
 
     @Test
@@ -58,23 +59,23 @@ public class TransformedUnitTest {
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
-        assertEquals(UnitConverters.multiply(2.5).andThen(parentUnit.getConverterToAny(Units.Imperial.YARD)),
-                     unit.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(UnitConverters.multiply(2.5).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
+                     unit.getConverterToAny(Imperial.YARD));
 
         // m * 2.5
         unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(BigDecimal.valueOf(2.5)));
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
-        assertEquals(UnitConverters.multiply(BigDecimal.valueOf(2.5)).andThen(parentUnit.getConverterToAny(Units.Imperial.YARD)),
-                     unit.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(UnitConverters.multiply(BigDecimal.valueOf(2.5)).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
+                     unit.getConverterToAny(Imperial.YARD));
 
         // m * 5/9
         unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(5, 9));
 
         assertEquals(parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
-        assertEquals(UnitConverters.multiply(5, 9).andThen(parentUnit.getConverterToAny(Units.Imperial.YARD)),
-                     unit.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(UnitConverters.multiply(5, 9).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
+                     unit.getConverterToAny(Imperial.YARD));
     }
 }

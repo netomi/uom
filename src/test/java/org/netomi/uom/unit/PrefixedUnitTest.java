@@ -22,6 +22,7 @@ import org.netomi.uom.UnitConverter;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.quantity.Length;
 import org.netomi.uom.quantity.Temperature;
+import org.netomi.uom.unit.systems.Imperial;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -39,8 +40,8 @@ public class PrefixedUnitTest {
 
         assertEquals(prefix.getSymbol() + parentUnit.getSymbol(), km.getSymbol());
         assertEquals(prefix.getName() + parentUnit.getName(), km.getName());
-        assertEquals(UnitConverters.multiply(1000, 1).andThen(parentUnit.getConverterToAny(Units.Imperial.YARD)),
-                     km.getConverterToAny(Units.Imperial.YARD));
+        assertEquals(UnitConverters.multiply(1000, 1).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
+                     km.getConverterToAny(Imperial.YARD));
     }
 
     @Test
@@ -69,8 +70,8 @@ public class PrefixedUnitTest {
     public void prefixWithLinearConverter() {
         Unit<Length> mm = PrefixedUnit.withPrefix(Units.SI.METRE, Prefixes.Metric.MILLI);
 
-        UnitConverter withPrefix    = mm.getConverterTo(Units.Imperial.YARD);
-        UnitConverter withoutPrefix = Units.SI.METRE.getConverterTo(Units.Imperial.YARD);
+        UnitConverter withPrefix    = mm.getConverterTo(Imperial.YARD);
+        UnitConverter withoutPrefix = Units.SI.METRE.getConverterTo(Imperial.YARD);
 
         // 0.02 m converted to yd should be equal to 20 mm.
         assertEquals(withoutPrefix.convert(20 * 1e-3), withPrefix.convert(20), 1e-6);
@@ -80,8 +81,8 @@ public class PrefixedUnitTest {
         // apply milli prefix again to get micrometer.
         Unit<Length> µm = mm.withPrefix(Prefixes.Metric.MILLI);
 
-        withPrefix    = µm.getConverterTo(Units.Imperial.YARD);
-        withoutPrefix = Units.SI.METRE.getConverterTo(Units.Imperial.YARD);
+        withPrefix    = µm.getConverterTo(Imperial.YARD);
+        withoutPrefix = Units.SI.METRE.getConverterTo(Imperial.YARD);
 
         assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
         assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);
