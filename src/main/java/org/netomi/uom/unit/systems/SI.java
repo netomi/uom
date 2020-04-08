@@ -68,4 +68,8 @@ public class SI extends AbstractSystemOfUnits {
 
     // Constants expressed in SI units.
     public static final Unit<Speed>       C                = INSTANCE.buildUnit(METER_PER_SECOND.multiply(299792458, 1).withName("SPEED OF LIGHT"), Speed.class);
+
+    static {
+        Units.register(INSTANCE);
+    }
 }

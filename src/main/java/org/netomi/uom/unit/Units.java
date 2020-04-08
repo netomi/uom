@@ -35,10 +35,6 @@ public class Units {
     public static final Unit<Dimensionless> ONE = new ProductUnit<>();
     public static final BigDecimal          PI  = BigDecimal.valueOf(StrictMath.PI);
 
-    static {
-        register(org.netomi.uom.unit.systems.SI.INSTANCE);
-    }
-
     public static void register(SystemOfUnits systemOfUnits) {
         for (Unit<?> unit : systemOfUnits.getUnits()) {
             // do not put dimensionless units into the set of named units.
