@@ -47,6 +47,8 @@ public class Units {
             // as much as possible.
             if (!namedUnits.containsKey(unit)) {
                 namedUnits.put(unit, unit);
+                // refresh the ProductUnit cache with named units.
+                ProductUnit.putNamedUnitIntoCache(unit);
             }
         }
     }

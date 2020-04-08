@@ -37,7 +37,7 @@ public class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
      * reference as the keys are contained in the values, creating a
      * circular reference which would prevent the keys from being collected.
      */
-    private static final Map<UnitElementWrapper, WeakReference<ProductUnit<?>>> unitCache =
+    private static final Map<UnitElementWrapper, WeakReference<Unit<?>>> unitCache =
             Collections.synchronizedMap(new WeakHashMap<>());
 
     private final UnitElementWrapper     unitElements;
@@ -95,7 +95,7 @@ public class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
             return newElements[0].getUnit();
         }
 
-        ProductUnit<?> cachedUnit = getCachedUnit(newElements);
+        Unit<?> cachedUnit = getCachedUnit(newElements);
         if (cachedUnit != null) {
             return cachedUnit;
         } else {
@@ -117,13 +117,23 @@ public class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
         }
     }
 
-    private static ProductUnit<?> getCachedUnit(UnitElement[] elements) {
-        WeakReference<ProductUnit<?>> reference = unitCache.get(UnitElementWrapper.of(elements));
+    private static Unit<?> getCachedUnit(UnitElement[] elements) {
+        WeakReference<Unit<?>> reference = unitCache.get(UnitElementWrapper.of(elements));
         return reference != null ? reference.get() : null;
     }
 
     private static void putUnitIntoCache(ProductUnit<?> unit) {
         unitCache.put(unit.unitElements, new WeakReference<>(unit));
+    }
+
+    static void putNamedUnitIntoCache(Unit<?> unit) {
+        if (unit instanceof NamedUnit<?>) {
+            Unit<?> delegateUnit = ((NamedUnit<?>) unit).getDelegateUnit();
+            if (delegateUnit instanceof ProductUnit<?>) {
+                ProductUnit<?> productUnit = (ProductUnit<?>) delegateUnit;
+                unitCache.put(productUnit.unitElements, new WeakReference<>(unit));
+            }
+        }
     }
 
     protected ProductUnit() {
