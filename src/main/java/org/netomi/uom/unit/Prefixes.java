@@ -18,7 +18,7 @@ package org.netomi.uom.unit;
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.util.StringUtil;
+import org.netomi.uom.util.ObjectPrinter;
 
 /**
  * A utility class to provide access to different {@link Prefix} implementations.
@@ -433,7 +433,7 @@ public final class Prefixes {
 
         @Override
         public String getSymbol() {
-            return String.format("%d%s", base, StringUtil.toUnicodeString(Fraction.of(exponent)));
+            return String.format("%d%s", base, ObjectPrinter.instance().print(Fraction.of(exponent)));
         }
 
         @Override

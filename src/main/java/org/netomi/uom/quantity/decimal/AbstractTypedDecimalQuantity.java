@@ -207,7 +207,7 @@ public abstract class AbstractTypedDecimalQuantity<P extends DecimalQuantity<Q>,
 
     @Override
     public String toString() {
-        return String.format("%f %s", value, unit.getSymbol());
+        return String.format("%s %s", value, unit.getSymbol());
     }
 
     static class GenericImpl extends AbstractTypedDecimalQuantity {

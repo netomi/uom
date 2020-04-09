@@ -21,23 +21,26 @@ import org.netomi.uom.math.Fraction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Unit tests for the {@link StringUtil} class.
+ * Unit tests for the {@link ObjectPrinter} class.
  */
-public class StringUtilTest {
+public class ObjectPrinterTest {
 
     @Test
-    public void fractionToString() {
+    public void printFraction() {
+
+        ObjectPrinter objectPrinter = ObjectPrinter.forUnicode();
+
         // 0
-        assertEquals("⁰", StringUtil.toUnicodeString(Fraction.ZERO));
+        assertEquals("⁰", objectPrinter.print(Fraction.ZERO));
         // 1
-        assertEquals("¹", StringUtil.toUnicodeString(Fraction.ONE));
+        assertEquals("¹", objectPrinter.print(Fraction.ONE));
         // -1
-        assertEquals("⁻¹", StringUtil.toUnicodeString(Fraction.ONE.negate()));
+        assertEquals("⁻¹", objectPrinter.print(Fraction.ONE.negate()));
         // 42
-        assertEquals("⁴²", StringUtil.toUnicodeString(Fraction.of(42)));
+        assertEquals("⁴²", objectPrinter.print(Fraction.of(42)));
         // 1/2
-        assertEquals("¹⁄₂", StringUtil.toUnicodeString(Fraction.ONE.divide(Fraction.of(2))));
+        assertEquals("¹⁄₂", objectPrinter.print(Fraction.ONE.divide(Fraction.of(2))));
         // 23/45
-        assertEquals("²³⁄₄₅", StringUtil.toUnicodeString(Fraction.of(23).divide(Fraction.of(45))));
+        assertEquals("²³⁄₄₅", objectPrinter.print(Fraction.of(23).divide(Fraction.of(45))));
     }
 }

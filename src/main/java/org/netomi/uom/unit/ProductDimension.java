@@ -16,7 +16,7 @@
 package org.netomi.uom.unit;
 
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.util.StringUtil;
+import org.netomi.uom.util.ObjectPrinter;
 
 import java.util.*;
 
@@ -181,7 +181,7 @@ class ProductDimension extends Dimension {
 
         ProductDimension that = (ProductDimension) o;
         return Objects.equals(physicalDimension, that.physicalDimension) &&
-               Arrays.equals(dimensionElements, that.dimensionElements);
+               Arrays.equals(dimensionElements,  that.dimensionElements);
     }
 
     @Override
@@ -197,7 +197,7 @@ class ProductDimension extends Dimension {
             sb.append(element.dimension);
             Fraction fraction = element.fraction;
             if (Fraction.ONE.compareTo(fraction) != 0) {
-                StringUtil.appendUnicodeString(fraction, sb);
+                ObjectPrinter.instance().appendTo(sb, fraction);
             }
 
             sb.append(',');

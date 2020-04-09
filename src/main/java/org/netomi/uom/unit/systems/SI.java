@@ -52,8 +52,8 @@ public class SI extends AbstractSystemOfUnits {
     public static final Unit<Speed>             METER_PER_SECOND = addUnit(METRE.divide(SECOND).withSymbol("m/s").withName("METER PER SECOND"), Speed.class);
     public static final Unit<Acceleration>      METER_PER_SECOND_SQUARED = addUnit(METER_PER_SECOND.divide(SECOND).withSymbol("m/s²").withName("METER PER SECOND SQUARED"), Acceleration.class);
 
-    public static final Unit<Area>              SQUARE_METER = addUnit(METRE.multiply(METRE).withSymbol("m²").withName("SQUARE METER"), Area.class);
-    public static final Unit<Volume>            CUBIC_METER  = addUnit(SQUARE_METER.multiply(METRE).withSymbol("m³").withName("CUBIC METER"), Volume.class);
+    public static final Unit<Area>              SQUARE_METER = addUnit(METRE.multiply(METRE).withSymbol("m\u00B2").withName("SQUARE METER"), Area.class);
+    public static final Unit<Volume>            CUBIC_METER  = addUnit(SQUARE_METER.multiply(METRE).withSymbol("m\u00B3").withName("CUBIC METER"), Volume.class);
 
     public static final Unit<Force>             NEWTON = addUnit(KILOGRAM.multiply(METRE).divide(SECOND.pow(2)).withSymbol("N").withName("NEWTON"), Force.class);
     public static final Unit<Pressure>          PASCAL = addUnit(NEWTON.divide(SQUARE_METER).withSymbol("Pa").withName("PASCAL"), Pressure.class);

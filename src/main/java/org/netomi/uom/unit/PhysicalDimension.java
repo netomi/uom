@@ -16,7 +16,7 @@
 package org.netomi.uom.unit;
 
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.util.StringUtil;
+import org.netomi.uom.util.ObjectPrinter;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -70,6 +70,7 @@ class PhysicalDimension extends Dimension {
             Collections.synchronizedMap(new WeakHashMap<>());
 
     private final EnumMap<Base, Fraction> dimensionMap;
+    private final String                  cachedToString;
 
     static Dimension empty() {
         return new PhysicalDimension(new EnumMap<>(Base.class));
@@ -97,11 +98,15 @@ class PhysicalDimension extends Dimension {
         dimensionMap = new EnumMap<>(Base.class);
         dimensionMap.put(baseDimension, Fraction.ONE);
 
+        cachedToString = calculateToString();
+
         putDimensionIntoCache(this);
     }
 
     PhysicalDimension(Map<Base, Fraction> map) {
         dimensionMap = new EnumMap<>(map);
+
+        cachedToString = calculateToString();
 
         putDimensionIntoCache(this);
     }
@@ -246,16 +251,10 @@ class PhysicalDimension extends Dimension {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        return cachedToString;
+    }
 
-        for (Map.Entry<Base, Fraction> entry : dimensionMap.entrySet()) {
-            sb.append(entry.getKey().getSymbol());
-            Fraction fraction = entry.getValue();
-            if (Fraction.ONE.compareTo(fraction) != 0) {
-                StringUtil.appendUnicodeString(fraction, sb);
-            }
-        }
-
-        return sb.toString();
+    private String calculateToString() {
+        return ObjectPrinter.instance().print(dimensionMap, base -> String.valueOf(base.getSymbol()));
     }
 }

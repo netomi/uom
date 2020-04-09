@@ -16,6 +16,8 @@
 package org.netomi.uom.unit;
 
 import org.netomi.uom.*;
+import org.netomi.uom.format.UnitFormat;
+import org.netomi.uom.format.UnitFormatter;
 import org.netomi.uom.quantity.*;
 
 import java.math.BigDecimal;
@@ -26,6 +28,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Thomas Neidhart
  */
 public class Units {
+
+    private static UnitFormatter DEFAULT_FORMATTER = UnitFormat.symbolAndDimension();
 
     private static Map<Unit<?>, Unit<?>> namedUnits = new ConcurrentHashMap<>();
 
@@ -64,6 +68,15 @@ public class Units {
 
     public static <Q extends Quantity<Q>> Unit<Q> baseUnitForDimension(String symbol, String name, Dimension dimension) {
         return new BaseUnit<>(symbol, name, dimension);
+    }
+
+    public static UnitFormatter defaultFormatter() {
+        return DEFAULT_FORMATTER;
+    }
+
+    public static void setDefaultFormatter(UnitFormatter unitFormatter) {
+        Objects.requireNonNull(unitFormatter);
+        DEFAULT_FORMATTER = unitFormatter;
     }
 
     // Builder methods to augment an existing unit, i.e. with a name or unit converter.

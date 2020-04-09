@@ -18,7 +18,7 @@ package org.netomi.uom.unit;
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.util.StringUtil;
+import org.netomi.uom.util.ObjectPrinter;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
@@ -161,52 +161,9 @@ public class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
     }
 
     private String calculateSymbol() {
-        StringBuilder numerator   = new StringBuilder();
-        StringBuilder denominator = new StringBuilder();
-
-        for (UnitElement element : unitElements.elements) {
-            if (element.getFraction().signum() > 0) {
-                appendUnitElementAsString(element.getUnit(), element.getFraction(), numerator);
-            } else {
-                appendUnitElementAsString(element.getUnit(), element.getFraction().negate(), denominator);
-            }
-        }
-
-        // remove final bullet char.
-        if (numerator.length() > 0) {
-            numerator.deleteCharAt(numerator.length() - 1);
-        }
-
-        if (denominator.length() > 0) {
-            denominator.deleteCharAt(denominator.length() - 1);
-        }
-
-        if (numerator.length() == 0) {
-            numerator.append('1');
-        }
-
         StringBuilder sb = new StringBuilder();
-        if (numerator.length() > 0) {
-            sb.append(numerator);
-
-            if (denominator.length() > 0) {
-                sb.append('\u2215');
-            }
-        }
-
-        if (denominator.length() > 0) {
-            sb.append(denominator);
-        }
-
+        ObjectPrinter.instance().appendTo(sb, unitElements.elements);
         return sb.toString();
-    }
-
-    private void appendUnitElementAsString(Unit<?> unit, Fraction fraction, StringBuilder stringBuilder) {
-        stringBuilder.append(unit.getSymbol());
-        if (Fraction.ONE.compareTo(fraction) != 0) {
-            StringUtil.appendUnicodeString(fraction, stringBuilder);
-        }
-        stringBuilder.append('\u2219');
     }
 
     private Dimension calculateDimension() {

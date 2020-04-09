@@ -85,7 +85,7 @@ class NamedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
         if (getDelegateUnit() instanceof ProductUnit<?>) {
             return getDelegateUnit().getUnitElements();
         } else {
-            return new UnitElement[]{new UnitElement(this, Fraction.ONE)};
+            return new UnitElement[]{ new UnitElement(this, Fraction.ONE) };
         }
     }
 }

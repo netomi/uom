@@ -55,4 +55,9 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     public UnitElement[] getUnitElements() {
         return new UnitElement[] { new UnitElement(this, Fraction.ONE) };
     }
+
+    @Override
+    public String toString() {
+        return String.format("(transform %s %s)", getDelegateUnit(), getSystemConverter());
+    }
 }

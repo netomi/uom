@@ -43,7 +43,7 @@ public class NonSI extends AbstractSystemOfUnits {
     // area units
     public static final Unit<Area> ARE       = addUnit(SI.METRE.pow(2).multiply(100, 1).withSymbol("a").withName("ARE"), Area.class);
     public static final Unit<Area> HECTARE   = addUnit(SI.METRE.pow(2).multiply(10000, 1).withSymbol("ha").withName("HECTARE"), Area.class);
-    public static final Unit<Area> SQUARE_KM = addUnit(SI.METRE.withPrefix(KILO).pow(2).withSymbol("km²").withName("SQUARE KILOMETER"), Area.class);
+    public static final Unit<Area> SQUARE_KM = addUnit(SI.METRE.withPrefix(KILO).pow(2).withSymbol("km\u00B2").withName("SQUARE KILOMETER"), Area.class);
 
     // time units
     public static final Unit<Time>  MINUTE = addUnit(SI.SECOND.multiply(60, 1).withSymbol("m").withName("MINUTE"), Time.class);

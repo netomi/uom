@@ -209,6 +209,6 @@ public abstract class Unit<Q extends Quantity<Q>> {
 
     @Override
     public String toString() {
-        return String.format("%s{%s}", getSymbol(), getDimension());
+        return Units.defaultFormatter().format(this);
     }
 }

@@ -35,11 +35,11 @@ public class UnitElement {
         this.fraction = fraction;
     }
 
-    Unit<?> getUnit() {
+    public Unit<?> getUnit() {
         return unit;
     }
 
-    Fraction getFraction() {
+    public Fraction getFraction() {
         return fraction;
     }
 
