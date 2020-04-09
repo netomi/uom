@@ -17,6 +17,8 @@ package org.netomi.uom.util;
 
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.math.Fraction;
+import org.netomi.uom.unit.Dimensions;
+import org.netomi.uom.unit.Units;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -26,8 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ObjectPrinterTest {
 
     @Test
-    public void printFraction() {
-
+    public void printFractionUnicode() {
         ObjectPrinter objectPrinter = ObjectPrinter.forUnicode();
 
         // 0
@@ -42,5 +43,41 @@ public class ObjectPrinterTest {
         assertEquals("¹⁄₂", objectPrinter.print(Fraction.ONE.divide(Fraction.of(2))));
         // 23/45
         assertEquals("²³⁄₄₅", objectPrinter.print(Fraction.of(23).divide(Fraction.of(45))));
+    }
+
+    @Test
+    public void printFractionAscii() {
+        ObjectPrinter objectPrinter = ObjectPrinter.forAscii();
+
+        // 0
+        assertEquals("^0", objectPrinter.print(Fraction.ZERO));
+        // 1
+        assertEquals("^1", objectPrinter.print(Fraction.ONE));
+        // -1
+        assertEquals("^-1", objectPrinter.print(Fraction.ONE.negate()));
+        // 42
+        assertEquals("^42", objectPrinter.print(Fraction.of(42)));
+        // 1/2
+        assertEquals("^1/2", objectPrinter.print(Fraction.ONE.divide(Fraction.of(2))));
+        // 23/45
+        assertEquals("^23/45", objectPrinter.print(Fraction.of(23).divide(Fraction.of(45))));
+    }
+
+    @Test
+    public void printFractionMapUnicode() {
+        ObjectPrinter objectPrinter = ObjectPrinter.forUnicode();
+
+        assertEquals("LT⁻¹",  objectPrinter.print(Units.SI.METER_PER_SECOND.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("LMT⁻²", objectPrinter.print(Units.SI.NEWTON.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("",      objectPrinter.print(Dimensions.NONE.getBaseDimensions(), Object::toString));
+    }
+
+    @Test
+    public void printFractionMapAscii() {
+        ObjectPrinter objectPrinter = ObjectPrinter.forAscii();
+
+        assertEquals("LT^-1",  objectPrinter.print(Units.SI.METER_PER_SECOND.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("LMT^-2", objectPrinter.print(Units.SI.NEWTON.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("",       objectPrinter.print(Dimensions.NONE.getBaseDimensions(), Object::toString));
     }
 }

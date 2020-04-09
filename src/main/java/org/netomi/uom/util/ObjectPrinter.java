@@ -66,9 +66,17 @@ public abstract class ObjectPrinter {
         return stringBuilder.toString();
     }
 
-    public abstract <T> void appendTo(Appendable          appendable,
-                                      Map<T, Fraction>    map,
-                                      Function<T, String> keyMapFunction) throws IOException;
+    public <T> void appendTo(Appendable          appendable,
+                             Map<T, Fraction>    map,
+                             Function<T, String> keyMapFunction) throws IOException {
+        for (Map.Entry<T, Fraction> entry : map.entrySet()) {
+            appendable.append(keyMapFunction.apply(entry.getKey()));
+            Fraction fraction = entry.getValue();
+            if (Fraction.ONE.compareTo(fraction) != 0) {
+                appendTo(appendable, fraction);
+            }
+        }
+    }
 
     public <T> void appendTo(StringBuilder       stringBuilder,
                              Map<T, Fraction>    map,
@@ -86,7 +94,52 @@ public abstract class ObjectPrinter {
         return stringBuilder.toString();
     }
 
-    public abstract void appendTo(Appendable appendable, UnitElement[] unitElements) throws IOException;
+    public void appendTo(Appendable appendable, UnitElement[] unitElements) throws IOException {
+        StringBuilder numeratorString   = new StringBuilder();
+        StringBuilder denominatorString = new StringBuilder();
+
+        for (UnitElement element : unitElements) {
+            if (element.getFraction().signum() > 0) {
+                appendTo(numeratorString, element.getUnit(), element.getFraction());
+            } else {
+                appendTo(denominatorString, element.getUnit(), element.getFraction().negate());
+            }
+        }
+
+        // remove final bullet char.
+        if (numeratorString.length() > 0) {
+            numeratorString.deleteCharAt(numeratorString.length() - 1);
+        }
+
+        if (denominatorString.length() > 0) {
+            denominatorString.deleteCharAt(denominatorString.length() - 1);
+        }
+
+        if (numeratorString.length() == 0) {
+            numeratorString.append('1');
+        }
+
+        if (numeratorString.length() > 0) {
+            appendable.append(numeratorString.toString());
+
+            if (denominatorString.length() > 0) {
+                appendable.append('/');
+            }
+        }
+
+        if (denominatorString.length() > 0) {
+            appendable.append(denominatorString.toString());
+        }
+    }
+
+    private void appendTo(StringBuilder stringBuilder, Unit<?> unit, Fraction fraction) {
+        stringBuilder.append(unit.getSymbol());
+        if (Fraction.ONE.compareTo(fraction) != 0) {
+            appendTo(stringBuilder, fraction);
+        }
+
+        stringBuilder.append('·');
+    }
 
     public void appendTo(StringBuilder stringBuilder, UnitElement[] unitElements) {
         try {
@@ -109,21 +162,6 @@ public abstract class ObjectPrinter {
                 appendable.append(Integer.toString(fraction.getDenominator()));
             }
         }
-
-        @Override
-        public <T> void appendTo(Appendable          appendable,
-                                 Map<T, Fraction>    map,
-                                 Function<T, String> keyMapFunction) throws IOException {
-            for (Map.Entry<T, Fraction> entry : map.entrySet()) {
-                appendable.append(keyMapFunction.apply(entry.getKey()));
-                appendTo(appendable, entry.getValue());
-            }
-        }
-
-        @Override
-        public void appendTo(Appendable appendable, UnitElement[] unitElements) throws IOException {
-
-        }
     }
 
     private static class UnicodeObjectPrinter extends ObjectPrinter {
@@ -132,8 +170,6 @@ public abstract class ObjectPrinter {
 
         private static final char FRACTION_SLASH = '\u2044';
         private static final char MINUS_SIGN     = '\u207B';
-        private static final char BULLET         = '\u2219';
-        private static final char DIVISION_SLASH = '\u2215';
 
         private static final char[] SUPERSCRIPT_CHARS = new char[] {
                 '\u2070', '\u00B9', '\u00B2', '\u00B3', '\u2074', '\u2075', '\u2076', '\u2077', '\u2078', '\u2079'
@@ -152,19 +188,6 @@ public abstract class ObjectPrinter {
             }
         }
 
-        @Override
-        public <T> void appendTo(Appendable          appendable,
-                                 Map<T, Fraction>    map,
-                                 Function<T, String> keyMapFunction) throws IOException {
-            for (Map.Entry<T, Fraction> entry : map.entrySet()) {
-                appendable.append(keyMapFunction.apply(entry.getKey()));
-                Fraction fraction = entry.getValue();
-                if (Fraction.ONE.compareTo(fraction) != 0) {
-                    appendTo(appendable, fraction);
-                }
-            }
-        }
-
         private void appendTo(Appendable appendable, int number, char[] chars) throws IOException {
             if (number < 0) {
                 appendable.append(MINUS_SIGN);
@@ -174,54 +197,6 @@ public abstract class ObjectPrinter {
             for (char ch : Integer.toString(number).toCharArray()) {
                 appendable.append(chars[ch - '0']);
             }
-        }
-
-        @Override
-        public void appendTo(Appendable appendable, UnitElement[] unitElements) throws IOException {
-            StringBuilder numeratorString   = new StringBuilder();
-            StringBuilder denominatorString = new StringBuilder();
-
-            for (UnitElement element : unitElements) {
-                if (element.getFraction().signum() > 0) {
-                    appendTo(numeratorString, element.getUnit(), element.getFraction());
-                } else {
-                    appendTo(denominatorString, element.getUnit(), element.getFraction().negate());
-                }
-            }
-
-            // remove final bullet char.
-            if (numeratorString.length() > 0) {
-                numeratorString.deleteCharAt(numeratorString.length() - 1);
-            }
-
-            if (denominatorString.length() > 0) {
-                denominatorString.deleteCharAt(denominatorString.length() - 1);
-            }
-
-            if (numeratorString.length() == 0) {
-                numeratorString.append('1');
-            }
-
-            if (numeratorString.length() > 0) {
-                appendable.append(numeratorString.toString());
-
-                if (denominatorString.length() > 0) {
-                    appendable.append(DIVISION_SLASH);
-                }
-            }
-
-            if (denominatorString.length() > 0) {
-                appendable.append(denominatorString.toString());
-            }
-        }
-
-        private void appendTo(StringBuilder stringBuilder, Unit<?> unit, Fraction fraction) {
-            stringBuilder.append(unit.getSymbol());
-            if (Fraction.ONE.compareTo(fraction) != 0) {
-                appendTo(stringBuilder, fraction);
-            }
-
-            stringBuilder.append(BULLET);
         }
     }
 }
