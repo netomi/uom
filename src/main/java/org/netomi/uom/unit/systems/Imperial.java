@@ -50,9 +50,9 @@ public class Imperial extends AbstractSystemOfUnits {
     public static final Unit<Length> LEAGUE  = addUnit(MILE   .multiply(3, 1) .withSymbol("lea").withName("LEAGUE") , Length.class);
 
     // length units for nautical purposes
-    public static final Unit<Length> NM     = addUnit(SI.METRE.multiply(1852, 1).withSymbol("nm")   .withName("NAUTICAL MILE"), Length.class);
-    public static final Unit<Length> CABLE  = addUnit(NM      .multiply(1, 10)  .withSymbol("cable").withName("CABLE")        , Length.class);
-    public static final Unit<Length> FATHOM = addUnit(CABLE   .multiply(1, 100) .withSymbol("ftm")  .withName("FATHOM")       , Length.class);
+    public static final Unit<Length> MILE_ADMIRALTY = addUnit(FOOT.multiply(6080, 1).withSymbol("nmi").withName("ADMIRALTY MILE"), Length.class);
+    public static final Unit<Length> CABLE          = addUnit(MILE_ADMIRALTY.multiply(1, 10).withSymbol("cable").withName("CABLE"), Length.class);
+    public static final Unit<Length> FATHOM         = addUnit(FOOT.multiply(6, 1).withSymbol("ftm").withName("FATHOM"), Length.class);
 
     // area units
     public static final Unit<Area> SQUARE_INCH  = addUnit(INCH.multiply(INCH).withSymbol("sq in").withName("SQUARE INCH"), Area.class);

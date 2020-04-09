@@ -37,6 +37,9 @@ public class NonSI extends AbstractSystemOfUnits {
         return INSTANCE.addUnitForQuantity(unit, quantityClass);
     }
 
+    // length units
+    public static final Unit<Length> NAUTICAL_MILE = addUnit(SI.METRE.multiply(1852, 1).withSymbol("nm").withName("NAUTICAL MILE"), Length.class);
+
     // area units
     public static final Unit<Area> ARE       = addUnit(SI.METRE.pow(2).multiply(100, 1).withSymbol("a").withName("ARE"), Area.class);
     public static final Unit<Area> HECTARE   = addUnit(SI.METRE.pow(2).multiply(10000, 1).withSymbol("ha").withName("HECTARE"), Area.class);
@@ -49,7 +52,8 @@ public class NonSI extends AbstractSystemOfUnits {
     public static final Unit<Angle> DEGREE = addUnit(SI.RADIAN.multiply(Units.PI).multiply(1, 180).withSymbol("deg").withName("DEGREE"), Angle.class);
 
     // speed units
-    public static final Unit<Speed> KMH = addUnit(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR).withSymbol("km/h").withName("KM PER HOUR"), Speed.class);
+    public static final Unit<Speed> KMH  = addUnit(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR).withSymbol("km/h").withName("KM PER HOUR"), Speed.class);
+    public static final Unit<Speed> KNOT = addUnit(NAUTICAL_MILE.divide(HOUR).withSymbol("kt").withName("KNOT"), Speed.class);
 
     // temperature units
     public static final Unit<Temperature> FAHRENHEIT = addUnit(SI.KELVIN.shift(459.67).multiply(5, 9).withSymbol("°F").withName("FAHRENHEIT"), Temperature.class);
