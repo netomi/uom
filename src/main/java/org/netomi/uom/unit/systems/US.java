@@ -17,6 +17,7 @@ package org.netomi.uom.unit.systems;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
+import org.netomi.uom.quantity.Area;
 import org.netomi.uom.quantity.Length;
 import org.netomi.uom.unit.Units;
 
@@ -36,7 +37,16 @@ public class US extends AbstractSystemOfUnits {
 
     // length units
     public static final Unit<Length> FOOT  = addUnit(SI.METRE.multiply(1200, 3937).withSymbol("ft (US)").withName("FOOT (US)"), Length.class);
+    public static final Unit<Length> LINK  = addUnit(FOOT.multiply(66, 100).withSymbol("lnk (US)").withName("LINK (US)"), Length.class);
+    public static final Unit<Length> CHAIN = addUnit(FOOT.multiply(66, 1).withSymbol("ch (US)") .withName("CHAIN (US)")  , Length.class);
     public static final Unit<Length> MILE  = addUnit(FOOT.multiply(5280, 1) .withSymbol("mi (US)") .withName("MILE (US)"), Length.class);
+
+    // area units
+    public static final Unit<Area> SQUARE_FOOT  = addUnit(FOOT.multiply(FOOT).withSymbol("sq ft").withName("SQUARE FOOT (US)"), Area.class);
+    public static final Unit<Area> SQUARE_LINK  = addUnit(LINK.multiply(LINK).withSymbol("sq lnk").withName("SQUARE LINK (US)"), Area.class);
+    public static final Unit<Area> SQUARE_CHAIN = addUnit(CHAIN.multiply(CHAIN).withSymbol("sq ch").withName("SQUARE CHAIN (US)"), Area.class);
+    public static final Unit<Area> ACRE         = addUnit(SQUARE_CHAIN.multiply(10, 1).withSymbol("ac").withName("ACRE (US)"), Area.class);
+    public static final Unit<Area> SQUARE_MILE  = addUnit(MILE.multiply(MILE).withSymbol("sq mi").withName("SQUARE MILE (US)"), Area.class);
 
     static {
         Units.register(INSTANCE);

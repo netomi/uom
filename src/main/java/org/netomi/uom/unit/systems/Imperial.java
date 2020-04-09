@@ -39,10 +39,11 @@ public class Imperial extends AbstractSystemOfUnits {
     }
 
     // length units
-    public static final Unit<Length> YARD  = addUnit(SI.METRE.multiply(new BigDecimal("0.9144")).withSymbol("yd").withName("YARD"), Length.class);
-    public static final Unit<Length> FOOT  = addUnit(YARD    .multiply(1, 3)                    .withSymbol("ft").withName("FOOT"), Length.class);
-    public static final Unit<Length> INCH  = addUnit(FOOT    .multiply(1, 12)                   .withSymbol("in").withName("INCH"), Length.class);
-    public static final Unit<Length> THOU  = addUnit(INCH    .multiply(1, 1000)                 .withSymbol("th").withName("THOU"), Length.class);
+    public static final Unit<Length> YARD  = addUnit(SI.METRE.multiply(new BigDecimal("0.9144")).withSymbol("yd") .withName("YARD"), Length.class);
+    public static final Unit<Length> FOOT  = addUnit(YARD    .multiply(1, 3)                    .withSymbol("ft") .withName("FOOT"), Length.class);
+    public static final Unit<Length> LINK  = addUnit(FOOT    .multiply(66, 100)                 .withSymbol("lnk").withName("LINK"), Length.class);
+    public static final Unit<Length> INCH  = addUnit(FOOT    .multiply(1, 12)                   .withSymbol("in") .withName("INCH"), Length.class);
+    public static final Unit<Length> THOU  = addUnit(INCH    .multiply(1, 1000)                 .withSymbol("th") .withName("THOU"), Length.class);
 
     public static final Unit<Length> CHAIN   = addUnit(YARD   .multiply(22, 1).withSymbol("ch") .withName("CHAIN")  , Length.class);
     public static final Unit<Length> FURLONG = addUnit(CHAIN  .multiply(10, 1).withSymbol("fur").withName("FURLONG"), Length.class);
@@ -57,6 +58,7 @@ public class Imperial extends AbstractSystemOfUnits {
     // area units
     public static final Unit<Area> SQUARE_INCH  = addUnit(INCH.multiply(INCH).withSymbol("sq in").withName("SQUARE INCH"), Area.class);
     public static final Unit<Area> SQUARE_FOOT  = addUnit(FOOT.multiply(FOOT).withSymbol("sq ft").withName("SQUARE FOOT"), Area.class);
+    public static final Unit<Area> SQUARE_LINK  = addUnit(LINK.multiply(LINK).withSymbol("sq lnk").withName("SQUARE LINK"), Area.class);
     public static final Unit<Area> SQUARE_YARD  = addUnit(YARD.multiply(YARD).withSymbol("sq yd").withName("SQUARE YARD"), Area.class);
     public static final Unit<Area> SQUARE_CHAIN = addUnit(CHAIN.multiply(CHAIN).withSymbol("sq ch").withName("SQUARE CHAIN"), Area.class);
     public static final Unit<Area> SQUARE_MILE  = addUnit(MILE.multiply(MILE).withSymbol("sq mi").withName("SQUARE MILE"), Area.class);
