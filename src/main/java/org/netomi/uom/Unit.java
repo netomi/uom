@@ -103,7 +103,7 @@ public abstract class Unit<Q extends Quantity<Q>> {
 
     public abstract Map<? extends Unit<?>, Fraction> getBaseUnits();
 
-    // builder methods thats return a new unit.
+    // builder methods which return a new unit.
 
     public Unit<Q> shift(double offset) {
         return transform(UnitConverters.shift(offset));
@@ -122,7 +122,7 @@ public abstract class Unit<Q extends Quantity<Q>> {
     }
 
     public Unit<Q> transform(UnitConverter converter) {
-        return TransformedUnit.of(this, converter);
+        return Units.transformedWith(this, converter);
     }
 
     public Unit<?> multiply(Unit<?> that) {
@@ -157,15 +157,15 @@ public abstract class Unit<Q extends Quantity<Q>> {
     }
 
     public Unit<Q> withSymbol(String symbol) {
-        return NamedUnit.withSymbol(this, symbol);
+        return Units.withSymbol(this, symbol);
     }
 
     public Unit<Q> withName(String name) {
-        return NamedUnit.withName(this, name);
+        return Units.withName(this, name);
     }
 
     public Unit<Q> withPrefix(Prefix prefix) {
-        return PrefixedUnit.withPrefix(this, prefix);
+        return Units.withPrefix(this, prefix);
     }
 
     /**

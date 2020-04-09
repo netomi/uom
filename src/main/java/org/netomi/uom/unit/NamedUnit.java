@@ -26,12 +26,12 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-public class NamedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
+class NamedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
 
     private final String symbol;
     private final String name;
 
-    public static <Q extends Quantity<Q>> Unit<Q> withSymbol(Unit<Q> unit, String symbol) {
+    static <Q extends Quantity<Q>> Unit<Q> withSymbol(Unit<Q> unit, String symbol) {
         Objects.requireNonNull(unit);
         Objects.requireNonNull(symbol);
 
@@ -47,7 +47,7 @@ public class NamedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
         return new NamedUnit<>(delegateUnit, symbol, name);
     }
 
-    public static <Q extends Quantity<Q>> Unit<Q> withName(Unit<Q> unit, String name) {
+    static <Q extends Quantity<Q>> Unit<Q> withName(Unit<Q> unit, String name) {
         Objects.requireNonNull(unit);
         Objects.requireNonNull(name);
 

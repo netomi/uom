@@ -27,11 +27,11 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-public class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
+class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
 
     private final UnitConverter converterToDelegate;
 
-    public static <Q extends Quantity<Q>> Unit<Q> of(Unit<Q> unit, UnitConverter converterToDelegate) {
+    static <Q extends Quantity<Q>> Unit<Q> of(Unit<Q> unit, UnitConverter converterToDelegate) {
         return new TransformedUnit<>(unit, converterToDelegate);
     }
 

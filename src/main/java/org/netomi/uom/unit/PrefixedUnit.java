@@ -27,11 +27,11 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-public class PrefixedUnit<Q extends Quantity<Q>> extends TransformedUnit<Q> {
+class PrefixedUnit<Q extends Quantity<Q>> extends TransformedUnit<Q> {
 
     private final Prefix prefix;
 
-    public static <Q extends Quantity<Q>> Unit<Q> withPrefix(Unit<Q> unit, Prefix prefix) {
+    static <Q extends Quantity<Q>> Unit<Q> withPrefix(Unit<Q> unit, Prefix prefix) {
         Objects.requireNonNull(prefix);
         return new PrefixedUnit<>(unit, prefix);
     }

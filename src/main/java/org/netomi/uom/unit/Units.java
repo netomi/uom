@@ -15,9 +15,7 @@
  */
 package org.netomi.uom.unit;
 
-import org.netomi.uom.Quantity;
-import org.netomi.uom.SystemOfUnits;
-import org.netomi.uom.Unit;
+import org.netomi.uom.*;
 import org.netomi.uom.quantity.*;
 
 import java.math.BigDecimal;
@@ -66,6 +64,24 @@ public class Units {
 
     public static <Q extends Quantity<Q>> Unit<Q> baseUnitForDimension(String symbol, String name, Dimension dimension) {
         return new BaseUnit<>(symbol, name, dimension);
+    }
+
+    // Builder methods to augment an existing unit, i.e. with a name or unit converter.
+
+    public static <Q extends Quantity<Q>> Unit<Q> withName(Unit<Q> unit, String name) {
+        return NamedUnit.withName(unit, name);
+    }
+
+    public static <Q extends Quantity<Q>> Unit<Q> withSymbol(Unit<Q> unit, String symbol) {
+        return NamedUnit.withSymbol(unit, symbol);
+    }
+
+    public static <Q extends Quantity<Q>> Unit<Q> withPrefix(Unit<Q> unit, Prefix prefix) {
+        return PrefixedUnit.withPrefix(unit, prefix);
+    }
+
+    public static <Q extends Quantity<Q>> Unit<Q> transformedWith(Unit<Q> unit, UnitConverter unitConverter) {
+        return TransformedUnit.of(unit, unitConverter);
     }
 
     // Convenient access to base SI units.
