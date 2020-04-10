@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of force.
@@ -46,23 +46,11 @@ public interface Force extends Quantity<Force> {
     }
 
     static Force ofNewton(double value) {
-        return of(value, Units.SI.NEWTON);
+        return of(value, SI.NEWTON);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.NEWTON.getDimension();
+        return SI.NEWTON.getDimension();
     }
-
-    @Override
-    Force to(Unit<Force> unit);
-
-    @Override
-    Force add(Quantity<Force> addend);
-
-    @Override
-    Force subtract(Quantity<Force> subtrahend);
-
-    @Override
-    Force negate();
 }

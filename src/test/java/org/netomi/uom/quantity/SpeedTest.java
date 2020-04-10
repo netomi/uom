@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Speed} quantity.
  */
-public class SpeedTest extends GenericQuantityTest<Speed, Speed> {
+public class SpeedTest extends GenericQuantityTest<Speed> {
 
     @Override
     protected Class<Speed> getQuantityClass() {

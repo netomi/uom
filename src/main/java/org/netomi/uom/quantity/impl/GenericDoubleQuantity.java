@@ -13,36 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.quantity;
+package org.netomi.uom.quantity.impl;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Units;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
+class GenericDoubleQuantity extends AbstractDoubleQuantity {
 
-/**
- * Unit test for the {@link Power} quantity.
- */
-public class PowerTest extends GenericQuantityTest<Power> {
+    public static DoubleQuantityFactory factory() {
+        return GenericDoubleQuantity::new;
+    }
 
-    @Override
-    protected Class<Power> getQuantityClass() {
-        return Power.class;
+    GenericDoubleQuantity(double value, Unit unit) {
+        super(value, unit);
     }
 
     @Override
-    protected Unit<Power> getSystemUnit() {
-        return Units.SI.WATT;
-    }
-
-    @Override
-    protected BiFunction<Double, Unit<Power>, Power> getFactoryMethod() {
-        return Power::of;
-    }
-
-    @Override
-    protected Function<Double, Power> getFactoryMethodForSystemUnit() {
-        return Power::ofWatt;
+    public DoubleQuantity with(double value, Unit unit) {
+        return new GenericDoubleQuantity(value, unit);
     }
 }

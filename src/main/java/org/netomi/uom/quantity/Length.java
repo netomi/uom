@@ -19,7 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of distance.
@@ -35,7 +35,7 @@ public interface Length extends Quantity<Length> {
      * <p>
      * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
-     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * with double precision ({@link org.netomi.uom.quantity.impl.DoubleQuantity}
      * will be returned.
      *
      * @param value the quantity value, expressed in the given unit.
@@ -47,7 +47,7 @@ public interface Length extends Quantity<Length> {
     }
 
     static Length ofMeter(double value) {
-        return of(value, Units.SI.METRE);
+        return of(value, SI.METRE);
     }
 
     @Override
@@ -55,23 +55,11 @@ public interface Length extends Quantity<Length> {
         return Dimensions.LENGTH;
     }
 
-    @Override
-    Length to(Unit<Length> unit);
-
-    @Override
-    Length add(Quantity<Length> addend);
-
-    @Override
-    Length subtract(Quantity<Length> subtrahend);
-
-    @Override
-    Length negate();
-
     default Area multiplyByLength(Quantity<Length> multiplicand) {
-        return multiply(multiplicand).asTypedQuantity(Area.class);
+        return multiply(multiplicand).asQuantity(Area.class);
     }
 
     default Speed divideByTime(Quantity<Time> divisor) {
-        return divide(divisor).asTypedQuantity(Speed.class);
+        return divide(divisor).asQuantity(Speed.class);
     }
 }

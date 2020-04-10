@@ -19,7 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an electric current.
@@ -47,23 +47,11 @@ public interface ElectricCurrent extends Quantity<ElectricCurrent> {
     }
 
     static ElectricCurrent ofAmpere(double value) {
-        return of(value, Units.SI.AMPERE);
+        return of(value, SI.AMPERE);
     }
 
     @Override
     default Dimension getDimension() {
         return Dimensions.ELECTRIC_CURRENT;
     }
-
-    @Override
-    ElectricCurrent to(Unit<ElectricCurrent> unit);
-
-    @Override
-    ElectricCurrent add(Quantity<ElectricCurrent> addend);
-
-    @Override
-    ElectricCurrent subtract(Quantity<ElectricCurrent> subtrahend);
-
-    @Override
-    ElectricCurrent negate();
 }

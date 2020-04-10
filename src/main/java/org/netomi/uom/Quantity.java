@@ -59,7 +59,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @param unit the {@link Unit} to convert to.
      * @return a new {@link Quantity} with this value expressed in the given {@link Unit}.
      */
-    Quantity<Q> to(Unit<Q> unit);
+    Q to(Unit<Q> unit);
 
     /**
      * Returns a new {@link Quantity} with its value expressed in the
@@ -68,7 +68,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *
      * @return a new {@link Quantity} with this value expressed in the corresponding system unit.
      */
-    Quantity<Q> toSystemUnit();
+    Q toSystemUnit();
 
     /**
      * Compares this {@link Quantity} to another quantity of the same quantity type. If the two
@@ -84,7 +84,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
      */
     @Override
-    int compareTo(Quantity<Q> other);
+    int compareTo(Quantity<Q> other) throws IncommensurableException;
 
     /**
      * Returns whether this {@link Quantity} is strictly greater in value than the other quantity.
@@ -95,7 +95,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return {@code true} if this quantity is strictly greater than the other quantity.
      * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
      */
-    default boolean isGreaterThan(Quantity<Q> other) {
+    default boolean isGreaterThan(Quantity<Q> other) throws IncommensurableException {
         return this.compareTo(other) > 0;
     }
 
@@ -108,7 +108,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return {@code true} if this quantity is strictly less than the other quantity.
      * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
      */
-    default boolean isLessThan(Quantity<Q> other) {
+    default boolean isLessThan(Quantity<Q> other) throws IncommensurableException {
         return this.compareTo(other) < 0;
     }
 
@@ -125,7 +125,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return {@code true} if this quantity is equal to the other quantity taking some error into account.
      * @throws IncommensurableException if the dimensions of the two quantities are not compatible.
      */
-    boolean isEqual(Quantity<Q> other, double epsilon);
+    boolean isEqual(Quantity<Q> other, double epsilon) throws IncommensurableException;
 
     /**
      * Returns whether the raw value of this {@link Quantity} is equal to zero such that the
@@ -145,7 +145,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return {@code true} if this quantity is equal to zero taking some error into account.
      * @throws IncommensurableException if the dimension of the specified unit is not compatible to this quantity.
      */
-    boolean isZero(Unit<Q> inUnit, double epsilon);
+    boolean isZero(Unit<Q> inUnit, double epsilon) throws IncommensurableException;
 
     /**
      * Returns whether the raw value of this {@link Quantity} is strictly equal to zero.
@@ -162,7 +162,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @param addend the {@link Quantity} to add to this quantity.
      * @return a new {@link Quantity} representing the sum of this and the other quantity.
      */
-    Quantity<Q> add(Quantity<Q> addend);
+    Q add(Quantity<Q> addend);
 
     /**
      * Returns a new {@link Quantity} that is the result of adding the given quantity
@@ -175,7 +175,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @param unit   the {@link Unit} of the resulting quantity.
      * @return a new {@link Quantity} representing the sum of this and the other quantity
      */
-    default Quantity<Q> add(Quantity<Q> addend, Unit<Q> unit) {
+    default Q add(Quantity<Q> addend, Unit<Q> unit) {
         return this.to(unit).add(addend.to(unit));
     }
 
@@ -187,7 +187,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @param subtrahend the {@link Quantity} to subtract from this quantity.
      * @return a new {@link Quantity} which is the result of subtracting the other quantity from this.
      */
-    Quantity<Q> subtract(Quantity<Q> subtrahend);
+    Q subtract(Quantity<Q> subtrahend);
 
     /**
      * Returns a new {@link Quantity} that is the result of subtracting the given quantity
@@ -200,7 +200,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @param unit       the {@link Unit} of the resulting quantity.
      * @return a new {@link Quantity} which is the result of subtracting the other quantity from this.
      */
-    default Quantity<Q> subtract(Quantity<Q> subtrahend, Unit<Q> unit) {
+    default Q subtract(Quantity<Q> subtrahend, Unit<Q> unit) {
         return this.to(unit).subtract(subtrahend.to(unit));
     }
 
@@ -209,7 +209,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *
      * @return a new {@link Quantity} whose value is {@code -this}.
      */
-    Quantity<Q> negate();
+    Q negate();
 
     Quantity<?> multiply(Quantity<?> multiplicand);
 
@@ -255,23 +255,9 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return this quantity cast as the requested quantity type.
      * @throws IncommensurableException if this quantity is not compatible with the requested quantity type.
      */
-    default <R extends Quantity<R>> Quantity<R> asQuantity(Class<R> quantityClass) {
+    default <R extends Quantity<R>> R asQuantity(Class<R> quantityClass) {
         Quantity<R> quantity = Quantities.createQuantity(doubleValue(), (Unit) getUnit(), quantityClass);
         TypeUtil.requireCommensurable(quantity, getUnit());
-        return quantity;
+        return (R) quantity;
     }
-
-    /**
-     * Performs a cast of this quantity to the specified typed quantity.
-     * <p>
-     * If no typed factory is registered for requested quantity type, a
-     * {@link ClassCastException} is thrown.
-     *
-     * @param quantityClass the quantity class to which this quantity should be cast.
-     * @param <T> the quantity type
-     * @return this quantity cast as the requested quantity type.
-     * @throws IncommensurableException if this quantity is not compatible with the requested quantity type.
-     * @throws ClassCastException if no concrete quantity class is registered for the specified quantity class.
-     */
-    <T extends R, R extends Quantity<R>> T asTypedQuantity(Class<T> quantityClass);
 }

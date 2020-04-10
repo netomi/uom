@@ -19,7 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of temperature.
@@ -47,23 +47,11 @@ public interface Temperature extends Quantity<Temperature> {
     }
 
     static Temperature ofKelvin(double value) {
-        return of(value, Units.SI.KELVIN);
+        return of(value, SI.KELVIN);
     }
 
     @Override
     default Dimension getDimension() {
         return Dimensions.TEMPERATURE;
     }
-
-    @Override
-    Temperature to(Unit<Temperature> unit);
-
-    @Override
-    Temperature add(Quantity<Temperature> addend);
-
-    @Override
-    Temperature subtract(Quantity<Temperature> subtrahend);
-
-    @Override
-    Temperature negate();
 }

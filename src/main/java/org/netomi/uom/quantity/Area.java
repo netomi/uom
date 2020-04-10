@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an area.
@@ -34,7 +34,7 @@ public interface Area extends Quantity<Area> {
      * <p>
      * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
-     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * with double precision ({@link org.netomi.uom.quantity.impl.DoubleQuantity}
      * will be returned.
      *
      * @param value the quantity value, expressed in the given unit.
@@ -46,23 +46,11 @@ public interface Area extends Quantity<Area> {
     }
 
     static Area ofSquareMeter(double value) {
-        return of(value, Units.SI.SQUARE_METER);
+        return of(value, SI.SQUARE_METER);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.SQUARE_METER.getDimension();
+        return SI.SQUARE_METER.getDimension();
     }
-
-    @Override
-    Area to(Unit<Area> unit);
-
-    @Override
-    Area add(Quantity<Area> addend);
-
-    @Override
-    Area subtract(Quantity<Area> subtrahend);
-
-    @Override
-    Area negate();
 }

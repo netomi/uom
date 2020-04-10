@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an acceleration.
@@ -46,23 +46,11 @@ public interface Acceleration extends Quantity<Acceleration> {
     }
 
     static Acceleration ofMeterPerSquareSecond(double value) {
-        return of(value, Units.SI.METER_PER_SECOND_SQUARED);
+        return of(value, SI.METER_PER_SECOND_SQUARED);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.METER_PER_SECOND_SQUARED.getDimension();
+        return SI.METER_PER_SECOND_SQUARED.getDimension();
     }
-
-    @Override
-    Acceleration to(Unit<Acceleration> unit);
-
-    @Override
-    Acceleration add(Quantity<Acceleration> addend);
-
-    @Override
-    Acceleration subtract(Quantity<Acceleration> subtrahend);
-
-    @Override
-    Acceleration negate();
 }

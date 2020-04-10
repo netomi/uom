@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an electric capacitance.
@@ -46,23 +46,11 @@ public interface ElectricCapacitance extends Quantity<ElectricCapacitance> {
     }
 
     static ElectricCapacitance ofFarad(double value) {
-        return of(value, Units.SI.FARAD);
+        return of(value, SI.FARAD);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.FARAD.getDimension();
+        return SI.FARAD.getDimension();
     }
-
-    @Override
-    ElectricCapacitance to(Unit<ElectricCapacitance> unit);
-
-    @Override
-    ElectricCapacitance add(Quantity<ElectricCapacitance> addend);
-
-    @Override
-    ElectricCapacitance subtract(Quantity<ElectricCapacitance> subtrahend);
-
-    @Override
-    ElectricCapacitance negate();
 }

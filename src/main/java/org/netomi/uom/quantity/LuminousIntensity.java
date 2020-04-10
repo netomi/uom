@@ -19,7 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of a luminous intensity.
@@ -47,23 +47,11 @@ public interface LuminousIntensity extends Quantity<LuminousIntensity> {
     }
 
     static LuminousIntensity ofCandela(double value) {
-        return of(value, Units.SI.CANDELA);
+        return of(value, SI.CANDELA);
     }
 
     @Override
     default Dimension getDimension() {
         return Dimensions.LUMINOUS_INTENSITY;
     }
-
-    @Override
-    LuminousIntensity to(Unit<LuminousIntensity> unit);
-
-    @Override
-    LuminousIntensity add(Quantity<LuminousIntensity> addend);
-
-    @Override
-    LuminousIntensity subtract(Quantity<LuminousIntensity> subtrahend);
-
-    @Override
-    LuminousIntensity negate();
 }

@@ -19,7 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of mass.
@@ -47,23 +47,11 @@ public interface Mass extends Quantity<Mass> {
     }
 
     static Mass ofKilogram(double value) {
-        return of(value, Units.SI.KILOGRAM);
+        return of(value, SI.KILOGRAM);
     }
 
     @Override
     default Dimension getDimension() {
         return Dimensions.MASS;
     }
-
-    @Override
-    Mass to(Unit<Mass> unit);
-
-    @Override
-    Mass add(Quantity<Mass> addend);
-
-    @Override
-    Mass subtract(Quantity<Mass> subtrahend);
-
-    @Override
-    Mass negate();
 }

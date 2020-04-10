@@ -55,16 +55,4 @@ public interface Dimensionless extends Quantity<Dimensionless> {
     default Dimension getDimension() {
         return Units.ONE.getDimension();
     }
-
-    @Override
-    Dimensionless to(Unit<Dimensionless> unit);
-
-    @Override
-    Dimensionless add(Quantity<Dimensionless> addend);
-
-    @Override
-    Dimensionless subtract(Quantity<Dimensionless> subtrahend);
-
-    @Override
-    Dimensionless negate();
 }

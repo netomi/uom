@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of a pressure.
@@ -46,23 +46,11 @@ public interface Pressure extends Quantity<Pressure> {
     }
 
     static Pressure ofPascal(double value) {
-        return of(value, Units.SI.PASCAL);
+        return of(value, SI.PASCAL);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.PASCAL.getDimension();
+        return SI.PASCAL.getDimension();
     }
-
-    @Override
-    Pressure to(Unit<Pressure> unit);
-
-    @Override
-    Pressure add(Quantity<Pressure> addend);
-
-    @Override
-    Pressure subtract(Quantity<Pressure> subtrahend);
-
-    @Override
-    Pressure negate();
 }

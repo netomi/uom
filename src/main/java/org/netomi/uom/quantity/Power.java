@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of power.
@@ -46,23 +46,11 @@ public interface Power extends Quantity<Power> {
     }
 
     static Power ofWatt(double value) {
-        return of(value, Units.SI.WATT);
+        return of(value, SI.WATT);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.WATT.getDimension();
+        return SI.WATT.getDimension();
     }
-
-    @Override
-    Power to(Unit<Power> unit);
-
-    @Override
-    Power add(Quantity<Power> addend);
-
-    @Override
-    Power subtract(Quantity<Power> subtrahend);
-
-    @Override
-    Power negate();
 }

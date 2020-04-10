@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of energy.
@@ -46,23 +46,11 @@ public interface Energy extends Quantity<Energy> {
     }
 
     static Energy ofJoule(double value) {
-        return of(value, Units.SI.JOULE);
+        return of(value, SI.JOULE);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.JOULE.getDimension();
+        return SI.JOULE.getDimension();
     }
-
-    @Override
-    Energy to(Unit<Energy> unit);
-
-    @Override
-    Energy add(Quantity<Energy> addend);
-
-    @Override
-    Energy subtract(Quantity<Energy> subtrahend);
-
-    @Override
-    Energy negate();
 }

@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an electric resistance.
@@ -46,23 +46,11 @@ public interface ElectricResistance extends Quantity<ElectricResistance> {
     }
 
     static ElectricResistance ofOhm(double value) {
-        return of(value, Units.SI.OHM);
+        return of(value, SI.OHM);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.OHM.getDimension();
+        return SI.OHM.getDimension();
     }
-
-    @Override
-    ElectricResistance to(Unit<ElectricResistance> unit);
-
-    @Override
-    ElectricResistance add(Quantity<ElectricResistance> addend);
-
-    @Override
-    ElectricResistance subtract(Quantity<ElectricResistance> subtrahend);
-
-    @Override
-    ElectricResistance negate();
 }

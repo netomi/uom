@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Time} quantity.
  */
-public class TimeTest extends GenericQuantityTest<Time, Time> {
+public class TimeTest extends GenericQuantityTest<Time> {
 
     @Override
     protected Class<Time> getQuantityClass() {

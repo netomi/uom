@@ -13,36 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.quantity;
+package org.netomi.uom.quantity.impl;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Units;
 
-import java.util.function.BiFunction;
-import java.util.function.Function;
+import java.math.BigDecimal;
+import java.math.MathContext;
 
-/**
- * Unit test for the {@link Power} quantity.
- */
-public class PowerTest extends GenericQuantityTest<Power> {
+class GenericDecimalQuantity extends AbstractDecimalQuantity {
 
-    @Override
-    protected Class<Power> getQuantityClass() {
-        return Power.class;
+    public static DecimalQuantityFactory factory() {
+        return GenericDecimalQuantity::new;
+    }
+
+    GenericDecimalQuantity(BigDecimal value, MathContext mathContext, Unit unit) {
+        super(value, mathContext, unit);
     }
 
     @Override
-    protected Unit<Power> getSystemUnit() {
-        return Units.SI.WATT;
-    }
-
-    @Override
-    protected BiFunction<Double, Unit<Power>, Power> getFactoryMethod() {
-        return Power::of;
-    }
-
-    @Override
-    protected Function<Double, Power> getFactoryMethodForSystemUnit() {
-        return Power::ofWatt;
+    public DecimalQuantity with(BigDecimal value, MathContext mathContext, Unit unit) {
+        return new GenericDecimalQuantity(value, mathContext, unit);
     }
 }

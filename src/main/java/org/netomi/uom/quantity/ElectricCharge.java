@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an electric charge.
@@ -46,23 +46,11 @@ public interface ElectricCharge extends Quantity<ElectricCharge> {
     }
 
     static ElectricCharge ofCoulomb(double value) {
-        return of(value, Units.SI.COULOMB);
+        return of(value, SI.COULOMB);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.COULOMB.getDimension();
+        return SI.COULOMB.getDimension();
     }
-
-    @Override
-    ElectricCharge to(Unit<ElectricCharge> unit);
-
-    @Override
-    ElectricCharge add(Quantity<ElectricCharge> addend);
-
-    @Override
-    ElectricCharge subtract(Quantity<ElectricCharge> subtrahend);
-
-    @Override
-    ElectricCharge negate();
 }

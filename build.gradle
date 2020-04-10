@@ -33,4 +33,5 @@ dependencies {
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
     testImplementation('com.google.guava:guava-testlib:28.2-jre')
+    testImplementation('org.assertj:assertj-core:3.15.0')
 }

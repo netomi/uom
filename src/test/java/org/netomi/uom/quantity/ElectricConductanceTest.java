@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link ElectricConductance} quantity.
  */
-public class ElectricConductanceTest extends GenericQuantityTest<ElectricConductance, ElectricConductance> {
+public class ElectricConductanceTest extends GenericQuantityTest<ElectricConductance> {
 
     @Override
     protected Class<ElectricConductance> getQuantityClass() {

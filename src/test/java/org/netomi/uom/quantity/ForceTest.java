@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Force} quantity.
  */
-public class ForceTest extends GenericQuantityTest<Force, Force> {
+public class ForceTest extends GenericQuantityTest<Force> {
 
     @Override
     protected Class<Force> getQuantityClass() {

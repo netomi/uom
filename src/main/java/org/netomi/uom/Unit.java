@@ -88,7 +88,7 @@ public abstract class Unit<Q extends Quantity<Q>> {
 
     public abstract UnitConverter getSystemConverter();
 
-    public UnitConverter getConverterTo(Unit<Q> unit) {
+    public UnitConverter getConverterTo(Unit<Q> unit) throws IncommensurableException {
         TypeUtil.requireCommensurable(this, unit);
 
         UnitConverter thisConverter = getSystemConverter();

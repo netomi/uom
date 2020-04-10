@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an angle.
@@ -46,23 +46,11 @@ public interface Angle extends Quantity<Angle> {
     }
 
     static Angle ofRadian(double value) {
-        return of(value, Units.SI.RADIAN);
+        return of(value, SI.RADIAN);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.RADIAN.getDimension();
+        return SI.RADIAN.getDimension();
     }
-
-    @Override
-    Angle to(Unit<Angle> unit);
-
-    @Override
-    Angle add(Quantity<Angle> addend);
-
-    @Override
-    Angle subtract(Quantity<Angle> subtrahend);
-
-    @Override
-    Angle negate();
 }

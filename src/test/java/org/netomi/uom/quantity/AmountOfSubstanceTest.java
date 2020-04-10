@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link AmountOfSubstance} quantity.
  */
-public class AmountOfSubstanceTest extends GenericQuantityTest<AmountOfSubstance, AmountOfSubstance> {
+public class AmountOfSubstanceTest extends GenericQuantityTest<AmountOfSubstance> {
 
     @Override
     protected Class<AmountOfSubstance> getQuantityClass() {

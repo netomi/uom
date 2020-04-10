@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an electric resistance.
@@ -46,23 +46,11 @@ public interface ElectricConductance extends Quantity<ElectricConductance> {
     }
 
     static ElectricConductance ofSiemens(double value) {
-        return of(value, Units.SI.SIEMENS);
+        return of(value, SI.SIEMENS);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.SIEMENS.getDimension();
+        return SI.SIEMENS.getDimension();
     }
-
-    @Override
-    ElectricConductance to(Unit<ElectricConductance> unit);
-
-    @Override
-    ElectricConductance add(Quantity<ElectricConductance> addend);
-
-    @Override
-    ElectricConductance subtract(Quantity<ElectricConductance> subtrahend);
-
-    @Override
-    ElectricConductance negate();
 }

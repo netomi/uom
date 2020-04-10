@@ -67,8 +67,21 @@ public class TypeUtil {
                                                unit.getSymbol(),
                                                unit.getName(),
                                                unit.getDimension(),
-                                               quantity.getClass().getSimpleName(),
+                                               getQuantityClass(quantity).getSimpleName(),
                                                quantity.getDimension());
         }
+    }
+
+    public static Class<?> getQuantityClass(Quantity<?> quantity) {
+        Class<?>[] interfaces = quantity.getClass().getInterfaces();
+
+        for (Class<?> itf : interfaces) {
+            if (Quantity.class.isAssignableFrom(itf)) {
+                return itf;
+            }
+        }
+
+        // did not find a quantity interface, return the class itself.
+        return quantity.getClass();
     }
 }

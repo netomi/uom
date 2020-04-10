@@ -19,7 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of time.
@@ -47,23 +47,11 @@ public interface Time extends Quantity<Time> {
     }
 
     static Time ofSecond(double value) {
-        return of(value, Units.SI.SECOND);
+        return of(value, SI.SECOND);
     }
 
     @Override
     default Dimension getDimension() {
         return Dimensions.TIME;
     }
-
-    @Override
-    Time to(Unit<Time> unit);
-
-    @Override
-    Time add(Quantity<Time> addend);
-
-    @Override
-    Time subtract(Quantity<Time> subtrahend);
-
-    @Override
-    Time negate();
 }

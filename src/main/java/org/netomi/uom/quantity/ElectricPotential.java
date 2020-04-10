@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an electric potential.
@@ -46,27 +46,15 @@ public interface ElectricPotential extends Quantity<ElectricPotential> {
     }
 
     static ElectricPotential ofVolt(double value) {
-        return of(value, Units.SI.VOLT);
+        return of(value, SI.VOLT);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.VOLT.getDimension();
+        return SI.VOLT.getDimension();
     }
 
-    @Override
-    ElectricPotential to(Unit<ElectricPotential> unit);
-
-    @Override
-    ElectricPotential add(Quantity<ElectricPotential> addend);
-
-    @Override
-    ElectricPotential subtract(Quantity<ElectricPotential> subtrahend);
-
-    @Override
-    ElectricPotential negate();
-
     default ElectricResistance divideByElectricCurrent(Quantity<ElectricCurrent> currentQuantity) {
-        return divide(currentQuantity).asTypedQuantity(ElectricResistance.class);
+        return divide(currentQuantity).asQuantity(ElectricResistance.class);
     }
 }

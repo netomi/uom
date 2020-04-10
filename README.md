@@ -6,17 +6,17 @@
 
 My personal take on a _units of measurement_ library for java.
 
-The design goal of the library is to include the following:
+The design goal of the library is to include:
 
 * fully typed quantities:
   ```java
   Length l1 = Length.of(1, SI.METER);
   Length l2 = Length.ofMeter(2);          // convenience factory method for SI unit 
   ```
-* support for double and arbitrary decimal precision quantities (BigDecimal):
+* transparent support for double and arbitrary decimal precision quantities (using BigDecimal):
   ```java
-  DoubleLength  l1 = DoubleLength.of(1, SI.METER);
-  DecimalLength l2 = DecimalLength.of(BigDecimal.ONE, Imperial.YARD);
+  Length doubleLength  = Quantities.createQuantity(1, SI.METER, Length.class);
+  Length decimalLength = Quantities.createQuantity(BigDecimal.ONE, Imperial.YARD, Length.class);
   
   Length l3 = l1.add(l2);
   ```
@@ -34,27 +34,25 @@ The design goal of the library is to include the following:
   
     // default factories can be replaced
     // use decimal precision for every quantity of type Lengh:
-    Quantities.registerQuantityFactory(Length.class, DecimalLength.factory());
+    Quantities.registerQuantityFactory(Length.class, DecimalQuantity.factory(Length.class));
   
     // quantity factories with caching behavior can be registered
     QuantityFactory<Length> myCachingFactory = ...;
     Quantities.registerQuantityFactory(Length.class, myCachingFactory);
   ```  
-* unit conversions can be performed with user-defined precision if needed
-  ```java
-  DecimalLength l1 = ...
-  DecimalLength l2 = l1.to(Imperial.YARD, MathContext.DECIMAL128);
-  ```
 * support for the standard unit manipulations as defined by [JSR-385](https://www.jcp.org/en/jsr/detail?id=385) et al
 * support for as many units as possible, the amazing [GNU units](https://www.gnu.org/software/units/) library is the reference to compare to
+
+The library uses dynamic proxies to create concrete quantity classes for the specified
+precision at runtime.
 
 ## Examples
 
 Conversion of units between different system of units, e.g. SI and CGS
 
 ```java
-DoubleQuantity<ElectricCharge> e1 = DoubleQuantity.of(1, SI.COULOMB);
-DoubleQuantity<ElectricCharge> e2 = e1.to(CGS.STATCOULOMB);
+ElectricCharge e1 = ElectricCharge.of(1, SI.COULOMB);
+ElectricCharge e2 = e1.to(CGS.STATCOULOMB);
 
 System.out.println(e2);
 ```
@@ -71,7 +69,7 @@ Custom quantities and units:
 
     ...
 
-    final Unit<Bmi> bmiUnit = UnitBuilder.<Bmi>fromAny(SI.KILOGRAM.divide(SI.METRE.pow(2))).withSymbol("B").build();
+    final Unit<Bmi> bmiUnit = SI.KILOGRAM.divide(SI.METRE.pow(2)).withSymbol("B").forQuantity(Bmi.class);
     Quantity<Bmi> bmiDouble  = Quantities.createQuantity(19, bmiUnit);
     Quantity<Bmi> bmiDecimal = Quantities.createQuantity(BigDecimal.valueOf(21), bmiUnit);
 

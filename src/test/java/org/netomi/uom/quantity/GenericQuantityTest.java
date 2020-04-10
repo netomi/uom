@@ -22,7 +22,7 @@ import org.netomi.uom.IncommensurableException;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
-import org.netomi.uom.quantity.primitive.DoubleQuantity;
+import org.netomi.uom.quantity.impl.DoubleQuantity;
 import org.netomi.uom.unit.*;
 
 import java.math.BigDecimal;
@@ -36,17 +36,17 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @param <Q> the quantity type
  */
-public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
+public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
     private static final double eps = 1e-6;
 
-    protected abstract Class<T> getQuantityClass();
+    protected abstract Class<Q> getQuantityClass();
 
     protected abstract Unit<Q> getSystemUnit();
 
-    protected abstract BiFunction<Double, Unit<Q>, T> getFactoryMethod();
+    protected abstract BiFunction<Double, Unit<Q>, Q> getFactoryMethod();
 
-    protected abstract Function<Double, T> getFactoryMethodForSystemUnit();
+    protected abstract Function<Double, Q> getFactoryMethodForSystemUnit();
 
     protected Q createQuantity(double value, Class<Number> numberClass) {
         if (Double.class.equals(numberClass)) {
@@ -104,7 +104,7 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
         assertFalse(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
 
-        quantity = DoubleQuantity.<Q>of(200, getSystemUnit());
+        quantity = DoubleQuantity.factory().create(200, getSystemUnit());
 
         assertEquals(200, quantity.doubleValue(), eps);
         assertEquals(BigDecimal.valueOf(200).doubleValue(), quantity.decimalValue().doubleValue(), eps);
@@ -518,7 +518,7 @@ public abstract class GenericQuantityTest<T extends Q, Q extends Quantity<Q>> {
 
     @Test
     public void factoryMethod() {
-        T quantity = getFactoryMethod().apply(10.0, getSystemUnit());
+        Q quantity = getFactoryMethod().apply(10.0, getSystemUnit());
 
         assertSame(getSystemUnit(), quantity.getUnit());
         assertEquals(10, quantity.doubleValue(), eps);

@@ -19,7 +19,7 @@ import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an amount of substance.
@@ -47,23 +47,11 @@ public interface AmountOfSubstance extends Quantity<AmountOfSubstance> {
     }
 
     static AmountOfSubstance ofMole(double value) {
-        return of(value, Units.SI.MOLE);
+        return of(value, SI.MOLE);
     }
 
     @Override
     default Dimension getDimension() {
         return Dimensions.AMOUNT_OF_SUBSTANCE;
     }
-
-    @Override
-    AmountOfSubstance to(Unit<AmountOfSubstance> unit);
-
-    @Override
-    AmountOfSubstance add(Quantity<AmountOfSubstance> addend);
-
-    @Override
-    AmountOfSubstance subtract(Quantity<AmountOfSubstance> subtrahend);
-
-    @Override
-    AmountOfSubstance negate();
 }

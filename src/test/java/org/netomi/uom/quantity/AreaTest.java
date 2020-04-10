@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Area} quantity.
  */
-public class AreaTest extends GenericQuantityTest<Area, Area> {
+public class AreaTest extends GenericQuantityTest<Area> {
 
     @Override
     protected Class<Area> getQuantityClass() {

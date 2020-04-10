@@ -18,7 +18,7 @@ package org.netomi.uom.quantity;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of a frequency.
@@ -46,23 +46,11 @@ public interface Frequency extends Quantity<Frequency> {
     }
 
     static Frequency ofHertz(double value) {
-        return of(value, Units.SI.HERTZ);
+        return of(value, SI.HERTZ);
     }
 
     @Override
     default Dimension getDimension() {
-        return Units.SI.HERTZ.getDimension();
+        return SI.HERTZ.getDimension();
     }
-
-    @Override
-    Frequency to(Unit<Frequency> unit);
-
-    @Override
-    Frequency add(Quantity<Frequency> addend);
-
-    @Override
-    Frequency subtract(Quantity<Frequency> subtrahend);
-
-    @Override
-    Frequency negate();
 }

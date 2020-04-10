@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Energy} quantity.
  */
-public class EnergyTest extends GenericQuantityTest<Energy, Energy> {
+public class EnergyTest extends GenericQuantityTest<Energy> {
 
     @Override
     protected Class<Energy> getQuantityClass() {
