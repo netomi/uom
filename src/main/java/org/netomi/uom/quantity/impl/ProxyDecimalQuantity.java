@@ -17,27 +17,21 @@ package org.netomi.uom.quantity.impl;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.util.DefaultMethodInvocationHandler;
+import org.netomi.uom.util.Proxies;
 import org.netomi.uom.util.TypeUtil;
 
-import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
 
-class ProxyDecimalQuantity<Q extends Quantity<Q>>
-    extends    AbstractDecimalQuantity<Q>
-    implements DefaultMethodInvocationHandler {
+class ProxyDecimalQuantity<Q extends Quantity<Q>> extends AbstractDecimalQuantity<Q> {
 
     private final Class<Q> quantityClass;
 
     public static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(Class<Q> quantityClass) {
         return (value, mathContext, unit) -> {
             ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mathContext, unit, quantityClass);
-            @SuppressWarnings("unchecked")
-            Q proxy = (Q) Proxy.newProxyInstance(ProxyDecimalQuantity.class.getClassLoader(),
-                    new Class<?>[] { quantityClass, DecimalQuantity.class }, proxyImpl);
-
+            Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };
@@ -46,10 +40,7 @@ class ProxyDecimalQuantity<Q extends Quantity<Q>>
     public static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(MathContext mathContext, Class<Q> quantityClass) {
         return (value, ignored, unit) -> {
             ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mathContext, unit, quantityClass);
-            @SuppressWarnings("unchecked")
-            Q proxy = (Q) Proxy.newProxyInstance(ProxyDecimalQuantity.class.getClassLoader(),
-                                                 new Class<?>[] { quantityClass, DecimalQuantity.class }, proxyImpl);
-
+            Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };

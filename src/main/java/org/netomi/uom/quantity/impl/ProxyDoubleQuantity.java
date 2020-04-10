@@ -17,25 +17,19 @@ package org.netomi.uom.quantity.impl;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.util.DefaultMethodInvocationHandler;
+import org.netomi.uom.util.Proxies;
 import org.netomi.uom.util.TypeUtil;
 
-import java.lang.reflect.Proxy;
 import java.util.Objects;
 
-class ProxyDoubleQuantity<Q extends Quantity<Q>>
-    extends    AbstractDoubleQuantity<Q>
-    implements DefaultMethodInvocationHandler {
+class ProxyDoubleQuantity<Q extends Quantity<Q>> extends AbstractDoubleQuantity<Q> {
 
     private final Class<Q> quantityClass;
 
     public static <Q extends Quantity<Q>> DoubleQuantityFactory<Q> factory(Class<Q> quantityClass) {
         return (value, unit) -> {
             ProxyDoubleQuantity<Q> proxyImpl = new ProxyDoubleQuantity<>(value, unit, quantityClass);
-            @SuppressWarnings("unchecked")
-            Q proxy = (Q) Proxy.newProxyInstance(ProxyDoubleQuantity.class.getClassLoader(),
-                                                 new Class<?>[] { quantityClass, DoubleQuantity.class }, proxyImpl);
-
+            Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DoubleQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };

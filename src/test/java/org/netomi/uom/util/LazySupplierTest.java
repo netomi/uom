@@ -22,7 +22,7 @@ import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LazyTest {
+public class LazySupplierTest {
 
     @Test
     public void getter() {
@@ -32,7 +32,7 @@ public class LazyTest {
 
         assertEquals(0, atomicReference.get());
 
-        Supplier<Integer> lazySupplier = Lazy.of(supplier);
+        Supplier<Integer> lazySupplier = LazySupplier.of(supplier);
 
         assertEquals(0, atomicReference.get());
 

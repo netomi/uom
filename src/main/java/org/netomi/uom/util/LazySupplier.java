@@ -28,7 +28,7 @@ import java.util.function.Supplier;
  * @author Oliver Gierke
  * @author Mark Paluch
  */
-class Lazy<T> implements Supplier<T> {
+class LazySupplier<T> implements Supplier<T> {
 
     private final Supplier<? extends T> supplier;
 
@@ -36,16 +36,16 @@ class Lazy<T> implements Supplier<T> {
     private boolean resolved = false;
 
     /**
-     * Creates a new {@link Lazy} to produce an object lazily.
+     * Creates a new {@link LazySupplier} to produce an object lazily.
      *
      * @param <T> the type of which to produce an object of eventually.
      * @param supplier the {@link Supplier} to create the object lazily.
      */
-    public static <T> Lazy<T> of(Supplier<? extends T> supplier) {
-        return new Lazy<>(supplier);
+    public static <T> LazySupplier<T> of(Supplier<? extends T> supplier) {
+        return new LazySupplier<>(supplier);
     }
 
-    private Lazy(Supplier<? extends T> supplier) {
+    private LazySupplier(Supplier<? extends T> supplier) {
         this.supplier = supplier;
     }
 
