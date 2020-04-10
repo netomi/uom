@@ -16,12 +16,14 @@
 package org.netomi.uom.unit;
 
 import org.netomi.uom.math.Fraction;
+import org.netomi.uom.util.ConcurrentReferenceHashMap;
 import org.netomi.uom.util.ObjectPrinter;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
+
+import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
 
 /**
  * An efficient implementation of a {@link Dimension} using an {@link EnumMap}
@@ -66,8 +68,8 @@ class PhysicalDimension extends Dimension {
      * reference as the keys are contained in the values, creating a
      * circular reference which would prevent the keys from being collected.
      */
-    private static final Map<EnumMap<?, ?>, WeakReference<Dimension>> dimensionCache =
-            Collections.synchronizedMap(new WeakHashMap<>());
+    private static final Map<EnumMap<?, ?>, Dimension> dimensionCache =
+            new ConcurrentReferenceHashMap<>(20, ReferenceType.WEAK, ReferenceType.WEAK);
 
     private final EnumMap<Base, Fraction> dimensionMap;
     private final String                  cachedToString;
@@ -86,12 +88,11 @@ class PhysicalDimension extends Dimension {
     }
 
     private static Dimension getCachedDimension(EnumMap<Base, Fraction> map) {
-        WeakReference<Dimension> reference = dimensionCache.get(map);
-        return reference != null ? reference.get() : null;
+        return dimensionCache.get(map);
     }
 
     private static void putDimensionIntoCache(PhysicalDimension dimension) {
-        dimensionCache.put(dimension.dimensionMap, new WeakReference<>(dimension));
+        dimensionCache.putIfAbsent(dimension.dimensionMap, dimension);
     }
 
     PhysicalDimension(Base baseDimension) {
@@ -237,7 +238,7 @@ class PhysicalDimension extends Dimension {
 
     @Override
     public int hashCode() {
-        return Objects.hash(dimensionMap);
+        return dimensionMap.hashCode();
     }
 
     @Override

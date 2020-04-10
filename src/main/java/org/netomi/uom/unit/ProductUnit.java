@@ -18,10 +18,13 @@ package org.netomi.uom.unit;
 import org.netomi.uom.*;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
+import org.netomi.uom.util.ConcurrentReferenceHashMap;
 import org.netomi.uom.util.ObjectPrinter;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
+
+import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
 
 /**
  * @param <Q> the quantity type
@@ -38,7 +41,7 @@ public class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
      * circular reference which would prevent the keys from being collected.
      */
     private static final Map<UnitElementWrapper, WeakReference<Unit<?>>> unitCache =
-            Collections.synchronizedMap(new WeakHashMap<>());
+            new ConcurrentReferenceHashMap<>(50, ReferenceType.WEAK, ReferenceType.WEAK);
 
     private final UnitElementWrapper     unitElements;
     private final String                 cachedSymbol;

@@ -7,3 +7,7 @@ The Apache Software Foundation (http://www.apache.org/).
 This product includes code from the spring project
 https://github.com/spring-projects/spring-framework
 licensed under Apache license v2.
+
+This product includes code from the hibernate validator project
+https://github.com/hibernate/hibernate-validator
+licensed under Apache license v2.

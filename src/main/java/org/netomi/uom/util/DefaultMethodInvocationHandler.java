@@ -23,6 +23,8 @@ import java.lang.invoke.MethodType;
 import java.lang.reflect.*;
 import java.util.Map;
 
+import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
+
 /**
  * Method interceptor to correctly invoke default methods of interfaces.
  * <p>
@@ -36,7 +38,8 @@ import java.util.Map;
 public interface DefaultMethodInvocationHandler extends InvocationHandler {
 
     MethodHandleLookup        methodHandleLookup = MethodHandleLookup.getMethodHandleLookup();
-    Map<Method, MethodHandle> methodHandleCache  = new ConcurrentReferenceHashMap<>(10, ConcurrentReferenceHashMap.ReferenceType.WEAK);
+    Map<Method, MethodHandle> methodHandleCache  =
+            new ConcurrentReferenceHashMap<>(10, ReferenceType.WEAK, ReferenceType.WEAK);
 
     @Override
     default Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
@@ -52,6 +55,7 @@ public interface DefaultMethodInvocationHandler extends InvocationHandler {
     }
 
     default MethodHandle getMethodHandle(Method method) throws Exception {
+
         MethodHandle handle = methodHandleCache.get(method);
 
         if (handle == null) {
