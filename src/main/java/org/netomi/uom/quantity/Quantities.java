@@ -20,7 +20,6 @@ import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.impl.DecimalQuantity;
 import org.netomi.uom.quantity.impl.DoubleQuantity;
-import org.netomi.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
 import java.math.MathContext;

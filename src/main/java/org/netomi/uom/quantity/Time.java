@@ -35,7 +35,7 @@ public interface Time extends Quantity<Time> {
      * <p>
      * The registered {@link org.netomi.uom.QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
-     * with double precision ({@link org.netomi.uom.quantity.primitive.DoubleQuantity}
+     * with double precision ({@link org.netomi.uom.quantity.impl.DoubleQuantity}
      * will be returned.
      *
      * @param value the quantity value, expressed in the given unit.
