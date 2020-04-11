@@ -21,6 +21,7 @@ import org.netomi.uom.math.BigFraction;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * A {@code UnitConverter} implementation that converts values by multiplying
@@ -62,6 +63,11 @@ class MultiplyConverter extends AbstractConverter {
     @Override
     public boolean isLinear() {
         return true;
+    }
+
+    @Override
+    public Optional<BigFraction> scale() {
+        return Optional.of(multiplier);
     }
 
     @Override

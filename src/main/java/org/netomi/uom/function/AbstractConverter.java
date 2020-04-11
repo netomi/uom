@@ -16,9 +16,11 @@
 package org.netomi.uom.function;
 
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Optional;
 
 /**
  * Base class for {@link UnitConverter} implementations, provides some default
@@ -27,6 +29,13 @@ import java.math.MathContext;
  * @author Thomas Neidhart
  */
 abstract class AbstractConverter implements UnitConverter {
+
+    @Override
+    public Optional<BigFraction> scale() {
+        return isLinear() ?
+                Optional.of(BigFraction.from(convert(BigDecimal.ONE))) :
+                Optional.empty();
+    }
 
     @Override
     public BigDecimal convert(BigDecimal value) {

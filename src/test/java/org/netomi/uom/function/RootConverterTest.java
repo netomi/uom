@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
 import org.netomi.uom.math.ArithmeticUtils;
+import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -73,6 +74,20 @@ public class RootConverterTest {
 
         assertEquals(ArithmeticUtils.sqrt(BigDecimal.valueOf(1000), MathContext.DECIMAL128).doubleValue(),
                      converter.convert(BigDecimal.ONE).doubleValue(), 1e-6);
+    }
+
+    @Test
+    public void scale() {
+        MultiplyConverter multiplyConverter = new MultiplyConverter(1000, 1);
+        RootConverter converter = new RootConverter(multiplyConverter, 2);
+
+        assertTrue(converter.scale().isPresent());
+        assertEquals(BigFraction.from(Math.sqrt(1000)).doubleValue(), converter.scale().get().doubleValue(), 1e-6);
+
+        RootConverter inverse = converter.inverse();
+
+        assertTrue(inverse.scale().isPresent());
+        assertEquals(BigFraction.from(1. / Math.sqrt(1000)).doubleValue(), inverse.scale().get().doubleValue(), 1e-6);
     }
 
     @Test

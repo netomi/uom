@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Utility class to access various unit converter implementations.
@@ -232,6 +233,11 @@ public class UnitConverters {
         @Override
         public boolean isLinear() {
             return true;
+        }
+
+        @Override
+        public Optional<BigFraction> scale() {
+            return Optional.of(BigFraction.ONE);
         }
 
         @Override

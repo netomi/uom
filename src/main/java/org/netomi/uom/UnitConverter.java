@@ -15,8 +15,11 @@
  */
 package org.netomi.uom;
 
+import org.netomi.uom.math.BigFraction;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Optional;
 
 /**
  * An interface to support conversion of numbers expressed in different units.
@@ -44,6 +47,12 @@ public interface UnitConverter {
      * @return {@code true} if this converter is linear, false otherwise.
      */
     boolean isLinear();
+
+    /**
+     * Returns the scale of this {@link UnitConverter} represented as a fraction
+     * if this is a linear converter, otherwise {@link Optional#empty()} is returned.
+     */
+    Optional<BigFraction> scale();
 
     /**
      * Returns a {@link UnitConverter} instance that is the inverse of this

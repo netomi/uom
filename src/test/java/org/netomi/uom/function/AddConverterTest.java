@@ -64,6 +64,15 @@ public class AddConverterTest {
     }
 
     @Test
+    public void scale() {
+        AddConverter converter = new AddConverter(100);
+        assertFalse(converter.scale().isPresent());
+
+        AddConverter inverse = converter.inverse();
+        assertFalse(inverse.scale().isPresent());
+    }
+
+    @Test
     public void negate() {
         AddConverter converter = new AddConverter(10.0);
 

@@ -18,6 +18,7 @@ package org.netomi.uom.function;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 
@@ -68,6 +69,20 @@ public class PowConverterTest {
         assertEquals(1000.0, converter.convert(10), 1e-6);
         assertEquals(BigDecimal.valueOf(10).multiply(BigDecimal.TEN.pow(2)).doubleValue(),
                      converter.convert(BigDecimal.TEN).doubleValue(), 1e-6);
+    }
+
+    @Test
+    public void scale() {
+        MultiplyConverter multiplyConverter = new MultiplyConverter(100, 1);
+        PowConverter converter = new PowConverter(multiplyConverter, 2);
+
+        assertTrue(converter.scale().isPresent());
+        assertEquals(BigFraction.of(10000, 1), converter.scale().get());
+
+        PowConverter inverse = converter.inverse();
+
+        assertTrue(inverse.scale().isPresent());
+        assertEquals(BigFraction.of(1, 10000), inverse.scale().get());
     }
 
     @Test

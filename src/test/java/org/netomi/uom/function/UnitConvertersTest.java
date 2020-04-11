@@ -19,6 +19,7 @@ package org.netomi.uom.function;
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -42,6 +43,8 @@ public class UnitConvertersTest {
         BigDecimal value = BigDecimal.valueOf(5);
         assertSame(value, identity.convert(value));
         assertSame(value, identity.convert(value, MathContext.DECIMAL128));
+
+        assertEquals(BigFraction.ONE, identity.scale().get());
     }
 
     @Test
