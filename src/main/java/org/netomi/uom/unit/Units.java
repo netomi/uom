@@ -18,6 +18,7 @@ package org.netomi.uom.unit;
 import org.netomi.uom.*;
 import org.netomi.uom.format.UnitFormat;
 import org.netomi.uom.format.UnitFormatter;
+import org.netomi.uom.math.Fraction;
 import org.netomi.uom.quantity.*;
 
 import java.math.BigDecimal;
@@ -95,5 +96,13 @@ public class Units {
 
     public static <Q extends Quantity<Q>> Unit<Q> transformedWith(Unit<Q> unit, UnitConverter unitConverter) {
         return TransformedUnit.of(unit, unitConverter);
+    }
+
+    public static Unit<?> productOf(Unit<?> left, Fraction leftFraction, Unit<?> right, Fraction rightFraction) {
+        return ProductUnit.ofProduct(left, leftFraction, right, rightFraction);
+    }
+
+    public static Unit<?> powerOf(Unit<?> unit, Fraction fraction) {
+        return ProductUnit.ofProduct(unit, fraction);
     }
 }

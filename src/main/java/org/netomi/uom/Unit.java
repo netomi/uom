@@ -128,18 +128,18 @@ public abstract class Unit<Q extends Quantity<Q>> {
     public Unit<?> multiply(Unit<?> that) {
         return this == Units.ONE ? that :
                that == Units.ONE ? this :
-                       ProductUnit.ofProduct(this, Fraction.ONE, that, Fraction.ONE);
+                       Units.productOf(this, Fraction.ONE, that, Fraction.ONE);
     }
 
     public Unit<?> divide(Unit<?> that) {
         return that == Units.ONE ? this :
-               ProductUnit.ofProduct(this, Fraction.ONE, that, Fraction.of(-1));
+               Units.productOf(this, Fraction.ONE, that, Fraction.of(-1));
     }
 
     public Unit<?> pow(int n) {
         return n == 0 ? Units.ONE :
                n == 1 ? this      :
-                        ProductUnit.ofProduct(this, Fraction.of(n));
+                        Units.powerOf(this, Fraction.of(n));
     }
 
     public Unit<?> root(int n) {
@@ -148,12 +148,12 @@ public abstract class Unit<Q extends Quantity<Q>> {
         }
 
         return n == 1 ? this :
-               ProductUnit.ofProduct(this, Fraction.of(1, n));
+               Units.powerOf(this, Fraction.of(1, n));
     }
 
     public Unit<?> inverse() {
         return this == Units.ONE ? this :
-               ProductUnit.ofProduct(Units.ONE, Fraction.ONE, this, Fraction.of(-1));
+               Units.productOf(Units.ONE, Fraction.ONE, this, Fraction.of(-1));
     }
 
     public Unit<Q> withSymbol(String symbol) {

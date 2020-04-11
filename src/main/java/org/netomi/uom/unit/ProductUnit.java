@@ -31,7 +31,7 @@ import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
  *
  * @author Thomas Neidhart
  */
-public class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
+class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     private static final String EMPTY_SYMBOL = "1";
 
