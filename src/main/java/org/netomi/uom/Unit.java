@@ -189,7 +189,9 @@ public abstract class Unit<Q extends Quantity<Q>> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getDimension(), getSystemConverter());
+        return getDimension() == Dimensions.NONE ?
+                Objects.hash(getDimension(), getSystemConverter(), getSymbol()) :
+                Objects.hash(getDimension(), getSystemConverter());
     }
 
     @Override
@@ -197,11 +199,13 @@ public abstract class Unit<Q extends Quantity<Q>> {
         if (this == o) return true;
         if (!(o instanceof Unit)) return false;
 
-        // TODO: implement a meaningful equals also for dimensionless units.
-
+        // Two units are considered to be equal if their dimension and
+        // system converter are equal. Special case for dimensionless units:
+        // they are not considered to be equal when their symbol differs.
         Unit<?> otherUnit = (Unit<?>) o;
         return Objects.equals(getDimension(),       otherUnit.getDimension()) &&
-               Objects.equals(getSystemConverter(), otherUnit.getSystemConverter());
+               Objects.equals(getSystemConverter(), otherUnit.getSystemConverter()) &&
+               (getDimension() != Dimensions.NONE || getSymbol().equals(otherUnit.getSymbol()));
     }
 
     @Override

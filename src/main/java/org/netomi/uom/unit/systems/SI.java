@@ -69,6 +69,8 @@ public final class SI extends AbstractSystemOfUnits {
     public static final Unit<Energy>            JOULE  = addUnit(NEWTON.multiply(METRE).withSymbol("J").withName("JOULE"), Energy.class);
     public static final Unit<Power>             WATT   = addUnit(JOULE.divide(SECOND).withSymbol("W").withName("WATT"), Power.class);
 
+    public static final Unit<LuminousFlux>      LUMEN  = addUnit(CANDELA.multiply(STERADIAN).withSymbol("lm").withName("LUMEN"), LuminousFlux.class);
+
     public static final Unit<ElectricCharge>      COULOMB = addUnit(AMPERE.multiply(SECOND).withSymbol("C").withName("COULOMB"), ElectricCharge.class);
     public static final Unit<ElectricPotential>   VOLT    = addUnit(JOULE.divide(COULOMB).withSymbol("V").withName("VOLT"), ElectricPotential.class);
     public static final Unit<ElectricCapacitance> FARAD   = addUnit(COULOMB.divide(VOLT).withSymbol("F").withName("FARAD"), ElectricCapacitance.class);

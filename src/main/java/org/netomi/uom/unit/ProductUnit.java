@@ -323,6 +323,31 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
         return new ProductUnit<>(this, this.symbol, name);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(cachedDimension, cachedSystemConverter, unitElements);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ProductUnit)) return false;
+
+        // specific equals for a product units: two units are considered
+        // to be equal if their dimension and system converter are equal.
+        // additionally make sure that their unit elements are equal, this
+        // is needed to distinguish between units with dimensionless components,
+        // like the unit for angular velocity: rad/s should not be equal to
+        // the unit for frequency which is 1/s. This is a design decision
+        // to ensure that units with the same dimension but different nature
+        // are not equal to each other.
+
+        ProductUnit<?> otherUnit = (ProductUnit<?>) o;
+        return Objects.equals(cachedDimension,       otherUnit.cachedDimension)       &&
+               Objects.equals(cachedSystemConverter, otherUnit.cachedSystemConverter) &&
+               Objects.equals(unitElements,          otherUnit.unitElements);
+    }
+
     /**
      * Internal class used by {@link Unit} implementations to return an
      * array of {@link UnitElement}'s this unit is composed of.
