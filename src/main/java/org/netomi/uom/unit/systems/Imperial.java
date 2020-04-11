@@ -27,8 +27,9 @@ import java.math.BigDecimal;
 /**
  * The IMPERIAL system of units.
  */
-public class Imperial extends AbstractSystemOfUnits {
-    protected Imperial() {
+public final class Imperial extends AbstractSystemOfUnits {
+    // hide constructor.
+    private Imperial() {
         super("Imperial");
     }
 

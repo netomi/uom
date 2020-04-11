@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.Unit;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.unit.systems.Imperial;
+import org.netomi.uom.unit.systems.SI;
 
 import java.math.BigDecimal;
 
@@ -31,7 +32,7 @@ public class TransformedUnitTest {
 
     @Test
     public void shiftedBy() {
-        Unit<?> parentUnit = Units.SI.METRE;
+        Unit<?> parentUnit = SI.METRE;
 
         // m + 100
         Unit<?> unit = TransformedUnit.of(parentUnit, UnitConverters.shift(100));
@@ -52,7 +53,7 @@ public class TransformedUnitTest {
 
     @Test
     public void multipliedBy() {
-        Unit<?> parentUnit = Units.SI.METRE;
+        Unit<?> parentUnit = SI.METRE;
 
         // m * 2.5
         Unit<?> unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(2.5));

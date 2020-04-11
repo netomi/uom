@@ -18,6 +18,7 @@ package org.netomi.uom.unit;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.Unit;
 import org.netomi.uom.unit.systems.Imperial;
+import org.netomi.uom.unit.systems.SI;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -28,7 +29,7 @@ public class NamedUnitTest {
 
     @Test
     public void symbol() {
-        Unit<?> parentUnit = Units.SI.METRE;
+        Unit<?> parentUnit = SI.METRE;
 
         Unit<?> unit = NamedUnit.withSymbol(parentUnit, "sym");
 
@@ -39,7 +40,7 @@ public class NamedUnitTest {
 
     @Test
     public void name() {
-        Unit<?> parentUnit = Units.SI.METRE;
+        Unit<?> parentUnit = SI.METRE;
 
         Unit<?> unit = NamedUnit.withName(parentUnit, "MY METER");
 

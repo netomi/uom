@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -33,7 +33,7 @@ public class ElectricConductanceTest extends GenericQuantityTest<ElectricConduct
 
     @Override
     protected Unit<ElectricConductance> getSystemUnit() {
-        return Units.SI.SIEMENS;
+        return SI.SIEMENS;
     }
 
     @Override

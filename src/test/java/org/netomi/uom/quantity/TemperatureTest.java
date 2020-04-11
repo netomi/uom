@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -33,7 +33,7 @@ public class TemperatureTest extends GenericQuantityTest<Temperature> {
 
     @Override
     protected Unit<Temperature> getSystemUnit() {
-        return Units.SI.KELVIN;
+        return SI.KELVIN;
     }
 
     @Override

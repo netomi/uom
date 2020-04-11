@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -33,7 +33,7 @@ public class FrequencyTest extends GenericQuantityTest<Frequency> {
 
     @Override
     protected Unit<Frequency> getSystemUnit() {
-        return Units.SI.HERTZ;
+        return SI.HERTZ;
     }
 
     @Override

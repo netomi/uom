@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -33,7 +33,7 @@ public class LengthTest extends GenericQuantityTest<Length> {
 
     @Override
     protected Unit<Length> getSystemUnit() {
-        return Units.SI.METRE;
+        return SI.METRE;
     }
 
     @Override

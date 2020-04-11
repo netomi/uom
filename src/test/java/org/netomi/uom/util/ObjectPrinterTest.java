@@ -18,7 +18,7 @@ package org.netomi.uom.util;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.unit.Dimensions;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -67,8 +67,8 @@ public class ObjectPrinterTest {
     public void printFractionMapUnicode() {
         ObjectPrinter objectPrinter = ObjectPrinter.forUnicode();
 
-        assertEquals("LT⁻¹",  objectPrinter.print(Units.SI.METER_PER_SECOND.getDimension().getBaseDimensions(), Object::toString));
-        assertEquals("LMT⁻²", objectPrinter.print(Units.SI.NEWTON.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("LT⁻¹",  objectPrinter.print(SI.METER_PER_SECOND.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("LMT⁻²", objectPrinter.print(SI.NEWTON.getDimension().getBaseDimensions(), Object::toString));
         assertEquals("",      objectPrinter.print(Dimensions.NONE.getBaseDimensions(), Object::toString));
     }
 
@@ -76,8 +76,8 @@ public class ObjectPrinterTest {
     public void printFractionMapAscii() {
         ObjectPrinter objectPrinter = ObjectPrinter.forAscii();
 
-        assertEquals("LT^-1",  objectPrinter.print(Units.SI.METER_PER_SECOND.getDimension().getBaseDimensions(), Object::toString));
-        assertEquals("LMT^-2", objectPrinter.print(Units.SI.NEWTON.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("LT^-1",  objectPrinter.print(SI.METER_PER_SECOND.getDimension().getBaseDimensions(), Object::toString));
+        assertEquals("LMT^-2", objectPrinter.print(SI.NEWTON.getDimension().getBaseDimensions(), Object::toString));
         assertEquals("",       objectPrinter.print(Dimensions.NONE.getBaseDimensions(), Object::toString));
     }
 }

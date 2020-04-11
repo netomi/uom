@@ -96,7 +96,4 @@ public class Units {
     public static <Q extends Quantity<Q>> Unit<Q> transformedWith(Unit<Q> unit, UnitConverter unitConverter) {
         return TransformedUnit.of(unit, unitConverter);
     }
-
-    // Convenient access to base SI units.
-    public static class SI extends org.netomi.uom.unit.systems.SI {}
 }

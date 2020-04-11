@@ -24,8 +24,9 @@ import org.netomi.uom.unit.Units;
 /**
  * The US survey system of units.
  */
-public class US extends AbstractSystemOfUnits {
-    protected US() {
+public final class US extends AbstractSystemOfUnits {
+    // hide constructor.
+    private US() {
         super("US Survey");
     }
 

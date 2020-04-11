@@ -24,8 +24,9 @@ import org.netomi.uom.unit.Units;
 /**
  * The SI system of units.
  */
-public class SI extends AbstractSystemOfUnits {
-    protected SI() {
+public final class SI extends AbstractSystemOfUnits {
+    // hide constructor.
+    private SI() {
         super("SI");
     }
 
@@ -34,6 +35,8 @@ public class SI extends AbstractSystemOfUnits {
     private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<?> unit, Class<Q> quantityClass) {
         return INSTANCE.addUnitForQuantity(unit, quantityClass);
     }
+
+    public static final Unit<Dimensionless>     ONE = Units.ONE;
 
     // Base units of the International System of Units (SI).
     public static final Unit<Length>            METRE    = addUnit(Units.baseUnitForDimension("m",   "METER",    Dimensions.LENGTH),              Length.class);

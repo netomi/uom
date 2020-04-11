@@ -20,6 +20,7 @@ import org.netomi.uom.Prefix;
 import org.netomi.uom.Unit;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Precision;
+import org.netomi.uom.unit.systems.SI;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -69,7 +70,7 @@ public class MetricPrefixTest {
     }
 
     private static void checkFactoryMethod(UnaryOperator<Unit<?>> factoryMethod, Prefix prefix, double multiplier) {
-        Unit<?> unit = Units.SI.METRE;
+        Unit<?> unit = SI.METRE;
 
         Unit<?> prefixedUnit = factoryMethod.apply(unit);
 

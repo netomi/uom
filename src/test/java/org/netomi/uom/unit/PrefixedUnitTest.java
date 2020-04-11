@@ -23,6 +23,7 @@ import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.quantity.Length;
 import org.netomi.uom.quantity.Temperature;
 import org.netomi.uom.unit.systems.Imperial;
+import org.netomi.uom.unit.systems.SI;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -34,7 +35,7 @@ public class PrefixedUnitTest {
     @Test
     public void prefix() {
         Prefix  prefix = Prefixes.Metric.KILO;
-        Unit<?> parentUnit = Units.SI.METRE;
+        Unit<?> parentUnit = SI.METRE;
 
         Unit<?> km = PrefixedUnit.withPrefix(parentUnit, prefix);
 
@@ -46,10 +47,10 @@ public class PrefixedUnitTest {
 
     @Test
     public void prefixWithNonLinearConverter() {
-        Unit<Temperature> mC = PrefixedUnit.withPrefix(Units.SI.CELSIUS, Prefixes.Metric.MILLI);
+        Unit<Temperature> mC = PrefixedUnit.withPrefix(SI.CELSIUS, Prefixes.Metric.MILLI);
 
-        UnitConverter withPrefix    = mC.getConverterTo(Units.SI.KELVIN);
-        UnitConverter withoutPrefix = Units.SI.CELSIUS.getConverterTo(Units.SI.KELVIN);
+        UnitConverter withPrefix    = mC.getConverterTo(SI.KELVIN);
+        UnitConverter withoutPrefix = SI.CELSIUS.getConverterTo(SI.KELVIN);
 
         // 0.01 C converted to K should be equal to 10 mC.
         assertEquals(withoutPrefix.convert(10 * 1e-3), withPrefix.convert(10), 1e-6);
@@ -59,8 +60,8 @@ public class PrefixedUnitTest {
         // apply milli prefix again to get microdegree celsius.
         Unit<Temperature> µC = mC.withPrefix(Prefixes.Metric.MILLI);
 
-        withPrefix    = µC.getConverterTo(Units.SI.KELVIN);
-        withoutPrefix = Units.SI.CELSIUS.getConverterTo(Units.SI.KELVIN);
+        withPrefix    = µC.getConverterTo(SI.KELVIN);
+        withoutPrefix = SI.CELSIUS.getConverterTo(SI.KELVIN);
 
         assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
         assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);
@@ -68,10 +69,10 @@ public class PrefixedUnitTest {
 
     @Test
     public void prefixWithLinearConverter() {
-        Unit<Length> mm = PrefixedUnit.withPrefix(Units.SI.METRE, Prefixes.Metric.MILLI);
+        Unit<Length> mm = PrefixedUnit.withPrefix(SI.METRE, Prefixes.Metric.MILLI);
 
         UnitConverter withPrefix    = mm.getConverterTo(Imperial.YARD);
-        UnitConverter withoutPrefix = Units.SI.METRE.getConverterTo(Imperial.YARD);
+        UnitConverter withoutPrefix = SI.METRE.getConverterTo(Imperial.YARD);
 
         // 0.02 m converted to yd should be equal to 20 mm.
         assertEquals(withoutPrefix.convert(20 * 1e-3), withPrefix.convert(20), 1e-6);
@@ -82,7 +83,7 @@ public class PrefixedUnitTest {
         Unit<Length> µm = mm.withPrefix(Prefixes.Metric.MILLI);
 
         withPrefix    = µm.getConverterTo(Imperial.YARD);
-        withoutPrefix = Units.SI.METRE.getConverterTo(Imperial.YARD);
+        withoutPrefix = SI.METRE.getConverterTo(Imperial.YARD);
 
         assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
         assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);

@@ -16,7 +16,7 @@
 package org.netomi.uom.quantity;
 
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Units;
+import org.netomi.uom.unit.systems.SI;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -33,7 +33,7 @@ public class ElectricCapacitanceTest extends GenericQuantityTest<ElectricCapacit
 
     @Override
     protected Unit<ElectricCapacitance> getSystemUnit() {
-        return Units.SI.FARAD;
+        return SI.FARAD;
     }
 
     @Override

@@ -23,8 +23,9 @@ import org.netomi.uom.unit.Units;
 /**
  * The CGS system of units.
  */
-public class CGS extends AbstractSystemOfUnits {
-    protected CGS() {
+public final class CGS extends AbstractSystemOfUnits {
+    // hide constructor.
+    private CGS() {
         super("CGS");
     }
 

@@ -26,8 +26,9 @@ import static org.netomi.uom.unit.Prefixes.Metric.*;
 /**
  * Any other units not directly linked to a specific system of units.
  */
-public class NonSI extends AbstractSystemOfUnits {
-    protected NonSI() {
+public final class NonSI extends AbstractSystemOfUnits {
+    // hide constructor.
+    private NonSI() {
         super("Non-SI");
     }
 
