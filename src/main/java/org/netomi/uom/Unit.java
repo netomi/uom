@@ -73,11 +73,12 @@ public abstract class Unit<Q extends Quantity<Q>> {
      * @return {@code true} if the two units are compatible, {@code false} otherwise.
      */
     public boolean isCompatible(Unit<?> that) {
-        // Two units are compatible if their dimensions are equal.
-        Dimension thisDimension = this.getDimension();
-        Dimension thatDimension = that.getDimension();
-
-        return thisDimension.equals(thatDimension);
+        // Two units are compatible if their dimensions are equal and their
+        // respective system units. Equality of dimensions is sufficient for
+        // the majority of cases but it is not enough when taking dimensionless
+        // units / quantities into account.
+        return Objects.equals(this.getDimension(),  that.getDimension()) &&
+               Objects.equals(this.getSystemUnit(), that.getSystemUnit());
     }
 
     public boolean isSystemUnit() {

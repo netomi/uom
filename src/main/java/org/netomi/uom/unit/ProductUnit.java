@@ -237,10 +237,6 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
             systemUnit = systemUnit.multiply(unit);
         }
 
-        if (!isCompatible(systemUnit)) {
-            throw new AssertionError(String.format("system unit dimension != this dimension: %s, %s", systemUnit, this));
-        }
-
         return (Unit<Q>) Units.getNamedUnitIfPresent(systemUnit);
     }
 

@@ -49,7 +49,13 @@ public final class SI extends AbstractSystemOfUnits {
 
     public static final Unit<Temperature>       CELSIUS  = addUnit(KELVIN.shift(273.15).withSymbol("°C").withName("DEGREE CELSIUS"), Temperature.class);
 
-    public static final Unit<Angle>             RADIAN   = addUnit(Units.ONE.withSymbol("rad").withName("RADIAN"), Angle.class);
+    // System units for dimensionless quantities Angle and SolidAngle.
+    // Create a transformed unit by multiplying ONE with a fraction of 1/1 which ensures
+    // that the created units are retained when creating product units. Otherwise
+    // CANDELA (cd) would be compatible with LUMEN (cd·sr) which we want to prevent.
+    public static final Unit<Angle>             RADIAN    = addUnit(Units.ONE.multiply(1, 1).withSymbol("rad").withName("RADIAN"), Angle.class);
+    public static final Unit<SolidAngle>        STERADIAN = addUnit(Units.ONE.multiply(1, 1).withSymbol("sr").withName("STERADIAN"), SolidAngle.class);
+
     public static final Unit<Frequency>         HERTZ    = addUnit(Units.ONE.divide(SECOND).withSymbol("Hz") .withName("HERTZ"), Frequency.class);
 
     public static final Unit<Speed>             METER_PER_SECOND = addUnit(METRE.divide(SECOND).withSymbol("m/s").withName("METER PER SECOND"), Speed.class);
