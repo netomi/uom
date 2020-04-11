@@ -52,7 +52,7 @@ public class Units {
                 namedUnits.put(unit, unit);
                 // refresh the ProductUnit cache with named system units.
                 if (unit.isSystemUnit()) {
-                    ProductUnit.putNamedUnitIntoCache(unit);
+                    ProductUnit.putProductUnitIntoCache(unit);
                 }
             }
         }
@@ -81,14 +81,6 @@ public class Units {
     }
 
     // Builder methods to augment an existing unit, i.e. with a name or unit converter.
-
-    public static <Q extends Quantity<Q>> Unit<Q> withName(Unit<Q> unit, String name) {
-        return NamedUnit.withName(unit, name);
-    }
-
-    public static <Q extends Quantity<Q>> Unit<Q> withSymbol(Unit<Q> unit, String symbol) {
-        return NamedUnit.withSymbol(unit, symbol);
-    }
 
     public static <Q extends Quantity<Q>> Unit<Q> withPrefix(Unit<Q> unit, Prefix prefix) {
         return PrefixedUnit.withPrefix(unit, prefix);

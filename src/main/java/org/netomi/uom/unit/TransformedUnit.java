@@ -29,16 +29,44 @@ import java.util.Objects;
  */
 class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
 
+    protected final String symbol;
+    protected final String name;
+
     private final UnitConverter converterToDelegate;
 
     static <Q extends Quantity<Q>> Unit<Q> of(Unit<Q> unit, UnitConverter converterToDelegate) {
-        return new TransformedUnit<>(unit, converterToDelegate);
+        if (unit instanceof TransformedUnit<?>) {
+            TransformedUnit<Q> transformedUnit = (TransformedUnit<Q>) unit;
+
+            return new TransformedUnit<>(transformedUnit.getDelegateUnit(),
+                                         converterToDelegate.andThen(transformedUnit.converterToDelegate));
+        } else {
+            return new TransformedUnit<>(unit, converterToDelegate);
+        }
     }
 
     protected TransformedUnit(Unit<Q> delegateUnit, UnitConverter converterToDelegate) {
+        this(delegateUnit, null, null, converterToDelegate);
+    }
+
+    protected TransformedUnit(Unit<Q> delegateUnit, String symbol, String name, UnitConverter converterToDelegate) {
         super(delegateUnit);
         Objects.requireNonNull(converterToDelegate);
+
+        this.symbol = symbol;
+        this.name   = name;
+
         this.converterToDelegate = converterToDelegate;
+    }
+
+    @Override
+    public String getSymbol() {
+        return symbol != null ? symbol : super.getSymbol();
+    }
+
+    @Override
+    public String getName() {
+        return name != null ? name : super.getName();
     }
 
     @Override
@@ -57,7 +85,19 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     }
 
     @Override
+    public Unit<Q> withSymbol(String symbol) {
+        return new TransformedUnit<>(getDelegateUnit(), symbol, this.name, converterToDelegate);
+    }
+
+    @Override
+    public Unit<Q> withName(String name) {
+        return new TransformedUnit<>(getDelegateUnit(), this.symbol, name, converterToDelegate);
+    }
+
+    @Override
     public String toString() {
-        return String.format("(transform %s %s)", getDelegateUnit(), getSystemConverter());
+        return symbol != null ?
+                super.toString() :
+                String.format("(transform %s %s)", getDelegateUnit(), getSystemConverter());
     }
 }

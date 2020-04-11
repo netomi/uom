@@ -60,9 +60,7 @@ abstract class DelegateUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     @Override
     public Unit<Q> getSystemUnit() {
-        return isSystemUnit() ?
-                this :
-                delegateUnit.getSystemUnit();
+        return isSystemUnit() ? this : delegateUnit.getSystemUnit();
     }
 
     @Override

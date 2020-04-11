@@ -156,13 +156,9 @@ public abstract class Unit<Q extends Quantity<Q>> {
                Units.productOf(Units.ONE, Fraction.ONE, this, Fraction.of(-1));
     }
 
-    public Unit<Q> withSymbol(String symbol) {
-        return Units.withSymbol(this, symbol);
-    }
+    public abstract Unit<Q> withSymbol(String symbol);
 
-    public Unit<Q> withName(String name) {
-        return Units.withName(this, name);
-    }
+    public abstract Unit<Q> withName(String name);
 
     public Unit<Q> withPrefix(Prefix prefix) {
         return Units.withPrefix(this, prefix);

@@ -43,6 +43,9 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
     private static final Map<UnitElementWrapper, WeakReference<Unit<?>>> unitCache =
             new ConcurrentReferenceHashMap<>(50, ReferenceType.WEAK, ReferenceType.WEAK);
 
+    private final String                 symbol;
+    private final String                 name;
+
     private final UnitElementWrapper     unitElements;
     private final String                 cachedSymbol;
     private final Dimension              cachedDimension;
@@ -129,17 +132,17 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
         unitCache.put(unit.unitElements, new WeakReference<>(unit));
     }
 
-    static void putNamedUnitIntoCache(Unit<?> unit) {
-        if (unit instanceof NamedUnit<?>) {
-            Unit<?> delegateUnit = ((NamedUnit<?>) unit).getDelegateUnit();
-            if (delegateUnit instanceof ProductUnit<?>) {
-                ProductUnit<?> productUnit = (ProductUnit<?>) delegateUnit;
-                unitCache.put(productUnit.unitElements, new WeakReference<>(unit));
-            }
+    static void putProductUnitIntoCache(Unit<?> unit) {
+        if (unit instanceof ProductUnit<?>) {
+            ProductUnit<?> productUnit = (ProductUnit<?>) unit;
+            unitCache.put(productUnit.unitElements, new WeakReference<>(unit));
         }
     }
 
     protected ProductUnit() {
+        this.symbol = null;
+        this.name   = null;
+
         this.unitElements = UnitElementWrapper.of(new UnitElement[0]);
 
         this.cachedSymbol          = EMPTY_SYMBOL;
@@ -149,6 +152,9 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
     }
 
     protected ProductUnit(UnitElementWrapper unitElements) {
+        this.symbol = null;
+        this.name   = null;
+
         this.unitElements          = unitElements;
         this.cachedSymbol          = calculateSymbol();
         this.cachedDimension       = calculateDimension();
@@ -156,6 +162,18 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
         this.cachedBaseUnitMap     = calculateBaseUnitMap();
         // the system unit is lazily initialized.
         this.cachedSystemUnit      = null;
+    }
+
+    protected ProductUnit(ProductUnit<Q> productUnit, String symbol, String name) {
+        this.symbol                = symbol;
+        this.name                  = name;
+
+        this.unitElements          = productUnit.unitElements;
+        this.cachedSymbol          = productUnit.cachedSymbol;
+        this.cachedDimension       = productUnit.cachedDimension;
+        this.cachedSystemConverter = productUnit.cachedSystemConverter;
+        this.cachedBaseUnitMap     = productUnit.cachedBaseUnitMap;
+        this.cachedSystemUnit      = productUnit.cachedSystemUnit;
     }
 
     @Override
@@ -182,14 +200,12 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     @Override
     public String getSymbol() {
-        return cachedSymbol;
+        return symbol != null ? symbol : cachedSymbol;
     }
 
     @Override
     public String getName() {
-        // Does not really make sense to return a name concatenated
-        // from each unit element, return an empty string.
-        return "";
+        return name;
     }
 
     @Override
@@ -199,6 +215,10 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     @Override
     public Unit<Q> getSystemUnit() {
+        if (isSystemUnit()) {
+            return this;
+        }
+
         synchronized (this) {
             if (cachedSystemUnit == null) {
                 cachedSystemUnit = calculateSystemUnit();
@@ -295,6 +315,16 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
             }
         }
         return baseUnitMap;
+    }
+
+    @Override
+    public Unit<Q> withSymbol(String symbol) {
+        return new ProductUnit<>(this, symbol, this.name);
+    }
+
+    @Override
+    public Unit<Q> withName(String name) {
+        return new ProductUnit<>(this, this.symbol, name);
     }
 
     /**

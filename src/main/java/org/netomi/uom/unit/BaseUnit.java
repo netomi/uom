@@ -97,6 +97,16 @@ class BaseUnit<Q extends Quantity<Q>> extends Unit<Q> {
     }
 
     @Override
+    public Unit<Q> withSymbol(String symbol) {
+        return new BaseUnit<>(symbol, this.name, this.dimension);
+    }
+
+    @Override
+    public Unit<Q> withName(String name) {
+        return new BaseUnit<>(this.symbol, name, this.dimension);
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(symbol, dimension);
     }

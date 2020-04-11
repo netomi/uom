@@ -41,18 +41,33 @@ class PrefixedUnit<Q extends Quantity<Q>> extends TransformedUnit<Q> {
         this.prefix = prefix;
     }
 
+    private PrefixedUnit(Unit<Q> delegateUnit, Prefix prefix, String name) {
+        super(delegateUnit, null, name, prefix.getUnitConverter());
+        this.prefix = prefix;
+    }
+
     @Override
     public String getSymbol() {
-        return prefix.getSymbol() + super.getSymbol();
+        return prefix.getSymbol() + getDelegateUnit().getSymbol();
     }
 
     @Override
     public String getName() {
-        return prefix.getName() + super.getName();
+        return name != null ? name : prefix.getName() + getDelegateUnit().getName();
     }
 
     @Override
     public UnitElement[] getUnitElements() {
         return new UnitElement[] { new UnitElement(this, Fraction.ONE) };
+    }
+
+    @Override
+    public Unit<Q> withSymbol(String symbol) {
+        throw new IllegalStateException("setting a symbol for a prefixed unit is not allowed");
+    }
+
+    @Override
+    public Unit<Q> withName(String name) {
+        return new PrefixedUnit<>(getDelegateUnit(), prefix, name);
     }
 }
