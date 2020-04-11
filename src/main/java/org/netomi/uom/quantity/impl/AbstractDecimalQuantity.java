@@ -113,13 +113,13 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
     @Override
     public Q add(Quantity<Q> addend) {
         Quantity<Q> scaledQuantity = addend.to(unit);
-        return with(value.add(scaledQuantity.decimalValue()), unit);
+        return with(value.add(scaledQuantity.decimalValue(), mathContext), unit);
     }
 
     @Override
     public Q subtract(Quantity<Q> subtrahend) {
         Quantity<Q> scaledQuantity = subtrahend.to(unit);
-        return with(value.subtract(scaledQuantity.decimalValue()), unit);
+        return with(value.subtract(scaledQuantity.decimalValue(), mathContext), unit);
     }
 
     @Override
