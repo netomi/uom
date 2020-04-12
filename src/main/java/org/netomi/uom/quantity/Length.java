@@ -17,8 +17,6 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Dimensions;
 import org.netomi.uom.unit.systems.SI;
 
 /**
@@ -51,8 +49,8 @@ public interface Length extends Quantity<Length> {
     }
 
     @Override
-    default Dimension getDimension() {
-        return Dimensions.LENGTH;
+    default Unit<Length> getSystemUnit() {
+        return SI.METRE;
     }
 
     default Area multiplyByLength(Quantity<Length> multiplicand) {

@@ -28,7 +28,7 @@ import java.util.*;
  *
  * @author Thomas Neidhart
  */
-public class Dimensions {
+public final class Dimensions {
 
     private static final Map<PhysicalDimension.Base, Dimension> basePhysicalDimensions =
             new EnumMap<>(PhysicalDimension.Base.class);

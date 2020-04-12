@@ -17,7 +17,6 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.systems.SI;
 
 /**
@@ -50,7 +49,7 @@ public interface ElectricResistance extends Quantity<ElectricResistance> {
     }
 
     @Override
-    default Dimension getDimension() {
-        return SI.OHM.getDimension();
+    default Unit<ElectricResistance> getSystemUnit() {
+        return SI.OHM;
     }
 }

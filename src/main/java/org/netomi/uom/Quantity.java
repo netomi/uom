@@ -16,7 +16,6 @@
 package org.netomi.uom;
 
 import org.netomi.uom.quantity.Quantities;
-import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
@@ -69,6 +68,33 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return a new {@link Quantity} with this value expressed in the corresponding system unit.
      */
     Q toSystemUnit();
+
+    /**
+     * Returns the system unit of this quantity.
+     * <p>
+     * The default implementation returns {@link #getSystemUnit()} of the unit
+     * in which this quantity is expressed. For full type-safety when using custom
+     * quantities, overwrite this method to return the correct system unit of
+     * this quantity.
+     * <p>
+     * All built-in quantities return a proper system unit.
+     *
+     * @return the system {@link Unit} for this quantity.
+     */
+    default Unit<Q> getSystemUnit() {
+        return getUnit().getSystemUnit();
+    }
+
+    /**
+     * Returns if the given unit is compatible with this quantity, i.e.
+     * if {@code this.getSystemUnit().equals(unit.getSystemUnit())}.
+     *
+     * @param unit  the unit to check for compatibility.
+     * @return {@code true} if the unit is compatible, {@code false} otherwise.
+     */
+    default boolean isCompatible(Unit<?> unit) {
+        return getSystemUnit().equals(unit.getSystemUnit());
+    }
 
     /**
      * Compares this {@link Quantity} to another quantity of the same quantity type. If the two
@@ -218,37 +244,11 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
     Quantity<?> reciprocal();
 
     /**
-     * Returns the dimension of this quantity.
+     * Performs a cast of this quantity to the specified quantity.
      * <p>
-     * The default implementation returns the dimension of the unit in which this quantity
-     * is expressed. For full type-safety when using custom quantities, overwrite this method
-     * to return the supported dimension of this quantity.
-     * <p>
-     * All built-in quantities return the compatible dimension for this quantity.
-     *
-     * @return the {@link Dimension} representing this quantity.
-     */
-    default Dimension getDimension() {
-        return getUnit().getDimension();
-    }
-
-    /**
-     * Returns if the given unit is compatible with the dimension of this quantity.
-     *
-     * @param unit  the unit to check for compatibility.
-     * @return {@code true} if the unit is compatible, {@code false} otherwise.
-     */
-    default boolean isCompatible(Unit<?> unit) {
-        return getDimension().equals(unit.getDimension());
-    }
-
-    /**
-     * Performs a cast of this quantity to the specified generic quantity.
-     * <p>
-     * If a typed factory for the requested quantity type is registered,
-     * it is verified that this quantity is compatible the specified quantityClass.
-     * If no concrete quantity factory is registered for this quantityClass, no
-     * check can be performed.
+     * It is verified if the quantity expressed in its unit is compatible
+     * with the specified quantity type. If they are incompatible, an
+     * {@link IncommensurableException} is thrown.
      *
      * @param quantityClass the quantity class to which this quantity should be cast.
      * @param <R> the quantity type

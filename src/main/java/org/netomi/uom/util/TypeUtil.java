@@ -30,7 +30,7 @@ public class TypeUtil {
     private static final String ERROR_UNIT_DIMENSION_MISMATCH = "Dimension mismatch for units {0} and {1}: {2} != {3}.";
 
     /** Error message for units and quantities whose dimension does not match. */
-    private static final String ERROR_UNIT_QUANTITY_DIMENSION_MISMATCH = "Dimension mismatch when trying to use unit {0}/{1}'{'{2}'}' for quantity of type {3}'{'{4}'}'.";
+    private static final String ERROR_UNIT_QUANTITY_DIMENSION_MISMATCH = "Incompatible system units: trying to use unit {0}/{1}'{'{2}'}' for quantity of type {3}'{'{4}'}'.";
 
     // hide constructor
     private TypeUtil() {}
@@ -66,9 +66,9 @@ public class TypeUtil {
             throw new IncommensurableException(ERROR_UNIT_QUANTITY_DIMENSION_MISMATCH,
                                                unit.getSymbol(),
                                                unit.getName(),
-                                               unit.getDimension(),
+                                               unit.getSystemUnit(),
                                                getQuantityClass(quantity).getSimpleName(),
-                                               quantity.getDimension());
+                                               quantity.getSystemUnit());
         }
     }
 

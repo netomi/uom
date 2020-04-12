@@ -68,17 +68,24 @@ public abstract class Unit<Q extends Quantity<Q>> {
      * <p>
      * Two units are considered to be compatible if they have the same
      * dimension.
+     * <p>
+     * If two units are compatible with each other, values can be technically
+     * converted between quantities expressed in them, although it does not
+     * make sense in some cases, for example
+     * <ul>
+     *     <li>CANDELA and LUMEN
+     *     <li>RADIAN and STERADIAN
+     * </ul>
+     * have the same dimension but inherently different physical nature.
+     * To account for this, the {@link Quantity#isCompatible(Unit)} also
+     * takes the system unit into account to see if a unit can be used
+     * for a certain quantity.
      *
      * @param that the unit to check for compatibility.
      * @return {@code true} if the two units are compatible, {@code false} otherwise.
      */
     public boolean isCompatible(Unit<?> that) {
-        // Two units are compatible if their dimensions are equal and their
-        // respective system units. Equality of dimensions is sufficient for
-        // the majority of cases but it is not enough when taking dimensionless
-        // units / quantities into account.
-        return Objects.equals(this.getDimension(),  that.getDimension()) &&
-               Objects.equals(this.getSystemUnit(), that.getSystemUnit());
+        return Objects.equals(this.getDimension(),  that.getDimension());
     }
 
     public boolean isSystemUnit() {

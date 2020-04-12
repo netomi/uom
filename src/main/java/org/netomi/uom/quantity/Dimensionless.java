@@ -17,7 +17,6 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.Units;
 
 /**
@@ -52,7 +51,7 @@ public interface Dimensionless extends Quantity<Dimensionless> {
     }
 
     @Override
-    default Dimension getDimension() {
-        return Units.ONE.getDimension();
+    default Unit<Dimensionless> getSystemUnit() {
+        return Units.ONE;
     }
 }

@@ -17,7 +17,6 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.systems.SI;
 
 /**
@@ -50,8 +49,8 @@ public interface ElectricPotential extends Quantity<ElectricPotential> {
     }
 
     @Override
-    default Dimension getDimension() {
-        return SI.VOLT.getDimension();
+    default Unit<ElectricPotential> getSystemUnit() {
+        return SI.VOLT;
     }
 
     default ElectricResistance divideByElectricCurrent(Quantity<ElectricCurrent> currentQuantity) {

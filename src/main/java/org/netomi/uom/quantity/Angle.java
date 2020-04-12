@@ -17,7 +17,6 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Dimension;
 import org.netomi.uom.unit.systems.SI;
 
 /**
@@ -50,7 +49,7 @@ public interface Angle extends Quantity<Angle> {
     }
 
     @Override
-    default Dimension getDimension() {
-        return SI.RADIAN.getDimension();
+    default Unit<Angle> getSystemUnit() {
+        return SI.RADIAN;
     }
 }

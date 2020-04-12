@@ -17,8 +17,6 @@ package org.netomi.uom.quantity;
 
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
-import org.netomi.uom.unit.Dimension;
-import org.netomi.uom.unit.Dimensions;
 import org.netomi.uom.unit.systems.SI;
 
 /**
@@ -51,7 +49,7 @@ public interface AmountOfSubstance extends Quantity<AmountOfSubstance> {
     }
 
     @Override
-    default Dimension getDimension() {
-        return Dimensions.AMOUNT_OF_SUBSTANCE;
+    default Unit<AmountOfSubstance> getSystemUnit() {
+        return SI.MOLE;
     }
 }
