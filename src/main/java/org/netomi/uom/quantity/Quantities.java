@@ -20,6 +20,8 @@ import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.impl.DecimalQuantity;
 import org.netomi.uom.quantity.impl.DoubleQuantity;
+import org.netomi.uom.unit.Dimension;
+import org.netomi.uom.util.Proxies;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -122,6 +124,59 @@ public class Quantities {
         @Override
         public Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
                 return decimalQuantityFactory.create(value, mathContext, unit);
+        }
+    }
+
+    /**
+     * Builtin quantity types.
+     */
+    public enum Type {
+        ACCELERATION(Acceleration.class),
+        AMOUNT_OF_SUBSTANCE(AmountOfSubstance.class),
+        ANGLE(Angle.class),
+        AREA(Area.class),
+        DIMENSIONLESS(Dimensionless.class),
+        ELECTRIC_CAPACITANCE(ElectricCapacitance.class),
+        ELECTRIC_CHARGE(ElectricCharge.class),
+        ELECTRIC_CONDUCTANCE(ElectricConductance.class),
+        ELECTRIC_CURRENT(ElectricCurrent.class),
+        ELECTRIC_POTENTIAL(ElectricPotential.class),
+        ELECTRIC_RESISTANCE(ElectricResistance.class),
+        ENERGY(Energy.class),
+        FORCE(Force.class),
+        FREQUENCY(Frequency.class),
+        LENGTH(Length.class),
+        LUMINOUS_FLUX(LuminousFlux.class),
+        LUMINOUS_INTENSITY(LuminousIntensity.class),
+        MASS(Mass.class),
+        POWER(Power.class),
+        PRESSURE(Pressure.class),
+        SOLID_ANGLE(SolidAngle.class),
+        SPEED(Speed.class),
+        TEMPERATURE(Temperature.class),
+        TIME(Time.class),
+        VOLUME(Volume.class);
+
+        private final Class<? extends Quantity<?>> quantityType;
+        private final Unit<?>                      systemUnit;
+
+        Type(Class<? extends Quantity<?>> quantityType) {
+            this.quantityType = quantityType;
+
+            Quantity<?> quantity = Proxies.delegatingProxy(this, quantityType);
+            systemUnit = quantity.getSystemUnit();
+        }
+
+        public Class<? extends Quantity<?>> getQuantityType() {
+            return quantityType;
+        }
+
+        public Unit<?> getSystemUnit() {
+            return systemUnit;
+        }
+
+        public Dimension getDimension() {
+            return systemUnit.getDimension();
         }
     }
 }
