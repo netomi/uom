@@ -17,6 +17,12 @@ test {
     }
 }
 
+test {
+    jacoco {
+        excludes += ['org/netomi/uom/util/ConcurrentReferenceHashMap**']
+    }
+}
+
 jacocoTestReport {
     reports {
         xml.enabled  = true
