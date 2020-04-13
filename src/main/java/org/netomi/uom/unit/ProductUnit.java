@@ -106,6 +106,16 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
             return cachedUnit;
         } else {
             ProductUnit<?> unit = new ProductUnit<>(UnitElementWrapper.of(newElements));
+
+            // if the generated product unit has an identity converter but is composed of
+            // non-system units, we can return the system unit instead. This can happen
+            // when e.g. multiplying km with mm which results in a product unit of km * mm
+            // but it is equivalent to m^2.
+            if (!unit.isSystemUnit() &&
+                unit.getSystemConverter() == UnitConverters.identity()) {
+                return unit.getSystemUnit();
+            }
+
             // do not cache dimensionless units, currently they are equal to each other
             // if they have a unit system converter ("1" == "rad").
             if (unit.getDimension() != Dimensions.NONE) {
@@ -129,7 +139,7 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
     }
 
     private static void putUnitIntoCache(ProductUnit<?> unit) {
-        unitCache.put(unit.unitElements, new WeakReference<>(unit));
+        unitCache.putIfAbsent(unit.unitElements, new WeakReference<>(unit));
     }
 
     static void putProductUnitIntoCache(Unit<?> unit) {
@@ -211,6 +221,16 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
     @Override
     public Dimension getDimension() {
         return cachedDimension;
+    }
+
+    @Override
+    public boolean isSystemUnit() {
+        for (UnitElement element : unitElements.elements) {
+            if (!element.getUnit().isSystemUnit()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override
