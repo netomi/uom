@@ -215,10 +215,6 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     @Override
     public Unit<Q> getSystemUnit() {
-        if (isSystemUnit()) {
-            return this;
-        }
-
         synchronized (this) {
             if (cachedSystemUnit == null) {
                 cachedSystemUnit = calculateSystemUnit();

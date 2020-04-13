@@ -53,11 +53,11 @@ public interface Length extends Quantity<Length> {
         return SI.METRE;
     }
 
-    default Area multiplyByLength(Quantity<Length> multiplicand) {
-        return multiply(multiplicand).asQuantity(Area.class);
+    default Area multiply(Length multiplicand) {
+        return multiply((Quantity<Length>) multiplicand).asQuantity(Area.class);
     }
 
-    default Speed divideByTime(Quantity<Time> divisor) {
-        return divide(divisor).asQuantity(Speed.class);
+    default Speed divide(Time divisor) {
+        return divide((Quantity<Time>) divisor).asQuantity(Speed.class);
     }
 }
