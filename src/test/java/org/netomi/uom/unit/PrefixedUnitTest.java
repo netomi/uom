@@ -25,7 +25,7 @@ import org.netomi.uom.quantity.Temperature;
 import org.netomi.uom.unit.systems.Imperial;
 import org.netomi.uom.unit.systems.SI;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for the {@link PrefixedUnit} class.
@@ -33,11 +33,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class PrefixedUnitTest {
 
     @Test
+    public void systemUnit() {
+        PrefixedUnit<Length> unit = PrefixedUnit.of(SI.METRE, Prefixes.Metric.KILO);
+
+        assertFalse(unit.isSystemUnit());
+        assertSame(SI.METRE, unit.getSystemUnit());
+    }
+
+    @Test
     public void prefix() {
-        Prefix  prefix = Prefixes.Metric.KILO;
+        Prefix prefix = Prefixes.Metric.KILO;
         Unit<?> parentUnit = SI.METRE;
 
-        Unit<?> km = PrefixedUnit.withPrefix(parentUnit, prefix);
+        PrefixedUnit<?> km = PrefixedUnit.of(parentUnit, prefix);
 
         assertEquals(prefix.getSymbol() + parentUnit.getSymbol(), km.getSymbol());
         assertEquals(prefix.getName() + parentUnit.getName(), km.getName());
@@ -47,9 +55,9 @@ public class PrefixedUnitTest {
 
     @Test
     public void prefixWithNonLinearConverter() {
-        Unit<Temperature> mC = PrefixedUnit.withPrefix(SI.CELSIUS, Prefixes.Metric.MILLI);
+        PrefixedUnit<Temperature> mC = PrefixedUnit.of(SI.CELSIUS, Prefixes.Metric.MILLI);
 
-        UnitConverter withPrefix    = mC.getConverterTo(SI.KELVIN);
+        UnitConverter withPrefix = mC.getConverterTo(SI.KELVIN);
         UnitConverter withoutPrefix = SI.CELSIUS.getConverterTo(SI.KELVIN);
 
         // 0.01 C converted to K should be equal to 10 mC.
@@ -57,10 +65,10 @@ public class PrefixedUnitTest {
         // 10 K converted to C should be 1e3 in mC.
         assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-3, 1e-6);
 
-        // apply milli prefix again to get microdegree celsius.
-        Unit<Temperature> µC = mC.withPrefix(Prefixes.Metric.MILLI);
+        // microdegree Celsius.
+        Unit<Temperature> µC = SI.CELSIUS.withPrefix(Prefixes.Metric.MICRO);
 
-        withPrefix    = µC.getConverterTo(SI.KELVIN);
+        withPrefix = µC.getConverterTo(SI.KELVIN);
         withoutPrefix = SI.CELSIUS.getConverterTo(SI.KELVIN);
 
         assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
@@ -69,9 +77,9 @@ public class PrefixedUnitTest {
 
     @Test
     public void prefixWithLinearConverter() {
-        Unit<Length> mm = PrefixedUnit.withPrefix(SI.METRE, Prefixes.Metric.MILLI);
+        PrefixedUnit<Length> mm = PrefixedUnit.of(SI.METRE, Prefixes.Metric.MILLI);
 
-        UnitConverter withPrefix    = mm.getConverterTo(Imperial.YARD);
+        UnitConverter withPrefix = mm.getConverterTo(Imperial.YARD);
         UnitConverter withoutPrefix = SI.METRE.getConverterTo(Imperial.YARD);
 
         // 0.02 m converted to yd should be equal to 20 mm.
@@ -79,14 +87,40 @@ public class PrefixedUnitTest {
         // 20 yd converted to m should be 1e3 in mm.
         assertEquals(withoutPrefix.inverse().convert(20), withPrefix.inverse().convert(20) * 1e-3, 1e-6);
 
-        // apply milli prefix again to get micrometer.
-        Unit<Length> µm = mm.withPrefix(Prefixes.Metric.MILLI);
+        // microdegree Celsius.
+        Unit<Length> µm = SI.METRE.withPrefix(Prefixes.Metric.MICRO);
 
-        withPrefix    = µm.getConverterTo(Imperial.YARD);
+        withPrefix = µm.getConverterTo(Imperial.YARD);
         withoutPrefix = SI.METRE.getConverterTo(Imperial.YARD);
 
         assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
         assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);
     }
 
+    @Test
+    public void withSymbol() {
+        PrefixedUnit<Length> unit = PrefixedUnit.of(SI.METRE, Prefixes.Metric.KILO);
+
+        PrefixedUnit<Length> customUnit = unit.withSymbol("custom");
+        assertNotSame(unit, customUnit);
+        assertEquals("custom", customUnit.getSymbol());
+    }
+
+    @Test
+    public void withName() {
+        PrefixedUnit<Length> unit = PrefixedUnit.of(SI.METRE, Prefixes.Metric.KILO);
+
+        PrefixedUnit<Length> customUnit = unit.withName("CUSTOM");
+        assertNotSame(unit, customUnit);
+        assertEquals("CUSTOM", customUnit.getName());
+    }
+
+    @Test
+    public void withPrefix() {
+        PrefixedUnit<Length> unit = PrefixedUnit.of(SI.METRE, Prefixes.Metric.KILO);
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            unit.withPrefix(Prefixes.Metric.KILO);
+        });
+    }
 }

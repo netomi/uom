@@ -23,6 +23,8 @@ import org.netomi.uom.math.Fraction;
 import java.util.Objects;
 
 /**
+ * Represents a {@link Unit} with a specific {@link Prefix}.
+ *
  * @param <Q> the quantity type
  *
  * @author Thomas Neidhart
@@ -31,8 +33,22 @@ class PrefixedUnit<Q extends Quantity<Q>> extends TransformedUnit<Q> {
 
     private final Prefix prefix;
 
-    static <Q extends Quantity<Q>> Unit<Q> withPrefix(Unit<Q> unit, Prefix prefix) {
+    /**
+     * Returns a new {@link PrefixedUnit} for the given {@link Unit} and {@link Prefix}.
+     *
+     * @param unit    the unit to add a prefix to.
+     * @param prefix  the prefix to apply to the unit.
+     * @param <Q>     the quantity type.
+     * @return a new {@link PrefixedUnit}.
+     * @throws IllegalArgumentException if the unit is already prefixed.
+     */
+    static <Q extends Quantity<Q>> PrefixedUnit<Q> of(Unit<Q> unit, Prefix prefix) {
         Objects.requireNonNull(prefix);
+
+        if (unit instanceof PrefixedUnit<?>) {
+            throw new IllegalArgumentException("trying to add a prefix to an already prefixed unit: " + unit);
+        }
+
         return new PrefixedUnit<>(unit, prefix);
     }
 
@@ -41,14 +57,14 @@ class PrefixedUnit<Q extends Quantity<Q>> extends TransformedUnit<Q> {
         this.prefix = prefix;
     }
 
-    private PrefixedUnit(Unit<Q> delegateUnit, Prefix prefix, String name) {
-        super(delegateUnit, null, name, prefix.getUnitConverter());
+    private PrefixedUnit(Unit<Q> delegateUnit, Prefix prefix, String symbol, String name) {
+        super(delegateUnit, symbol, name, prefix.getUnitConverter());
         this.prefix = prefix;
     }
 
     @Override
     public String getSymbol() {
-        return prefix.getSymbol() + getDelegateUnit().getSymbol();
+        return symbol != null ? symbol : prefix.getSymbol() + getDelegateUnit().getSymbol();
     }
 
     @Override
@@ -62,12 +78,12 @@ class PrefixedUnit<Q extends Quantity<Q>> extends TransformedUnit<Q> {
     }
 
     @Override
-    public Unit<Q> withSymbol(String symbol) {
-        throw new IllegalStateException("setting a symbol for a prefixed unit is not allowed");
+    public PrefixedUnit<Q> withSymbol(String symbol) {
+        return new PrefixedUnit<>(getDelegateUnit(), prefix, symbol, this.name);
     }
 
     @Override
-    public Unit<Q> withName(String name) {
-        return new PrefixedUnit<>(getDelegateUnit(), prefix, name);
+    public PrefixedUnit<Q> withName(String name) {
+        return new PrefixedUnit<>(getDelegateUnit(), prefix, this.symbol, name);
     }
 }

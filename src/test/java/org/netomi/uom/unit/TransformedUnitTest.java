@@ -18,17 +18,40 @@ package org.netomi.uom.unit;
 import org.junit.jupiter.api.Test;
 import org.netomi.uom.Unit;
 import org.netomi.uom.function.UnitConverters;
+import org.netomi.uom.quantity.Length;
 import org.netomi.uom.unit.systems.Imperial;
 import org.netomi.uom.unit.systems.SI;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit tests for the {@link TransformedUnit} class.
  */
 public class TransformedUnitTest {
+
+    @Test
+    public void factoryMethod() {
+        Unit<Length> unit = TransformedUnit.of(SI.METRE, UnitConverters.multiply(100, 1));
+
+        assertTrue(unit instanceof TransformedUnit<?>);
+
+        // resulting unit should have an identity converter and thus the system unit should
+        // be returned by the factory method.
+        unit = TransformedUnit.of(unit, UnitConverters.multiply(1, 100));
+        assertFalse(unit instanceof TransformedUnit<?>);
+
+        assertSame(SI.METRE, unit);
+    }
+
+    @Test
+    public void systemUnit() {
+        Unit<Length> unit = TransformedUnit.of(SI.METRE, UnitConverters.multiply(100));
+
+        assertFalse(unit.isSystemUnit());
+        assertEquals(SI.METRE, unit.getSystemUnit());
+    }
 
     @Test
     public void shiftedBy() {
@@ -78,5 +101,29 @@ public class TransformedUnitTest {
         assertEquals(parentUnit.getName(), unit.getName());
         assertEquals(UnitConverters.multiply(5, 9).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
                      unit.getConverterToAny(Imperial.YARD));
+    }
+
+    @Test
+    public void withSymbol() {
+        Unit<Length> unit = TransformedUnit.of(SI.METRE, UnitConverters.multiply(100));
+        Unit<Length> customUnit = unit.withSymbol("custom");
+        assertNotSame(unit, customUnit);
+        assertEquals("custom", customUnit.getSymbol());
+    }
+
+    @Test
+    public void withName() {
+        Unit<Length> unit = TransformedUnit.of(SI.METRE, UnitConverters.multiply(100));
+        Unit<Length> customUnit = unit.withName("CUSTOM");
+        assertNotSame(unit, customUnit);
+        assertEquals("CUSTOM", customUnit.getName());
+    }
+
+    @Test
+    public void withPrefix() {
+        Unit<Length> unit = TransformedUnit.of(SI.METRE, UnitConverters.multiply(100));
+        Unit<Length> prefixedUnit = unit.withPrefix(Prefixes.Metric.KILO);
+        assertNotSame(unit, prefixedUnit);
+        assertEquals(UnitConverters.multiply(100000), prefixedUnit.getSystemConverter());
     }
 }

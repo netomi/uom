@@ -50,11 +50,11 @@ public final class SI extends AbstractSystemOfUnits {
     public static final Unit<Temperature>       CELSIUS  = addUnit(KELVIN.shift(273.15).withSymbol("°C").withName("DEGREE CELSIUS"), Temperature.class);
 
     // System units for dimensionless quantities Angle and SolidAngle.
-    // Create a transformed unit by multiplying ONE with a fraction of 1/1 which ensures
-    // that the created units are retained when creating product units. Otherwise
-    // CANDELA (cd) would be compatible with LUMEN (cd·sr) which we want to prevent.
-    public static final Unit<Angle>             RADIAN    = addUnit(Units.ONE.multiply(1, 1).withSymbol("rad").withName("RADIAN"), Angle.class);
-    public static final Unit<SolidAngle>        STERADIAN = addUnit(Units.ONE.multiply(1, 1).withSymbol("sr").withName("STERADIAN"), SolidAngle.class);
+    // Create an alternate dimensionless system unit which ensures that the created units
+    // are retained when creating product units. Otherwise CANDELA (cd) would be compatible
+    // with LUMEN (cd·sr) which we want to prevent.
+    public static final Unit<Angle>             RADIAN    = addUnit(Units.alternateDimensionlessSystemUnit("rad", "RADIAN"), Angle.class);
+    public static final Unit<SolidAngle>        STERADIAN = addUnit(Units.alternateDimensionlessSystemUnit("sr", "STERADIAN"), SolidAngle.class);
 
     public static final Unit<Frequency>         HERTZ    = addUnit(Units.ONE.divide(SECOND).withSymbol("Hz") .withName("HERTZ"), Frequency.class);
 

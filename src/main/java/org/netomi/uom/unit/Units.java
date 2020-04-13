@@ -71,6 +71,10 @@ public class Units {
         return new BaseUnit<>(symbol, name, dimension);
     }
 
+    public static <Q extends Quantity<Q>> Unit<Q> alternateDimensionlessSystemUnit(String symbol, String name) {
+        return AlternateSystemUnit.of(Units.ONE, symbol, name);
+    }
+
     public static UnitFormatter defaultFormatter() {
         return DEFAULT_FORMATTER;
     }
@@ -83,7 +87,7 @@ public class Units {
     // Builder methods to augment an existing unit, i.e. with a name or unit converter.
 
     public static <Q extends Quantity<Q>> Unit<Q> withPrefix(Unit<Q> unit, Prefix prefix) {
-        return PrefixedUnit.withPrefix(unit, prefix);
+        return PrefixedUnit.of(unit, prefix);
     }
 
     public static <Q extends Quantity<Q>> Unit<Q> transformedWith(Unit<Q> unit, UnitConverter unitConverter) {

@@ -18,11 +18,15 @@ package org.netomi.uom.unit;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
 
 import java.util.Objects;
 
 /**
+ * Represents a {@link Unit} which is transformed with a {@link UnitConverter}
+ * from another {@link Unit}.
+ *
  * @param <Q> the quantity type
  *
  * @author Thomas Neidhart
@@ -35,14 +39,19 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     private final UnitConverter converterToDelegate;
 
     static <Q extends Quantity<Q>> Unit<Q> of(Unit<Q> unit, UnitConverter converterToDelegate) {
+        Unit<Q>       delegateUnit = unit;
+        UnitConverter converter    = converterToDelegate;
+
         if (unit instanceof TransformedUnit<?>) {
             TransformedUnit<Q> transformedUnit = (TransformedUnit<Q>) unit;
 
-            return new TransformedUnit<>(transformedUnit.getDelegateUnit(),
-                                         converterToDelegate.andThen(transformedUnit.converterToDelegate));
-        } else {
-            return new TransformedUnit<>(unit, converterToDelegate);
+            delegateUnit = transformedUnit.getDelegateUnit();
+            converter = converterToDelegate.andThen(transformedUnit.converterToDelegate);
         }
+
+        return converter == UnitConverters.identity() ?
+                delegateUnit :
+                new TransformedUnit<>(delegateUnit, converter);
     }
 
     protected TransformedUnit(Unit<Q> delegateUnit, UnitConverter converterToDelegate) {
@@ -85,12 +94,12 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     }
 
     @Override
-    public Unit<Q> withSymbol(String symbol) {
+    public TransformedUnit<Q> withSymbol(String symbol) {
         return new TransformedUnit<>(getDelegateUnit(), symbol, this.name, converterToDelegate);
     }
 
     @Override
-    public Unit<Q> withName(String name) {
+    public TransformedUnit<Q> withName(String name) {
         return new TransformedUnit<>(getDelegateUnit(), this.symbol, name, converterToDelegate);
     }
 
