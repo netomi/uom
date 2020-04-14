@@ -53,7 +53,7 @@ public interface ElectricPotential extends Quantity<ElectricPotential> {
         return SI.VOLT;
     }
 
-    default ElectricResistance divideByElectricCurrent(Quantity<ElectricCurrent> currentQuantity) {
-        return divide(currentQuantity).asQuantity(ElectricResistance.class);
+    default ElectricResistance divide(ElectricCurrent divisor) {
+        return divide(divisor, ElectricResistance.class);
     }
 }

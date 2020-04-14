@@ -19,6 +19,7 @@ import org.netomi.uom.IncommensurableException;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;
+import org.netomi.uom.quantity.Quantities;
 import org.netomi.uom.unit.Units;
 
 import java.math.BigDecimal;
@@ -31,6 +32,8 @@ import java.math.BigDecimal;
  */
 abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     implements DoubleQuantity<Q> {
+
+    private static final Quantity<?> ONE = new GenericDoubleQuantity(1.0, Units.ONE);
 
     protected final double  value;
     protected final Unit<Q> unit;
@@ -124,7 +127,17 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     @Override
     public Quantity<?> multiply(Quantity<?> multiplicand) {
         Unit<?> combinedSystemUnit = unit.multiply(multiplicand.getUnit()).getSystemUnit();
+        return genericDoubleQuantity(multiplyInternal(multiplicand), combinedSystemUnit);
+    }
 
+    @Override
+    public <R extends Quantity<R>> R multiply(Quantity<?> multiplicand, Class<R> quantityClass) {
+        @SuppressWarnings("unchecked")
+        Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplicand.getUnit()).getSystemUnit();
+        return Quantities.createQuantity(multiplyInternal(multiplicand), combinedSystemUnit, quantityClass);
+    }
+
+    private double multiplyInternal(Quantity<?> multiplicand) {
         UnitConverter toSystemConverter = unit.getSystemConverter();
         double valueInSystemUnit        = toSystemConverter.convert(value);
 
@@ -133,13 +146,23 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
                         multiplicand :
                         multiplicand.toSystemUnit();
 
-        return genericDoubleQuantity(valueInSystemUnit * multiplicandInSystemUnit.doubleValue(), combinedSystemUnit);
+        return valueInSystemUnit * multiplicandInSystemUnit.doubleValue();
     }
 
     @Override
     public Quantity<?> divide(Quantity<?> divisor) {
         Unit<?> combinedSystemUnit = unit.divide(divisor.getUnit()).getSystemUnit();
+        return genericDoubleQuantity(divideInternal(divisor), combinedSystemUnit);
+    }
 
+    @Override
+    public <R extends Quantity<R>> R divide(Quantity<?> divisor, Class<R> quantityClass) {
+        @SuppressWarnings("unchecked")
+        Unit<R> combinedSystemUnit = (Unit<R>) unit.divide(divisor.getUnit()).getSystemUnit();
+        return Quantities.createQuantity(divideInternal(divisor), combinedSystemUnit, quantityClass);
+    }
+
+    private double divideInternal(Quantity<?> divisor) {
         UnitConverter toSystemConverter = unit.getSystemConverter();
         double valueInSystemUnit        = toSystemConverter.convert(value);
 
@@ -148,12 +171,21 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
                         divisor :
                         divisor.toSystemUnit();
 
-        return genericDoubleQuantity(valueInSystemUnit / divisorInSystemUnit.doubleValue(), combinedSystemUnit);
+        return valueInSystemUnit / divisorInSystemUnit.doubleValue();
     }
 
     @Override
     public Quantity<?> reciprocal() {
         return genericDoubleQuantity(1. / value, unit.inverse());
+    }
+
+    public Quantity<?> one() {
+        return ONE;
+    }
+
+    @Override
+    public Quantity<Q> zero() {
+        return with(0, unit);
     }
 
     @Override

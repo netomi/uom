@@ -52,4 +52,9 @@ public interface ElectricConductance extends Quantity<ElectricConductance> {
     default Unit<ElectricConductance> getSystemUnit() {
         return SI.SIEMENS;
     }
+
+    @Override
+    default ElectricResistance reciprocal() {
+        return one().divide(this, ElectricResistance.class);
+    }
 }

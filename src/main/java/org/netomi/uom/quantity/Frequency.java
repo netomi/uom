@@ -52,4 +52,9 @@ public interface Frequency extends Quantity<Frequency> {
     default Unit<Frequency> getSystemUnit() {
         return SI.HERTZ;
     }
+
+    @Override
+    default Time reciprocal() {
+        return one().divide(this, Time.class);
+    }
 }

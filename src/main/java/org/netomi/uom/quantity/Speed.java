@@ -52,4 +52,8 @@ public interface Speed extends Quantity<Speed> {
     default Unit<Speed> getSystemUnit() {
         return SI.METER_PER_SECOND;
     }
+
+    default Length multiply(Time multiplicand) {
+        return multiply(multiplicand, Length.class);
+    }
 }

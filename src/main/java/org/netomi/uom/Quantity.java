@@ -237,11 +237,108 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      */
     Q negate();
 
+    /**
+     * Returns a quantity that is the result of multiplying this quantity with the
+     * provided quantity. Both quantities are first converted into their respective
+     * system unit and their raw values are then multiplied.
+     * <p>
+     * The returned quantity has the following properties:
+     * <ul>
+     *     <li>value = this.toSystemUnit() * other.toSystemUnit()
+     *     <li>unit  = this.getSystemUnit().multiply(other.getSystemUnit())
+     * </ul>
+     *
+     * @param multiplicand the quantity to multiply with.
+     * @return a new quantity which is the result of multiplying this quantity with the other.
+     */
     Quantity<?> multiply(Quantity<?> multiplicand);
 
+    /**
+     * Returns a quantity that is the result of multiplying this quantity with the
+     * provided quantity. Both quantities are first converted into their respective
+     * system unit and their raw values are then multiplied.
+     * <p>
+     * The returned quantity has the following properties:
+     * <ul>
+     *     <li>value = this.toSystemUnit() * other.toSystemUnit()
+     *     <li>unit  = this.getSystemUnit().multiply(other.getSystemUnit())
+     * </ul>
+     * <p>
+     * The resulting quantity is cast to the requested quantity class. If the result
+     * is not compatible with the requested quantity, an exception is thrown.
+     *
+     * @param multiplicand  the quantity to multiply with.
+     * @param quantityClass the requested quantity type.
+     * @return a new quantity which is the result of multiplying this quantity with the other.
+     * @throws IncommensurableException if the resulting unit does not match the system
+     * unit of the specified quantity.
+     */
+    <R extends Quantity<R>> R multiply(Quantity<?> multiplicand, Class<R> quantityClass);
+
+    /**
+     * Returns a quantity that is the result of dividing this quantity by the
+     * provided quantity. Both quantities are first converted into their respective
+     * system unit and their raw values are then divided.
+     * <p>
+     * The returned quantity has the following properties:
+     * <ul>
+     *     <li>value = this.toSystemUnit() / other.toSystemUnit()
+     *     <li>unit  = this.getSystemUnit().divide(other.getSystemUnit())
+     * </ul>
+     *
+     * @param divisor the quantity to divide by.
+     * @return a new quantity which is the result of dividing this quantity by the other.
+     */
     Quantity<?> divide(Quantity<?> divisor);
 
+    /**
+     * Returns a quantity that is the result of dividing this quantity by the
+     * provided quantity. Both quantities are first converted into their respective
+     * system unit and their raw values are then divided.
+     * <p>
+     * The returned quantity has the following properties:
+     * <ul>
+     *     <li>value = this.toSystemUnit() / other.toSystemUnit()
+     *     <li>unit  = this.getSystemUnit().divide(other.getSystemUnit())
+     * </ul>
+     * <p>
+     * The resulting quantity is cast to the requested quantity class. If the result
+     * is not compatible with the requested quantity, an exception is thrown.
+     *
+     * @param divisor       the quantity to divide by.
+     * @param quantityClass the requested quantity type.
+     * @return a new quantity which is the result of dividing this quantity by the other.
+     * @throws IncommensurableException if the resulting unit does not match the system
+     * unit of the specified quantity.
+     */
+    <R extends Quantity<R>> R divide(Quantity<?> divisor, Class<R> quantityClass);
+
+    /**
+     * Returns the reciprocal of this quantity.
+     * <p>
+     * The returned quantity has the following properties:
+     * <ul>
+     *     <li>value = one() / this
+     *     <li>unit  = this.getUnit().inverse()
+     * </ul>
+     *
+     * @return a new quantity which is the reciprocal of this quantity.
+     */
     Quantity<?> reciprocal();
+
+    /**
+     * Returns the multiplicative identity of this {@link Quantity}.
+     *
+     * @return a quantity with value "1" and unit {@link org.netomi.uom.unit.Units#ONE}.
+     */
+    Quantity<?> one();
+
+    /**
+     * Returns the additive identity of this {@link Quantity}.
+     *
+     * @return a quantity with value "0" and the same unit as this quantity.
+     */
+    Quantity<Q> zero();
 
     /**
      * Performs a cast of this quantity to the specified quantity.

@@ -52,4 +52,9 @@ public interface Time extends Quantity<Time> {
     default Unit<Time> getSystemUnit() {
         return SI.SECOND;
     }
+
+    @Override
+    default Frequency reciprocal() {
+        return one().divide(this, Frequency.class);
+    }
 }

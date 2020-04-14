@@ -52,4 +52,9 @@ public interface ElectricResistance extends Quantity<ElectricResistance> {
     default Unit<ElectricResistance> getSystemUnit() {
         return SI.OHM;
     }
+
+    @Override
+    default ElectricConductance reciprocal() {
+        return one().divide(this, ElectricConductance.class);
+    }
 }
