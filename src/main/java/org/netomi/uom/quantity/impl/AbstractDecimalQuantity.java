@@ -129,64 +129,54 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
     }
 
     @Override
-    public DecimalQuantity<?> multiply(Quantity<?> multiplicand) {
-        Unit<?> combinedSystemUnit = unit.multiply(multiplicand.getUnit()).getSystemUnit();
-        return genericDecimalQuantity(multiplyInternal(multiplicand), combinedSystemUnit);
+    public DecimalQuantity<?> multiply(Quantity<?> multiplier) {
+        Unit<?> combinedSystemUnit = unit.multiply(multiplier.getUnit()).getSystemUnit();
+        return genericDecimalQuantity(multiplyInternal(this, multiplier), combinedSystemUnit);
     }
 
     @Override
-    public <R extends Quantity<R>> R multiply(Quantity<?> multiplicand, Class<R> quantityClass) {
+    public <R extends Quantity<R>> R multiply(Quantity<?> multiplier, Class<R> quantityClass) {
         @SuppressWarnings("unchecked")
-        Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplicand.getUnit()).getSystemUnit();
-        return Quantities.createQuantity(multiplyInternal(multiplicand), mathContext, combinedSystemUnit, quantityClass);
+        Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplier.getUnit()).getSystemUnit();
+        return Quantities.createQuantity(multiplyInternal(this, multiplier), mathContext, combinedSystemUnit, quantityClass);
     }
 
-    private BigDecimal multiplyInternal(Quantity<?> multiplicand) {
-        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
-        BigDecimal valueInSystemUnit    = toSystemConverter.convert(value, mathContext);
+    private BigDecimal multiplyInternal(Quantity<?> multiplicand, Quantity<?> multiplier) {
+        BigDecimal multiplicandInSystemUnit = toSystemUnitValue(multiplicand);
+        BigDecimal multiplierInSystemUnit   = toSystemUnitValue(multiplier);
 
-        Quantity<?> multiplicandInSystemUnit =
-                multiplicand.getUnit().isSystemUnit() ?
-                        multiplicand :
-                        multiplicand.toSystemUnit();
-
-        return valueInSystemUnit.multiply(multiplicandInSystemUnit.decimalValue(), mathContext);
+        return multiplicandInSystemUnit.multiply(multiplierInSystemUnit, mathContext);
     }
 
     @Override
     public DecimalQuantity<?> divide(Quantity<?> divisor) {
         Unit<?> combinedSystemUnit = unit.divide(divisor.getUnit()).getSystemUnit();
-        return genericDecimalQuantity(divideInternal(divisor), combinedSystemUnit);
+        return genericDecimalQuantity(divideInternal(this, divisor), combinedSystemUnit);
     }
 
     @Override
     public <R extends Quantity<R>> R divide(Quantity<?> divisor, Class<R> quantityClass) {
         @SuppressWarnings("unchecked")
         Unit<R> combinedSystemUnit = (Unit<R>) unit.divide(divisor.getUnit()).getSystemUnit();
-        return Quantities.createQuantity(divideInternal(divisor), mathContext, combinedSystemUnit, quantityClass);
+        return Quantities.createQuantity(divideInternal(this, divisor), mathContext, combinedSystemUnit, quantityClass);
     }
 
-    private BigDecimal divideInternal(Quantity<?> divisor) {
-        UnitConverter toSystemConverter = unit.getConverterTo(unit.getSystemUnit());
-        BigDecimal valueInSystemUnit    = toSystemConverter.convert(value, mathContext);
+    private BigDecimal divideInternal(Quantity<?> dividend, Quantity<?> divisor) {
+        BigDecimal dividendInSystemUnit = toSystemUnitValue(dividend);
+        BigDecimal divisorInSystemUnit   = toSystemUnitValue(divisor);
 
-        Quantity<?> multiplicandInSystemUnit =
-                divisor.getUnit().isSystemUnit() ?
-                        divisor :
-                        divisor.toSystemUnit();
-
-        return valueInSystemUnit.divide(multiplicandInSystemUnit.decimalValue(), mathContext);
+        return dividendInSystemUnit.divide(divisorInSystemUnit, mathContext);
     }
 
     @Override
     public DecimalQuantity<?> reciprocal() {
-        return genericDecimalQuantity(BigDecimal.ONE.divide(value, mathContext), unit.inverse());
+        return genericDecimalQuantity(divideInternal(one(), this), unit.inverse().getSystemUnit());
     }
 
     @Override
     public Quantity<?> one() {
         // return a generic quantity of dimension ONE with the same mathContext as this instance.
-        return genericDecimalQuantity(BigDecimal.ONE, unit);
+        return genericDecimalQuantity(BigDecimal.ONE, Units.ONE);
     }
 
     @Override
@@ -216,6 +206,12 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
 
         UnitConverter converter = unit.getSystemConverter();
         return with(converter.convert(value, mathContext), unit.getSystemUnit());
+    }
+
+    private BigDecimal toSystemUnitValue(Quantity<?> quantity) {
+        return quantity.getUnit().isSystemUnit() ?
+                quantity.decimalValue() :
+                quantity.getUnit().getSystemConverter().convert(quantity.decimalValue(), mathContext);
     }
 
     protected DecimalQuantity<?> genericDecimalQuantity(BigDecimal value, Unit<?> unit) {

@@ -248,10 +248,10 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *     <li>unit  = this.getSystemUnit().multiply(other.getSystemUnit())
      * </ul>
      *
-     * @param multiplicand the quantity to multiply with.
+     * @param multiplier the quantity to multiply with.
      * @return a new quantity which is the result of multiplying this quantity with the other.
      */
-    Quantity<?> multiply(Quantity<?> multiplicand);
+    Quantity<?> multiply(Quantity<?> multiplier);
 
     /**
      * Returns a quantity that is the result of multiplying this quantity with the
@@ -267,13 +267,13 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * The resulting quantity is cast to the requested quantity class. If the result
      * is not compatible with the requested quantity, an exception is thrown.
      *
-     * @param multiplicand  the quantity to multiply with.
+     * @param multiplier    the quantity to multiply with.
      * @param quantityClass the requested quantity type.
      * @return a new quantity which is the result of multiplying this quantity with the other.
      * @throws IncommensurableException if the resulting unit does not match the system
      * unit of the specified quantity.
      */
-    <R extends Quantity<R>> R multiply(Quantity<?> multiplicand, Class<R> quantityClass);
+    <R extends Quantity<R>> R multiply(Quantity<?> multiplier, Class<R> quantityClass);
 
     /**
      * Returns a quantity that is the result of dividing this quantity by the
@@ -319,7 +319,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * The returned quantity has the following properties:
      * <ul>
      *     <li>value = one() / this
-     *     <li>unit  = this.getUnit().inverse()
+     *     <li>unit  = this.getUnit().inverse().getSystemUnit()
      * </ul>
      *
      * @return a new quantity which is the reciprocal of this quantity.

@@ -125,58 +125,48 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     }
 
     @Override
-    public Quantity<?> multiply(Quantity<?> multiplicand) {
-        Unit<?> combinedSystemUnit = unit.multiply(multiplicand.getUnit()).getSystemUnit();
-        return genericDoubleQuantity(multiplyInternal(multiplicand), combinedSystemUnit);
+    public Quantity<?> multiply(Quantity<?> multiplier) {
+        Unit<?> combinedSystemUnit = unit.multiply(multiplier.getUnit()).getSystemUnit();
+        return genericDoubleQuantity(multiplyInternal(this, multiplier), combinedSystemUnit);
     }
 
     @Override
-    public <R extends Quantity<R>> R multiply(Quantity<?> multiplicand, Class<R> quantityClass) {
+    public <R extends Quantity<R>> R multiply(Quantity<?> multiplier, Class<R> quantityClass) {
         @SuppressWarnings("unchecked")
-        Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplicand.getUnit()).getSystemUnit();
-        return Quantities.createQuantity(multiplyInternal(multiplicand), combinedSystemUnit, quantityClass);
+        Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplier.getUnit()).getSystemUnit();
+        return Quantities.createQuantity(multiplyInternal(this, multiplier), combinedSystemUnit, quantityClass);
     }
 
-    private double multiplyInternal(Quantity<?> multiplicand) {
-        UnitConverter toSystemConverter = unit.getSystemConverter();
-        double valueInSystemUnit        = toSystemConverter.convert(value);
+    private double multiplyInternal(Quantity<?> multiplicand, Quantity<?> multiplier) {
+        double multiplicandInSystemUnit = toSystemUnitValue(multiplicand);
+        double multiplierInSystemUnit   = toSystemUnitValue(multiplier);
 
-        Quantity<?> multiplicandInSystemUnit =
-                multiplicand.getUnit().isSystemUnit() ?
-                        multiplicand :
-                        multiplicand.toSystemUnit();
-
-        return valueInSystemUnit * multiplicandInSystemUnit.doubleValue();
+        return multiplicandInSystemUnit * multiplierInSystemUnit;
     }
 
     @Override
     public Quantity<?> divide(Quantity<?> divisor) {
         Unit<?> combinedSystemUnit = unit.divide(divisor.getUnit()).getSystemUnit();
-        return genericDoubleQuantity(divideInternal(divisor), combinedSystemUnit);
+        return genericDoubleQuantity(divideInternal(this, divisor), combinedSystemUnit);
     }
 
     @Override
     public <R extends Quantity<R>> R divide(Quantity<?> divisor, Class<R> quantityClass) {
         @SuppressWarnings("unchecked")
         Unit<R> combinedSystemUnit = (Unit<R>) unit.divide(divisor.getUnit()).getSystemUnit();
-        return Quantities.createQuantity(divideInternal(divisor), combinedSystemUnit, quantityClass);
+        return Quantities.createQuantity(divideInternal(this, divisor), combinedSystemUnit, quantityClass);
     }
 
-    private double divideInternal(Quantity<?> divisor) {
-        UnitConverter toSystemConverter = unit.getSystemConverter();
-        double valueInSystemUnit        = toSystemConverter.convert(value);
+    private double divideInternal(Quantity<?> dividend, Quantity<?> divisor) {
+        double dividendInSystemUnit = toSystemUnitValue(dividend);
+        double divisorInSystemUnit  = toSystemUnitValue(divisor);
 
-        Quantity<?> divisorInSystemUnit =
-                divisor.getUnit().isSystemUnit() ?
-                        divisor :
-                        divisor.toSystemUnit();
-
-        return valueInSystemUnit / divisorInSystemUnit.doubleValue();
+        return dividendInSystemUnit / divisorInSystemUnit;
     }
 
     @Override
     public Quantity<?> reciprocal() {
-        return genericDoubleQuantity(1. / value, unit.inverse());
+        return genericDoubleQuantity(divideInternal(ONE, this), unit.inverse().getSystemUnit());
     }
 
     public Quantity<?> one() {
@@ -205,6 +195,12 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
 
         UnitConverter converter = unit.getSystemConverter();
         return with(converter.convert(value), unit.getSystemUnit());
+    }
+
+    private double toSystemUnitValue(Quantity<?> quantity) {
+        return quantity.getUnit().isSystemUnit() ?
+                quantity.doubleValue() :
+                quantity.getUnit().getSystemConverter().convert(quantity.doubleValue());
     }
 
     private Quantity<?> genericDoubleQuantity(double value, Unit<?> unit) {

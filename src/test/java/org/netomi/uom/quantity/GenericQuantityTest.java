@@ -478,16 +478,17 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
         // convert to milli unit.
         Q quantityInMilli = (Q) quantity.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
 
-        // make sure the q2 value is correctly expressed in milli unit.
+        // make sure the q2 value is correctly expressed in reciprocal system unit.
         assertEquals(100000, quantityInMilli.doubleValue(), eps);
         assertEquals(100000, quantityInMilli.decimalValue().doubleValue(), eps);
 
-        Q resultInMilli = (Q) quantityInMilli.reciprocal();
+        result = (Q) quantityInMilli.reciprocal();
 
-        assertEquals(1. / 100000., resultInMilli.doubleValue(), eps);
-        assertEquals(1. / 100000., resultInMilli.decimalValue().doubleValue(), eps);
+        assertEquals(1. / 100., result.doubleValue(), eps);
+        assertEquals(1. / 100., result.decimalValue().doubleValue(), eps);
 
-        assertEquals(Units.ONE.divide(getSystemUnit().withPrefix(Prefixes.Metric.MILLI)), resultInMilli.getUnit());
+        assertEquals(Units.ONE.divide(getSystemUnit().withPrefix(Prefixes.Metric.MILLI)).getSystemUnit(),
+                     result.getUnit());
     }
 
     @ParameterizedTest
