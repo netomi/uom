@@ -7,6 +7,7 @@ buildscript {
         }
     }
     dependencies {
+        // override the shadow plugin with a version that uses R8.
         classpath ':shadow:'
         classpath 'com.android.tools:r8:2.0.61'
     }
