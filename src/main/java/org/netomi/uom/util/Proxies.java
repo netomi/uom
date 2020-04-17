@@ -15,11 +15,15 @@
  */
 package org.netomi.uom.util;
 
+import com.google.common.base.Suppliers;
+import org.hibernate.validator.internal.util.ConcurrentReferenceHashMap;
+
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 import java.lang.reflect.*;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public final class Proxies {
@@ -65,8 +69,8 @@ public final class Proxies {
         private static final MethodHandleLookup        methodHandleLookup = MethodHandleLookup.getMethodHandleLookup();
         private static final Map<Method, MethodHandle> methodHandleCache  =
                 new ConcurrentReferenceHashMap<>(10,
-                                                 ConcurrentReferenceHashMap.ReferenceType.WEAK,
-                                                 ConcurrentReferenceHashMap.ReferenceType.WEAK);
+                        ConcurrentReferenceHashMap.ReferenceType.WEAK,
+                        ConcurrentReferenceHashMap.ReferenceType.WEAK);
 
         public static MethodHandle getMethodHandle(Method method) throws Exception {
             MethodHandle handle = methodHandleCache.get(method);
@@ -129,8 +133,8 @@ public final class Proxies {
              * Works with Java 8 and with Java 9 permitting illegal access.
              */
             OPEN {
-                private final LazySupplier<Constructor<MethodHandles.Lookup>> constructor =
-                        LazySupplier.of(MethodHandleLookup::getLookupConstructor);
+                private final Supplier<Constructor<MethodHandles.Lookup>> constructor =
+                        Suppliers.memoize(MethodHandleLookup::getLookupConstructor);
 
                 @Override
                 MethodHandle lookup(Method method) throws ReflectiveOperationException {
@@ -144,7 +148,7 @@ public final class Proxies {
 
                 @Override
                 boolean isAvailable() {
-                    return constructor.orElse(null) != null;
+                    return constructor.get() != null;
                 }
             },
 

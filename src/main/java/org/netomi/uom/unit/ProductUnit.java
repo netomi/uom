@@ -15,16 +15,18 @@
  */
 package org.netomi.uom.unit;
 
-import org.netomi.uom.*;
+import org.hibernate.validator.internal.util.ConcurrentReferenceHashMap;
+import org.netomi.uom.Quantity;
+import org.netomi.uom.Unit;
+import org.netomi.uom.UnitConverter;
 import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.util.ConcurrentReferenceHashMap;
 import org.netomi.uom.util.ObjectPrinter;
 
 import java.lang.ref.WeakReference;
 import java.util.*;
 
-import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
+import static org.hibernate.validator.internal.util.ConcurrentReferenceHashMap.ReferenceType;
 
 /**
  * @param <Q> the quantity type

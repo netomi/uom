@@ -15,15 +15,15 @@
  */
 package org.netomi.uom.unit;
 
+import org.hibernate.validator.internal.util.ConcurrentReferenceHashMap;
 import org.netomi.uom.math.Fraction;
-import org.netomi.uom.util.ConcurrentReferenceHashMap;
 import org.netomi.uom.util.ObjectPrinter;
 
 import java.util.*;
 import java.util.function.BinaryOperator;
 import java.util.function.UnaryOperator;
 
-import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
+import static org.hibernate.validator.internal.util.ConcurrentReferenceHashMap.*;
 
 /**
  * An efficient implementation of a {@link Dimension} using an {@link EnumMap}
