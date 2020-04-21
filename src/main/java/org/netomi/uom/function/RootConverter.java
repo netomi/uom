@@ -17,10 +17,12 @@ package org.netomi.uom.function;
 
 import org.netomi.uom.UnitConverter;
 import org.netomi.uom.math.ArithmeticUtils;
+import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * {@code UnitConverter} implementation that converts values by applying
@@ -49,12 +51,15 @@ class RootConverter extends AbstractConverter {
 
         this.unitConverter = unitConverter;
 
-        // get the multiplier from the delegate converter
+        // get the scale from the delegate converter
         // and calculate its root as double for caching reasons.
         // do not cache the BigDecimal value as the MathContext
         // is not known in advance.
-        double multiplier = unitConverter.convert(1);
-        multiplierRooted = Math.sqrt(multiplier);
+        Optional<BigFraction> scale = unitConverter.scale();
+        // any linear converter must have a scale.
+        assert scale.isPresent();
+
+        multiplierRooted = Math.sqrt(scale.get().doubleValue());
     }
 
     public UnitConverter getUnitConverter() {

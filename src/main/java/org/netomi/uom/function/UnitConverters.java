@@ -175,11 +175,31 @@ public final class UnitConverters {
      * @return a {@link UnitConverter} applying the converter n times.
      */
     public static UnitConverter pow(UnitConverter converter, int exponent) {
-        return converter.isIdentity() ? converter  :
-               exponent == 1          ? converter  :
-               exponent == 0          ? identity() :
-               exponent > 1           ? new PowConverter(converter, exponent)  :
-                                        new PowConverter(converter.inverse(), -exponent);
+        if (converter.isIdentity() || exponent == 1) {
+            return converter;
+        } else if (exponent == 0) {
+            return identity();
+        } else if (converter.isLinear()) {
+            // unroll the power operation for linear converters to be able
+            // to reduce the unit converters.
+
+            if (exponent < 0) {
+                exponent  = -exponent;
+                converter = converter.inverse();
+            }
+
+            UnitConverter poweredConverter = UnitConverters.identity();
+            for (int j = 0; j < exponent; j++) {
+                poweredConverter = poweredConverter.andThen(converter);
+            }
+            return poweredConverter;
+        } else {
+            // do not unroll the power operation for non-linear converters.
+            // its possible but does not bring much value.
+            return exponent > 1 ?
+                    new PowConverter(converter, exponent) :
+                    new PowConverter(converter.inverse(), -exponent);
+        }
     }
 
     /**

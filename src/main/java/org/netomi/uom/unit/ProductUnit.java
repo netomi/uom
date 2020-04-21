@@ -268,27 +268,10 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
             int pow  = e.getFraction().getNumerator();
             int root = e.getFraction().getDenominator();
 
-            if (pow < 0) {
-                pow       = -pow;
-                converter = converter.inverse();
-            }
+            converter = UnitConverters.pow(converter,  pow);
+            converter = UnitConverters.root(converter, root);
 
-            if (root > 1) {
-                // TODO: unrolling the pow operation could be done always,
-                //       keeping the specific pow converter is only useful
-                //       for debugging.
-                converter = UnitConverters.pow(converter,  pow);
-                converter = UnitConverters.root(converter, root);
-
-                systemConverter = systemConverter.andThen(converter);
-            } else {
-                // if we do not have a root component, unroll the power
-                // operation to be able to reduce the resulting
-                // unit converter.
-                for (int j = 0; j < pow; j++) {
-                    systemConverter = systemConverter.andThen(converter);
-                }
-            }
+            systemConverter = systemConverter.andThen(converter);
         }
         return systemConverter;
     }
