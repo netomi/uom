@@ -26,7 +26,6 @@ import java.io.Serializable;
 public final class Fraction
     extends Number
     implements Comparable<Fraction>,
-               NativeOperators<Fraction>,
                Serializable {
     /** A fraction representing "1". */
     public static final Fraction ONE = new Fraction(1, 1);
@@ -146,9 +145,8 @@ public final class Fraction
      * Constructs an instance.
      *
      * @param num Numerator.
-     * @param den Nenominator.
-     * @throws ArithmeticException if the denominator is {@code zero}
-     * or if integer overflow occurs.
+     * @param den Denominator.
+     * @throws ArithmeticException if the denominator is {@code zero} or if integer overflow occurs.
      */
     private Fraction(int num, int den) {
         if (den == 0) {
@@ -183,8 +181,7 @@ public final class Fraction
      * Creates an instance.
      *
      * @param value Value to convert to a fraction.
-     * @throws ArithmeticException if the continued fraction failed to
-     * converge.
+     * @throws ArithmeticException if the continued fraction failed to converge.
      * @return a new instance.
      */
     public static Fraction from(double value) {
@@ -193,7 +190,6 @@ public final class Fraction
 
     /**
      * Create a fraction given the double value and maximum error allowed.
-     *
      * <p>
      * References:
      * <ul>
@@ -205,8 +201,7 @@ public final class Fraction
      * @param epsilon maximum error allowed.  The resulting fraction is within
      * {@code epsilon} of {@code value}, in absolute terms.
      * @param maxIterations maximum number of convergents
-     * @throws ArithmeticException if the continued fraction failed to
-     * converge.
+     * @throws ArithmeticException if the continued fraction failed to converge.
      * @return a new instance.
      */
     public static Fraction from(double value, double epsilon, int maxIterations) {
@@ -215,7 +210,6 @@ public final class Fraction
 
     /**
      * Creates an instance.
-     *
      * <p>
      * References:
      * <ul>
@@ -225,8 +219,7 @@ public final class Fraction
      *
      * @param value the double value to convert to a fraction.
      * @param maxDenominator The maximum allowed value for denominator
-     * @throws ArithmeticException if the continued fraction failed to
-     * converge.
+     * @throws ArithmeticException if the continued fraction failed to converge.
      * @return a new instance.
      */
     public static Fraction from(double value, int maxDenominator) {
@@ -234,8 +227,7 @@ public final class Fraction
     }
 
     /**
-     * Creates an instance.
-     * The fraction is {@code num / 1}.
+     * Creates an instance. The fraction is {@code num / 1}.
      *
      * @param num Numerator.
      * @return a new instance.
@@ -397,7 +389,6 @@ public final class Fraction
      *
      * @return the opposite.
      */
-    @Override
     public Fraction negate() {
         return numerator == Integer.MIN_VALUE ?
             new Fraction(numerator, -denominator) :
@@ -409,7 +400,6 @@ public final class Fraction
      *
      * @return the reciprocal.
      */
-    @Override
     public Fraction reciprocal() {
         return new Fraction(denominator, numerator);
     }
@@ -424,7 +414,6 @@ public final class Fraction
      * @throws ArithmeticException if the resulting numerator or denominator
      * cannot be represented in an {@code int}.
      */
-    @Override
     public Fraction add(Fraction fraction) {
         return addSub(fraction, true /* add */);
     }
@@ -448,7 +437,6 @@ public final class Fraction
      * @throws ArithmeticException if the resulting numerator or denominator
      * cannot be represented in an {@code int}.
      */
-    @Override
     public Fraction subtract(Fraction fraction) {
         return addSub(fraction, false /* subtract */);
     }
@@ -524,7 +512,6 @@ public final class Fraction
      * @throws ArithmeticException if the resulting numerator or denominator
      * cannot be represented in an {@code int}.
      */
-    @Override
     public Fraction multiply(Fraction fraction) {
         if (numerator == 0 ||
             fraction.numerator == 0) {
@@ -545,7 +532,6 @@ public final class Fraction
      * @param i Value to multiply by.
      * @return {@code this * i}.
      */
-    @Override
     public Fraction multiply(final int i) {
         return multiply(of(i));
     }
@@ -555,15 +541,12 @@ public final class Fraction
      *
      * @param fraction Fraction to divide by.
      * @return a new instance.
-     * @throws ArithmeticException if the fraction to divide by is zero
-     * or if the resulting numerator or denominator cannot be represented
-     * by an {@code int}.
+     * @throws ArithmeticException if the fraction to divide by is zero or if the resulting
+     * numerator or denominator cannot be represented by an {@code int}.
      */
-    @Override
     public Fraction divide(Fraction fraction) {
         if (fraction.numerator == 0) {
-            throw new FractionException("the fraction to divide by must not be zero: {0}/{1}",
-                                        fraction.numerator, fraction.denominator);
+            throw new FractionException(FractionException.ERROR_ZERO_DENOMINATOR);
         }
 
         return multiply(fraction.reciprocal());
@@ -583,7 +566,6 @@ public final class Fraction
      * @param n Power.
      * @return <code>this<sup>n</sup></code>.
      */
-    @Override
     public Fraction pow(final int n) {
         if (n == 0) {
             return ONE;
@@ -613,14 +595,22 @@ public final class Fraction
         return str;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Additive identity element.
+     *
+     * @return the field element such that for all {@code a},
+     * {@code zero().add(a).equals(a)} is {@code true}.
+     */
     public Fraction zero() {
         return ZERO;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Multiplicative identity element.
+     *
+     * @return the field element such that for all {@code a},
+     * {@code one().multiply(a).equals(a)} is {@code true}.
+     */
     public Fraction one() {
         return ONE;
     }

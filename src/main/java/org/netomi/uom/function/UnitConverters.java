@@ -30,7 +30,7 @@ import java.util.Optional;
  *
  * @author Thomas Neidhart
  */
-public class UnitConverters {
+public final class UnitConverters {
 
     // hide constructor of a pure utility class.
     private UnitConverters() {}

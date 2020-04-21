@@ -19,14 +19,13 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.Prefix;
 import org.netomi.uom.Unit;
 import org.netomi.uom.function.UnitConverters;
-import org.netomi.uom.math.Precision;
 import org.netomi.uom.unit.systems.SI;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.function.UnaryOperator;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
 /**
@@ -68,14 +67,15 @@ public class BinaryPrefixTest {
         assertEquals(UnitConverters.pow(prefix.getBase(), prefix.getExponent()), prefixedUnit.getSystemConverter());
 
         // double precision
-        assertTrue(Precision.equals(42. * multiplier, prefixedUnit.getSystemConverter().convert(42.), 1e-12));
-        assertTrue(Precision.equals(42. / multiplier, prefixedUnit.getSystemConverter().inverse().convert(42.), 1e-12));
+        assertEquals(42. * multiplier, prefixedUnit.getSystemConverter().convert(42.), 1e-12);
+        assertEquals(42. / multiplier, prefixedUnit.getSystemConverter().inverse().convert(42.), 1e-12);
 
         // DECIMAL128 precision
+        BigDecimal value    = BigDecimal.valueOf(42);
         MathContext context = MathContext.DECIMAL128;
-        assertTrue(Precision.equals(BigDecimal.valueOf(42).multiply(BigDecimal.valueOf(multiplier), context).doubleValue(),
-                                    prefixedUnit.getSystemConverter().convert(BigDecimal.valueOf(42), context).doubleValue(), 1e-24));
-        assertTrue(Precision.equals(BigDecimal.valueOf(42).divide(BigDecimal.valueOf(multiplier), context).doubleValue(),
-                                    prefixedUnit.getSystemConverter().inverse().convert(BigDecimal.valueOf(42), context).doubleValue(), 1e-24));
+        assertEquals(value.multiply(BigDecimal.valueOf(multiplier), context).doubleValue(),
+                     prefixedUnit.getSystemConverter().convert(value, context).doubleValue(), 1e-24);
+        assertEquals(value.divide(BigDecimal.valueOf(multiplier), context).doubleValue(),
+                     prefixedUnit.getSystemConverter().inverse().convert(value, context).doubleValue(), 1e-24);
     }
 }

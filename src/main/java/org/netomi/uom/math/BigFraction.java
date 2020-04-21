@@ -25,16 +25,14 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.text.MessageFormat;
 
 /**
  * Representation of a rational number without any overflow. This class is
  * immutable.
  */
 public final class BigFraction
-    extends Number
+    extends    Number
     implements Comparable<BigFraction>,
-               NativeOperators<BigFraction>,
                Serializable {
     /** A fraction representing "0". */
     public static final BigFraction ZERO = of(0);
@@ -78,7 +76,6 @@ public final class BigFraction
     /**
      * Create a fraction given the double value and either the maximum
      * error allowed or the maximum number of denominator digits.
-     *
      * <p>
      * NOTE: This method is called with
      *  - EITHER a valid epsilon value and the maxDenominator set to
@@ -86,13 +83,11 @@ public final class BigFraction
      *  - OR a valid maxDenominator value and the epsilon value set to
      *    zero (that way epsilon only has effect if there is an exact
      *    match before the maxDenominator value is reached).
-     * </p>
      * <p>
      * It has been done this way so that the same code can be reused for
      * both scenarios.  However this could be confusing to users if it
      * were part of the public API and this method should therefore remain
      * PRIVATE.
-     * </p>
      *
      * See JIRA issue ticket MATH-181 for more details:
      *   https://issues.apache.org/jira/browse/MATH-181
@@ -179,10 +174,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Create a {@link BigFraction} equivalent to the passed {@code BigInteger}, ie
      * "num / 1".
-     * </p>
      *
      * @param num the numerator.
      * @return a new instance.
@@ -226,7 +219,6 @@ public final class BigFraction
      * exactly, considering its internal bits representation. This works for all
      * values except NaN and infinities and does not requires any loop or
      * convergence threshold.
-     * </p>
      * <p>
      * Since this conversion is exact and since double numbers are sometimes
      * approximated, the fraction created may seem strange in some cases. For example,
@@ -234,7 +226,6 @@ public final class BigFraction
      * the fraction \( \frac{1}{3} \), but the fraction \( \frac{6004799503160661}{18014398509481984} \)
      * because the double number passed to the method is not exactly \( \frac{1}{3} \)
      * (which cannot be represented exactly in IEEE754).
-     * </p>
      *
      * @param value Value to convert to a fraction.
      * @throws IllegalArgumentException if the given {@code value} is NaN or infinite.
@@ -333,13 +324,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Create a {@link BigFraction} equivalent to the passed {@code int}, ie
      * "num / 1".
-     * </p>
      *
-     * @param num
-     *            the numerator.
+     * @param num the numerator.
      * @return a new instance.
      */
     public static BigFraction of(final int num) {
@@ -347,10 +335,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Create a {@link BigFraction} given the numerator and denominator as simple
      * {@code int}. The {@link BigFraction} is reduced to lowest terms.
-     * </p>
      *
      * @param num the numerator.
      * @param den the denominator.
@@ -362,9 +348,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Create a {@link BigFraction} equivalent to the passed long, ie "num / 1".
-     * </p>
      *
      * @param num the numerator.
      * @return a new instance.
@@ -374,10 +358,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Create a {@link BigFraction} given the numerator and denominator as simple
      * {@code long}. The {@link BigFraction} is reduced to lowest terms.
-     * </p>
      *
      * @param num the numerator.
      * @param den the denominator.
@@ -389,9 +371,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Returns the absolute value of this {@link BigFraction}.
-     * </p>
      *
      * @return the absolute value as a {@link BigFraction}.
      */
@@ -402,13 +382,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Adds the value of this fraction to the passed {@link BigInteger},
      * returning the result in reduced form.
-     * </p>
      *
-     * @param bg
-     *            the {@link BigInteger} to add, must'nt be <code>null</code>.
+     * @param bg the {@link BigInteger} to add, must'nt be <code>null</code>.
      * @return a <code>BigFraction</code> instance with the resulting values.
      */
     public BigFraction add(final BigInteger bg) {
@@ -423,13 +400,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Adds the value of this fraction to the passed {@code integer}, returning
      * the result in reduced form.
-     * </p>
      *
-     * @param i
-     *            the {@code integer} to add.
+     * @param i the {@code integer} to add.
      * @return a <code>BigFraction</code> instance with the resulting values.
      */
     public BigFraction add(final int i) {
@@ -437,13 +411,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Adds the value of this fraction to the passed {@code long}, returning
      * the result in reduced form.
-     * </p>
      *
-     * @param l
-     *            the {@code long} to add.
+     * @param l the {@code long} to add.
      * @return a <code>BigFraction</code> instance with the resulting values.
      */
     public BigFraction add(final long l) {
@@ -451,16 +422,12 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Adds the value of this fraction to another, returning the result in
      * reduced form.
-     * </p>
      *
-     * @param fraction
-     *            the {@link BigFraction} to add, must not be <code>null</code>.
+     * @param fraction the {@link BigFraction} to add, must not be <code>null</code>.
      * @return a {@link BigFraction} instance with the resulting values.
      */
-    @Override
     public BigFraction add(final BigFraction fraction) {
         if (fraction.numerator.signum() == 0) {
             return this;
@@ -489,15 +456,11 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as a <code>BigDecimal</code>. This calculates the
      * fraction as the numerator divided by denominator.
-     * </p>
      *
      * @return the fraction as a <code>BigDecimal</code>.
-     * @throws ArithmeticException
-     *             if the exact quotient does not have a terminating decimal
-     *             expansion.
+     * @throws ArithmeticException if the exact quotient does not have a terminating decimal expansion.
      * @see BigDecimal
      */
     public BigDecimal bigDecimalValue() {
@@ -505,11 +468,9 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as a <code>BigDecimal</code> following the passed
      * rounding mode. This calculates the fraction as the numerator divided by
      * denominator.
-     * </p>
      *
      * @param roundingMode Rounding mode to apply.
      * @return the fraction as a <code>BigDecimal</code>.
@@ -520,15 +481,12 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as a <code>BigDecimal</code> following the passed scale
      * and rounding mode. This calculates the fraction as the numerator divided
      * by denominator.
-     * </p>
      *
-     * @param scale
-     *            scale of the <code>BigDecimal</code> quotient to be returned.
-     *            see {@link BigDecimal} for more information.
+     * @param scale scale of the <code>BigDecimal</code> quotient to be returned.
+     *              see {@link BigDecimal} for more information.
      * @param roundingMode Rounding mode to apply.
      * @return the fraction as a <code>BigDecimal</code>.
      * @throws ArithmeticException if {@code roundingMode} == {@link RoundingMode#UNNECESSARY} and
@@ -540,11 +498,9 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as a <code>BigDecimal</code> following the passed scale
      * and rounding mode. This calculates the fraction as the numerator divided
      * by denominator.
-     * </p>
      *
      * @param context the {@code MathContext} to use.
      * @return the fraction as a <code>BigDecimal</code>.
@@ -557,9 +513,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Compares this object to another based on size.
-     * </p>
      *
      * @param other Object to compare to, must not be {@code null}.
      * @return -1 if this is less than {@code object}, +1 if this is greater
@@ -585,10 +539,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Divide the value of this fraction by the passed {@code BigInteger},
      * ie {@code this * 1 / bg}, returning the result in reduced form.
-     * </p>
      *
      * @param bg the {@code BigInteger} to divide by, must not be {@code null}
      * @return a {@link BigFraction} instance with the resulting values
@@ -605,10 +557,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Divide the value of this fraction by the passed {@code int}, ie
      * {@code this * 1 / i}, returning the result in reduced form.
-     * </p>
      *
      * @param i the {@code int} to divide by
      * @return a {@link BigFraction} instance with the resulting values
@@ -619,10 +569,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Divide the value of this fraction by the passed {@code long}, ie
      * {@code this * 1 / l}, returning the result in reduced form.
-     * </p>
      *
      * @param l the {@code long} to divide by
      * @return a {@link BigFraction} instance with the resulting values
@@ -633,16 +581,13 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Divide the value of this fraction by another, returning the result in
      * reduced form.
-     * </p>
      *
      * @param fraction Fraction to divide by, must not be {@code null}.
      * @return a {@link BigFraction} instance with the resulting values.
      * @throws ArithmeticException if the fraction to divide by is zero
      */
-    @Override
     public BigFraction divide(final BigFraction fraction) {
         if (fraction.numerator.signum() == 0) {
             throw new FractionException(FractionException.ERROR_ZERO_DENOMINATOR);
@@ -817,10 +762,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as a {@code double}. This calculates the fraction as
      * the numerator divided by denominator.
-     * </p>
      *
      * @return the fraction as a {@code double}
      * @see java.lang.Number#doubleValue()
@@ -862,18 +805,13 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Test for the equality of two fractions. If the lowest term numerator and
      * denominators are the same for both fractions, the two fractions are
      * considered to be equal.
-     * </p>
      *
-     * @param other
-     *            fraction to test for equality to this fraction, can be
-     *            <code>null</code>.
-     * @return true if two fractions are equal, false if object is
-     *         <code>null</code>, not an instance of {@link BigFraction}, or not
-     *         equal to this fraction instance.
+     * @param other fraction to test for equality to this fraction, can be {@code null}.
+     * @return true if two fractions are equal, false if object is {@code null}, not an instance
+     *   of {@link BigFraction}, or not equal to this fraction instance.
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
@@ -895,10 +833,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as a {@code float}. This calculates the fraction as
      * the numerator divided by denominator.
-     * </p>
      *
      * @return the fraction as a {@code float}.
      * @see java.lang.Number#floatValue()
@@ -909,9 +845,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Access the denominator as a <code>BigInteger</code>.
-     * </p>
      *
      * @return the denominator as a <code>BigInteger</code>.
      */
@@ -920,9 +854,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Access the denominator as a {@code int}.
-     * </p>
      *
      * @return the denominator as a {@code int}.
      */
@@ -931,9 +863,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Access the denominator as a {@code long}.
-     * </p>
      *
      * @return the denominator as a {@code long}.
      */
@@ -942,9 +872,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Access the numerator as a <code>BigInteger</code>.
-     * </p>
      *
      * @return the numerator as a <code>BigInteger</code>.
      */
@@ -953,9 +881,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Access the numerator as a {@code int}.
-     * </p>
      *
      * @return the numerator as a {@code int}.
      */
@@ -964,9 +890,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Access the numerator as a {@code long}.
-     * </p>
      *
      * @return the numerator as a {@code long}.
      */
@@ -975,9 +899,7 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets a hashCode for the fraction.
-     * </p>
      *
      * @return a hash code value for this object.
      * @see java.lang.Object#hashCode()
@@ -988,10 +910,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as an {@code int}. This returns the whole number part
      * of the fraction.
-     * </p>
      *
      * @return the whole number fraction part.
      * @see java.lang.Number#intValue()
@@ -1002,10 +922,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Gets the fraction as a {@code long}. This returns the whole number part
      * of the fraction.
-     * </p>
      *
      * @return the whole number fraction part.
      * @see java.lang.Number#longValue()
@@ -1016,10 +934,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Multiplies the value of this fraction by the passed
      * <code>BigInteger</code>, returning the result in reduced form.
-     * </p>
      *
      * @param bg the {@code BigInteger} to multiply by.
      * @return a {@code BigFraction} instance with the resulting values.
@@ -1032,16 +948,12 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Multiply the value of this fraction by the passed {@code int}, returning
      * the result in reduced form.
-     * </p>
      *
-     * @param i
-     *            the {@code int} to multiply by.
+     * @param i the {@code int} to multiply by.
      * @return a {@link BigFraction} instance with the resulting values.
      */
-    @Override
     public BigFraction multiply(final int i) {
         if (i == 0 || numerator.signum() == 0) {
             return ZERO;
@@ -1051,13 +963,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Multiply the value of this fraction by the passed {@code long},
      * returning the result in reduced form.
-     * </p>
      *
-     * @param l
-     *            the {@code long} to multiply by.
+     * @param l the {@code long} to multiply by.
      * @return a {@link BigFraction} instance with the resulting values.
      */
     public BigFraction multiply(final long l) {
@@ -1069,15 +978,12 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Multiplies the value of this fraction by another, returning the result in
      * reduced form.
-     * </p>
      *
      * @param fraction Fraction to multiply by, must not be {@code null}.
      * @return a {@link BigFraction} instance with the resulting values.
      */
-    @Override
     public BigFraction multiply(final BigFraction fraction) {
         if (numerator.signum() == 0 ||
             fraction.numerator.signum() == 0) {
@@ -1108,30 +1014,21 @@ public final class BigFraction
     }
 
     /**
-     * <p>
-     * Return the additive inverse of this fraction, returning the result in
-     * reduced form.
-     * </p>
+     * Return the additive inverse of this fraction, returning the result in reduced form.
      *
      * @return the negation of this fraction.
      */
-    @Override
     public BigFraction negate() {
         return new BigFraction(numerator.negate(), denominator);
     }
 
     /**
-     * <p>
-     * Returns a {@code BigFraction} whose value is
-     * {@code (this<sup>exponent</sup>)}, returning the result in reduced form.
-     * </p>
+     * Returns a {@code BigFraction} whose value is {@code (this<sup>exponent</sup>)},
+     * returning the result in reduced form.
      *
-     * @param exponent
-     *            exponent to which this {@code BigFraction} is to be
-     *            raised.
+     * @param exponent exponent to which this {@code BigFraction} is to be raised.
      * @return \(\mathit{this}^{\mathit{exponent}}\).
      */
-    @Override
     public BigFraction pow(final int exponent) {
         if (exponent == 0) {
             return ONE;
@@ -1147,13 +1044,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Returns a <code>BigFraction</code> whose value is
      * \(\mathit{this}^{\mathit{exponent}}\), returning the result in reduced form.
-     * </p>
      *
-     * @param exponent
-     *            exponent to which this <code>BigFraction</code> is to be raised.
+     * @param exponent exponent to which this <code>BigFraction</code> is to be raised.
      * @return \(\mathit{this}^{\mathit{exponent}}\) as a <code>BigFraction</code>.
      */
     public BigFraction pow(final long exponent) {
@@ -1173,13 +1067,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Returns a <code>BigFraction</code> whose value is
      * \(\mathit{this}^{\mathit{exponent}}\), returning the result in reduced form.
-     * </p>
      *
-     * @param exponent
-     *            exponent to which this <code>BigFraction</code> is to be raised.
+     * @param exponent exponent to which this <code>BigFraction</code> is to be raised.
      * @return \(\mathit{this}^{\mathit{exponent}}\) as a <code>BigFraction</code>.
      */
     public BigFraction pow(final BigInteger exponent) {
@@ -1200,13 +1091,10 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Returns a <code>double</code> whose value is
      * \(\mathit{this}^{\mathit{exponent}}\), returning the result in reduced form.
-     * </p>
      *
-     * @param exponent
-     *            exponent to which this <code>BigFraction</code> is to be raised.
+     * @param exponent exponent to which this <code>BigFraction</code> is to be raised.
      * @return \(\mathit{this}^{\mathit{exponent}}\).
      */
     public double pow(final double exponent) {
@@ -1215,22 +1103,17 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Return the multiplicative inverse of this fraction.
-     * </p>
      *
      * @return the reciprocal fraction.
      */
-    @Override
     public BigFraction reciprocal() {
         return new BigFraction(denominator, numerator);
     }
 
     /**
-     * <p>
      * Subtracts the value of an {@link BigInteger} from the value of this
      * {@code BigFraction}, returning the result in reduced form.
-     * </p>
      *
      * @param bg the {@link BigInteger} to subtract, cannot be {@code null}.
      * @return a {@code BigFraction} instance with the resulting values.
@@ -1247,10 +1130,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Subtracts the value of an {@code integer} from the value of this
      * {@code BigFraction}, returning the result in reduced form.
-     * </p>
      *
      * @param i the {@code integer} to subtract.
      * @return a {@code BigFraction} instance with the resulting values.
@@ -1260,10 +1141,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Subtracts the value of a {@code long} from the value of this
      * {@code BigFraction}, returning the result in reduced form.
-     * </p>
      *
      * @param l the {@code long} to subtract.
      * @return a {@code BigFraction} instance with the resulting values.
@@ -1273,15 +1152,12 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Subtracts the value of another fraction from the value of this one,
      * returning the result in reduced form.
-     * </p>
      *
      * @param fraction {@link BigFraction} to subtract, must not be {@code null}.
      * @return a {@link BigFraction} instance with the resulting values
      */
-    @Override
     public BigFraction subtract(final BigFraction fraction) {
         if (fraction.numerator.signum() == 0) {
             return this;
@@ -1303,10 +1179,8 @@ public final class BigFraction
     }
 
     /**
-     * <p>
      * Returns the <code>String</code> representing this fraction, ie
      * "num / dem" or just "num" if the denominator is one.
-     * </p>
      *
      * @return a string representation of the fraction.
      * @see java.lang.Object#toString()
@@ -1324,14 +1198,22 @@ public final class BigFraction
         return str;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Additive identity element.
+     *
+     * @return the field element such that for all {@code a},
+     * {@code zero().add(a).equals(a)} is {@code true}.
+     */
     public BigFraction zero() {
         return ZERO;
     }
 
-    /** {@inheritDoc} */
-    @Override
+    /**
+     * Multiplicative identity element.
+     *
+     * @return the field element such that for all {@code a},
+     * {@code one().multiply(a).equals(a)} is {@code true}.
+     */
     public BigFraction one() {
         return ONE;
     }
