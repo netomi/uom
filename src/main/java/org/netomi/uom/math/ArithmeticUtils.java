@@ -25,6 +25,7 @@ import java.math.BigInteger;
 import java.math.MathContext;
 import java.math.RoundingMode;
 import java.text.MessageFormat;
+import java.util.Objects;
 
 /**
  * Some useful, arithmetics related, additions to the built-in functions in {@link Math}.
@@ -247,7 +248,7 @@ public final class ArithmeticUtils {
      * @throws ArithmeticException if the result would overflow.
      */
     public static long pow(final long k,
-                           final int e) {
+                           final int  e) {
         if (e < 0) {
             throw new IllegalArgumentException(NEGATIVE_EXPONENT_1 + e + NEGATIVE_EXPONENT_2);
         }
@@ -342,104 +343,68 @@ public final class ArithmeticUtils {
         return result;
     }
 
-    private static boolean isPowerOfTen(BigDecimal bigDecimal) {
-        return BigInteger.ONE.equals(bigDecimal.unscaledValue());
-    }
-
     /**
-     * Returns the square root of a {@link BigDecimal} number.
+     * Returns an approximation to the nth root of the provided {@code bigDecimal}
+     * with rounding according to the context settings.
+     * <p>
+     * The code is derived from Richard J. Mathar as described in his paper
+     * "A Java Math.BigDecimal Implementation of Core Mathematical Functions".
      *
-     * This code has been extracted from JDK 11 as this method was
-     * only added in JDK 9.
+     * @see <a href=https://arxiv.org/abs/0908.3030v2">A Java Math.BigDecimal Implementation of Core Mathematical Functions</a>
+     * @see <a href=https://arxiv.org/src/0908.3030v2/anc">Ancillary files</a>
+     *
+     * @param n the requested integral root.
+     * @param bigDecimal the decimal number to
+     * @param mc the context to use.
+     * @return the nth root of the provided {@link BigDecimal}.
+     * @throws NullPointerException if {@code bigDecimal} is null.
+     * @throws ArithmeticException if {@code bigDecimal} is less than zero.
      */
-    public static BigDecimal sqrt(BigDecimal bigDecimal, MathContext mc) {
-        int signum = bigDecimal.signum();
-        if (signum != 1) {
-            switch(signum) {
-                case -1:
-                    throw new ArithmeticException("Attempted square root of negative BigDecimal");
-                case 0:
-                    return BigDecimal.valueOf(0L, bigDecimal.scale() / 2);
-                default:
-                    throw new AssertionError("Bad value from signum");
-            }
-        } else {
-            int preferredScale = bigDecimal.scale() / 2;
-            BigDecimal zeroWithFinalPreferredScale = BigDecimal.valueOf(0L, preferredScale);
-            BigDecimal stripped = bigDecimal.stripTrailingZeros();
-            int strippedScale = stripped.scale();
-            if (isPowerOfTen(stripped) && strippedScale % 2 == 0) {
-                BigDecimal result = BigDecimal.valueOf(1L, strippedScale / 2);
-                if (result.scale() != preferredScale) {
-                    result = result.add(zeroWithFinalPreferredScale, mc);
-                }
+    public static BigDecimal root(int n, BigDecimal bigDecimal, MathContext mc) {
+        Objects.requireNonNull(bigDecimal);
 
-                return result;
-            } else {
-                int scaleAdjust;
-                int scale = stripped.scale() - stripped.precision() + 1;
-                if (scale % 2 == 0) {
-                    scaleAdjust = scale;
-                } else {
-                    scaleAdjust = scale - 1;
-                }
+        if (bigDecimal.compareTo(BigDecimal.ZERO) < 0) {
+            throw new ArithmeticException("Attempted square root of negative BigDecimal: " + bigDecimal);
+        }
 
-                BigDecimal working = stripped.scaleByPowerOfTen(scaleAdjust);
+        if (n <= 0) {
+            throw new ArithmeticException("Attempted negative power for root: " + n);
+        }
 
-                //assert ONE_TENTH.compareTo(working) <= 0 && working.compareTo(TEN) < 0;
+        if (n == 1) {
+            return bigDecimal;
+        }
 
-                BigDecimal guess = new BigDecimal(Math.sqrt(working.doubleValue()));
-                int guessPrecision = 15;
-                int originalPrecision = mc.getPrecision();
-                int targetPrecision;
-                if (originalPrecision == 0) {
-                    targetPrecision = stripped.precision() / 2 + 1;
-                } else {
-                    targetPrecision = originalPrecision;
-                }
+        // start the computation from a double precision estimate.
+        BigDecimal guess = new BigDecimal(Math.pow(bigDecimal.doubleValue(), 1.0 / n), mc);
 
-                BigDecimal approx = guess;
-                int workingPrecision = working.precision();
+        // this creates n as decimal number with a nominal precision of 1 digit.
+        final BigDecimal nDecimal = new BigDecimal(n);
 
-                do {
-                    int tmpPrecision = Math.max(Math.max(guessPrecision, targetPrecision + 2), workingPrecision);
-                    MathContext mcTmp = new MathContext(tmpPrecision, RoundingMode.HALF_EVEN);
-                    approx = ONE_HALF.multiply(approx.add(working.divide(approx, mcTmp), mcTmp));
-                    guessPrecision *= 2;
-                } while(guessPrecision < targetPrecision + 2);
+        // Relative accuracy of the result based on the requested precision.
+        final BigDecimal eps = BigDecimal.valueOf(1, mc.getPrecision());
 
-                RoundingMode targetRm = mc.getRoundingMode();
-                BigDecimal result;
-                if (targetRm != RoundingMode.UNNECESSARY && originalPrecision != 0) {
-                    result = approx.scaleByPowerOfTen(-scaleAdjust / 2).round(mc);
-                } else {
-                    RoundingMode tmpRm = targetRm == RoundingMode.UNNECESSARY ? RoundingMode.DOWN : targetRm;
-                    MathContext mcTmp = new MathContext(targetPrecision, tmpRm);
-                    result = approx.scaleByPowerOfTen(-scaleAdjust / 2).round(mcTmp);
-                    if (bigDecimal.subtract(result.multiply(result)).compareTo(BigDecimal.ZERO) != 0) {
-                        throw new ArithmeticException("Computed square root not exact.");
-                    }
-                }
+        // for temporary results, use a mathContext with a slightly larger
+        // precision as the requested one.
+        MathContext tmpMc = new MathContext(2 + mc.getPrecision(), RoundingMode.HALF_EVEN);
 
-                if (result.scale() != preferredScale) {
-                    result = result.stripTrailingZeros().add(zeroWithFinalPreferredScale, new MathContext(originalPrecision, RoundingMode.UNNECESSARY));
-                }
+        // start with the initial guess with double precision.
+        BigDecimal s = guess;
 
-                //assert this.squareRootResultAssertions(result, mc);
+        for (;;) {
+            // s = s - (s/n - x/n / s^(n-1)) = s - (s - x/s^(n-1))/n;
+            BigDecimal correction = s.subtract(bigDecimal.divide(s.pow(n - 1), tmpMc), tmpMc).divide(nDecimal, tmpMc);
+            s = s.subtract(correction, tmpMc);
 
-                return result;
+            // test correction s/n - x/n/s^(n-1) for being smaller than the precision requested.
+            // The relative correction is (1 - x/s^n)/n,
+            BigDecimal relativeCorrection = correction.divide(s, tmpMc);
+            if (relativeCorrection.abs().compareTo(eps) < 0) {
+                break;
             }
         }
-    }
 
-    /**
-     * Returns true if the argument is a power of two.
-     *
-     * @param n the number to test
-     * @return true if the argument is a power of two
-     */
-    public static boolean isPowerOfTwo(long n) {
-        return (n > 0) && ((n & (n - 1)) == 0);
+        return s.round(mc).stripTrailingZeros();
     }
 
     /**

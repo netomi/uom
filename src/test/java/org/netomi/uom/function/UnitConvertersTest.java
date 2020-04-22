@@ -160,9 +160,6 @@ public class UnitConvertersTest {
         assertThrows(IllegalArgumentException.class, () -> UnitConverters.root(multiplyConverter, 0));
 
         assertThrows(IllegalArgumentException.class, () -> UnitConverters.root(multiplyConverter, -2));
-
-        // exponent > 2
-        assertThrows(IllegalArgumentException.class, () -> UnitConverters.root(multiplyConverter, 3));
     }
 
     @Test

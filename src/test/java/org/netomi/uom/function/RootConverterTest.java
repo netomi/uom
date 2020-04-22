@@ -37,11 +37,6 @@ public class RootConverterTest {
     public void unsupportedRoot() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             // constructor is hidden, thus this should never happen.
-            new RootConverter(UnitConverters.identity(), 5);
-        });
-
-        Assertions.assertThrows(IllegalArgumentException.class, () -> {
-            // constructor is hidden, thus this should never happen.
             new RootConverter(UnitConverters.identity(), -2);
         });
     }
@@ -72,7 +67,18 @@ public class RootConverterTest {
 
         assertEquals(Math.sqrt(1000), converter.convert(1), 1e-6);
 
-        assertEquals(ArithmeticUtils.sqrt(BigDecimal.valueOf(1000), MathContext.DECIMAL128).doubleValue(),
+        assertEquals(ArithmeticUtils.root(2, BigDecimal.valueOf(1000), MathContext.DECIMAL128).doubleValue(),
+                     converter.convert(BigDecimal.ONE).doubleValue(), 1e-6);
+    }
+
+    @Test
+    public void convertCubicRoot() {
+        MultiplyConverter multiplyConverter = new MultiplyConverter(1000, 1);
+        RootConverter     converter         = new RootConverter(multiplyConverter, 3);
+
+        assertEquals(Math.pow(1000, 1. / 3.), converter.convert(1), 1e-6);
+
+        assertEquals(ArithmeticUtils.root(3, BigDecimal.valueOf(1000), MathContext.DECIMAL128).doubleValue(),
                      converter.convert(BigDecimal.ONE).doubleValue(), 1e-6);
     }
 

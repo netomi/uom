@@ -327,18 +327,4 @@ public class ArithmeticUtilsTest {
         }
     }
 
-    @Test
-    public void testIsPowerOfTwo() {
-        final int n = 1025;
-        final boolean[] expected = new boolean[n];
-        Arrays.fill(expected, false);
-        for (int i = 1; i < expected.length; i *= 2) {
-            expected[i] = true;
-        }
-        for (int i = 0; i < expected.length; i++) {
-            final boolean actual = ArithmeticUtils.isPowerOfTwo(i);
-            Assertions.assertEquals(expected[i], actual, Integer.toString(i));
-        }
-    }
-
 }

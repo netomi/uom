@@ -37,11 +37,12 @@ import java.util.Optional;
 class RootConverter extends AbstractConverter {
 
     private final UnitConverter unitConverter;
+    private final int           n;
     private final double        multiplierRooted;
 
     RootConverter(UnitConverter unitConverter, int n) {
-        if (n != 2) {
-            throw new IllegalArgumentException(String.format("Unsupported nth root '%d', only n=2 is allowed.", n));
+        if (n <= 0) {
+            throw new IllegalArgumentException(String.format("Unsupported nth root '%d', only positive numbers are allowed.", n));
         }
 
         if (!unitConverter.isLinear()) {
@@ -50,6 +51,7 @@ class RootConverter extends AbstractConverter {
         }
 
         this.unitConverter = unitConverter;
+        this.n             = n;
 
         // get the scale from the delegate converter
         // and calculate its root as double for caching reasons.
@@ -59,7 +61,9 @@ class RootConverter extends AbstractConverter {
         // any linear converter must have a scale.
         assert scale.isPresent();
 
-        multiplierRooted = Math.sqrt(scale.get().doubleValue());
+        multiplierRooted = n == 2 ?
+                Math.sqrt(scale.get().doubleValue()) :
+                Math.pow(scale.get().doubleValue(), 1. / n);
     }
 
     public UnitConverter getUnitConverter() {
@@ -67,7 +71,7 @@ class RootConverter extends AbstractConverter {
     }
 
     public int getN() {
-        return 2;
+        return n;
     }
 
     @Override
@@ -77,8 +81,7 @@ class RootConverter extends AbstractConverter {
 
     @Override
     public RootConverter inverse() {
-        // Use a fixed root of 2 as only this is supported.
-        return new RootConverter(unitConverter.inverse(), 2);
+        return new RootConverter(unitConverter.inverse(), n);
     }
 
     @Override
@@ -89,7 +92,7 @@ class RootConverter extends AbstractConverter {
     @Override
     public BigDecimal convert(BigDecimal value, MathContext context) {
         BigDecimal multiplier = unitConverter.convert(BigDecimal.ONE, context);
-        multiplier = ArithmeticUtils.sqrt(multiplier, context);
+        multiplier = ArithmeticUtils.root(n, multiplier, context);
         return value.multiply(multiplier, context);
     }
 

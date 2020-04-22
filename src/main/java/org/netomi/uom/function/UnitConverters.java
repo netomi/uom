@@ -215,7 +215,7 @@ public final class UnitConverters {
      * @param converter  the converter to use for the power operation.
      * @param n          specifies the number of the root operation.
      * @return a {@link UnitConverter} applying the converter n times.
-     * @throws IllegalArgumentException if n is negative or {@code n > 2}.
+     * @throws IllegalArgumentException if n is negative.
      */
     public static UnitConverter root(UnitConverter converter, int n) {
         return converter.isIdentity() ? converter :
