@@ -24,7 +24,7 @@ import org.netomi.uom.Unit;
  *
  * @author Thomas Neidhart
  */
-public class TypeUtil {
+public final class TypeUtil {
 
     /** Error message for units whose dimensions does not match. */
     private static final String ERROR_UNIT_DIMENSION_MISMATCH = "Dimension mismatch for units {0} and {1}: {2} != {3}.";
