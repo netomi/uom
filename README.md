@@ -22,23 +22,23 @@ The design goal of the library is to include:
   ```
 * support for generic quantities:
   ```java
-    Quantity<Speed> speed = Quantities.create(1, SI.METER_PER_SECOND);
+    Quantity<Speed> speed = Quantities.createGeneric(1, SI.METER_PER_SECOND);
   
     System.out.println(speed.add(Speed.ofMeterPerSecond(2))); // -> prints 3 m/s
   ```
 * support for quantity factories:
   ```java
-    QuantityFactory<Length> factory = DoubleLength.factory();
+    QuantityFactory<Length> factory = DoubleQuantity.factory(Length.class);
   
     Length l1 = factory.create(1, SI.METRE);
   
     // default factories can be replaced
-    // use decimal precision for every quantity of type Lengh:
-    Quantities.registerQuantityFactory(Length.class, DecimalQuantity.factory(Length.class));
+    // use decimal precision with MathContext DECIMAL128 for every quantity of type Length:
+    Quantities.registerQuantityFactory(Length.class, DecimalQuantity.factory(MathContext.DECIMAL128, Length.class));
   
-    // quantity factories with caching behavior can be registered
-    QuantityFactory<Length> myCachingFactory = ...;
-    Quantities.registerQuantityFactory(Length.class, myCachingFactory);
+    // quantity factories with pooling behavior can be registered
+    QuantityFactory<Length> myPoolFactory = ...;
+    Quantities.registerQuantityFactory(Length.class, myPoolFactory);
   ```  
 * support for the standard unit manipulations as defined by [JSR-385](https://www.jcp.org/en/jsr/detail?id=385) et al
 * support for as many units as possible, the amazing [GNU units](https://www.gnu.org/software/units/) library is the reference to compare to
@@ -70,8 +70,8 @@ Custom quantities and units:
     ...
 
     final Unit<Bmi> bmiUnit = SI.KILOGRAM.divide(SI.METRE.pow(2)).withSymbol("B").forQuantity(Bmi.class);
-    Quantity<Bmi> bmiDouble  = Quantities.createQuantity(19, bmiUnit);
-    Quantity<Bmi> bmiDecimal = Quantities.createQuantity(BigDecimal.valueOf(21), bmiUnit);
+    Quantity<Bmi> bmiDouble  = Quantities.createGeneric(19, bmiUnit);
+    Quantity<Bmi> bmiDecimal = Quantities.createGeneric(BigDecimal.valueOf(21), bmiUnit);
 
     System.out.println(bmiDouble);
 ```

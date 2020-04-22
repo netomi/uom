@@ -31,7 +31,22 @@ public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
         return GenericDoubleQuantity.factory();
     }
 
+    /**
+     * Returns a new {@link DoubleQuantityFactory} for the specified quantity class.
+     * <p>
+     * The returned factory creates instances with double precision.
+     *
+     * @param quantityClass the quantity class
+     * @param <Q> the quantity type
+     * @return a factory that creates quantities with double precision which implement the
+     * specified quantity class.
+     * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
+     */
     static <Q extends Quantity<Q>> DoubleQuantityFactory<Q> factory(Class<Q> quantityClass) {
+        if (!Quantity.class.isAssignableFrom(quantityClass)) {
+            throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
+        }
+
         return ProxyDoubleQuantity.factory(quantityClass);
     }
 

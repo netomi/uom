@@ -34,8 +34,43 @@ public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
         return GenericDecimalQuantity.factory();
     }
 
+    /**
+     * Returns a new {@link DecimalQuantityFactory} for the specified quantity class.
+     * <p>
+     * The returned factory creates instances with decimal precision.
+     *
+     * @param quantityClass the quantity class
+     * @param <Q> the quantity type
+     * @return a factory that creates quantities with decimal precision which implement the
+     * specified quantity class.
+     * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
+     */
     static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(Class<Q> quantityClass) {
+        if (!Quantity.class.isAssignableFrom(quantityClass)) {
+            throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
+        }
+
         return ProxyDecimalQuantity.factory(quantityClass);
+    }
+
+    /**
+     * Returns a new {@link DecimalQuantityFactory} for the specified quantity class.
+     * <p>
+     * The returned factory creates instances with a fixed decimal precision.
+     *
+     * @param mc            the {@link MathContext} to use for all created instances.
+     * @param quantityClass the quantity class
+     * @param <Q> the quantity type
+     * @return a factory that creates quantities with decimal precision which implement the
+     * specified quantity class.
+     * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
+     */
+    static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(MathContext mc, Class<Q> quantityClass) {
+        if (!Quantity.class.isAssignableFrom(quantityClass)) {
+            throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
+        }
+
+        return ProxyDecimalQuantity.factory(mc, quantityClass);
     }
 
     MathContext getMathContext();
