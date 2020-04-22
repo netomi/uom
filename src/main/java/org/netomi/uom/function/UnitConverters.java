@@ -23,7 +23,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.math.MathContext;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Utility class to access various unit converter implementations.
@@ -256,8 +255,18 @@ public final class UnitConverters {
         }
 
         @Override
-        public Optional<BigFraction> scale() {
-            return Optional.of(BigFraction.ONE);
+        public double scale() {
+            return 1.;
+        }
+
+        @Override
+        public BigFraction scaleAsFraction() {
+            return BigFraction.ONE;
+        }
+
+        @Override
+        public BigDecimal scale(MathContext mathContext) {
+            return BigDecimal.ONE;
         }
 
         @Override

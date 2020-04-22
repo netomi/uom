@@ -74,13 +74,12 @@ public class MultiplyConverterTest {
     @Test
     public void scale() {
         MultiplyConverter converter = new MultiplyConverter(100, 1);
-        assertTrue(converter.scale().isPresent());
-        assertEquals(BigFraction.of(100, 1), converter.scale().get());
+        assertEquals(100., converter.scale(), 1e-6);
+        assertEquals(BigFraction.of(100, 1), converter.scaleAsFraction());
 
         MultiplyConverter inverse = converter.inverse();
-
-        assertTrue(inverse.scale().isPresent());
-        assertEquals(BigFraction.of(1, 100), inverse.scale().get());
+        assertEquals(1e-2, inverse.scale(), 1e-6);
+        assertEquals(BigFraction.of(1, 100), inverse.scaleAsFraction());
     }
 
     @Test

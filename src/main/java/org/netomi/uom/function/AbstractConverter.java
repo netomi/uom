@@ -20,7 +20,6 @@ import org.netomi.uom.math.BigFraction;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Optional;
 
 /**
  * Base class for {@link UnitConverter} implementations, provides some default
@@ -31,10 +30,30 @@ import java.util.Optional;
 abstract class AbstractConverter implements UnitConverter {
 
     @Override
-    public Optional<BigFraction> scale() {
-        return isLinear() ?
-                Optional.of(BigFraction.from(convert(BigDecimal.ONE))) :
-                Optional.empty();
+    public double scale() {
+        if (!isLinear()) {
+            throw new UnsupportedOperationException("scale() is only supported for linear converters.");
+        }
+
+        return convert(1);
+    }
+
+    @Override
+    public BigFraction scaleAsFraction() {
+        if (!isLinear()) {
+            throw new UnsupportedOperationException("scale() is only supported for linear converters.");
+        }
+
+        return BigFraction.from(convert(BigDecimal.ONE));
+    }
+
+    @Override
+    public BigDecimal scale(MathContext mathContext) {
+        if (!isLinear()) {
+            throw new UnsupportedOperationException("scale() is only supported for linear converters.");
+        }
+
+        return convert(BigDecimal.ONE, mathContext);
     }
 
     @Override

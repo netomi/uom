@@ -74,8 +74,7 @@ public class MetricPrefixTest {
         Unit<?> unit = SI.METRE;
 
         UnitConverter unitConverter = UnitConverters.pow(10, exponent);
-        assertTrue(unitConverter.scale().isPresent());
-        BigFraction fraction = unitConverter.scale().get();
+        BigFraction fraction = unitConverter.scaleAsFraction();
 
         Unit<?> prefixedUnit = factoryMethod.apply(unit);
 

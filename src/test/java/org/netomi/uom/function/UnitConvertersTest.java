@@ -44,7 +44,9 @@ public class UnitConvertersTest {
         assertSame(value, identity.convert(value));
         assertSame(value, identity.convert(value, MathContext.DECIMAL128));
 
-        assertEquals(BigFraction.ONE, identity.scale().get());
+        assertEquals(1., identity.scale(), 1e-6);
+        assertEquals(BigFraction.ONE, identity.scaleAsFraction());
+        assertEquals(BigDecimal.ONE, identity.scale(MathContext.DECIMAL128));
     }
 
     @Test

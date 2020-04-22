@@ -87,13 +87,13 @@ public class RootConverterTest {
         MultiplyConverter multiplyConverter = new MultiplyConverter(1000, 1);
         RootConverter converter = new RootConverter(multiplyConverter, 2);
 
-        assertTrue(converter.scale().isPresent());
-        assertEquals(BigFraction.from(Math.sqrt(1000)).doubleValue(), converter.scale().get().doubleValue(), 1e-6);
+        assertEquals(Math.sqrt(1000), converter.scale(), 1e-6);
+        assertEquals(BigFraction.from(Math.sqrt(1000)).doubleValue(), converter.scaleAsFraction().doubleValue(), 1e-6);
 
         RootConverter inverse = converter.inverse();
 
-        assertTrue(inverse.scale().isPresent());
-        assertEquals(BigFraction.from(1. / Math.sqrt(1000)).doubleValue(), inverse.scale().get().doubleValue(), 1e-6);
+        assertEquals(1. / Math.sqrt(1000), inverse.scale(), 1e-6);
+        assertEquals(BigFraction.from(1. / Math.sqrt(1000)).doubleValue(), inverse.scaleAsFraction().doubleValue(), 1e-6);
     }
 
     @Test

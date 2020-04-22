@@ -21,7 +21,6 @@ import org.netomi.uom.math.BigFraction;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * A {@code UnitConverter} implementation that converts values by multiplying
@@ -66,8 +65,18 @@ class MultiplyConverter extends AbstractConverter {
     }
 
     @Override
-    public Optional<BigFraction> scale() {
-        return Optional.of(multiplier);
+    public double scale() {
+        return multiplierAsDouble;
+    }
+
+    @Override
+    public BigFraction scaleAsFraction() {
+        return multiplier;
+    }
+
+    @Override
+    public BigDecimal scale(MathContext mathContext) {
+        return multiplier.bigDecimalValue(mathContext);
     }
 
     @Override

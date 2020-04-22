@@ -76,13 +76,13 @@ public class PowConverterTest {
         MultiplyConverter multiplyConverter = new MultiplyConverter(100, 1);
         PowConverter converter = new PowConverter(multiplyConverter, 2);
 
-        assertTrue(converter.scale().isPresent());
-        assertEquals(BigFraction.of(10000, 1), converter.scale().get());
+        assertEquals(1e4, converter.scale(), 1e-6);
+        assertEquals(BigFraction.of(10000, 1), converter.scaleAsFraction());
 
         PowConverter inverse = converter.inverse();
 
-        assertTrue(inverse.scale().isPresent());
-        assertEquals(BigFraction.of(1, 10000), inverse.scale().get());
+        assertEquals(1e-4, inverse.scale(), 1e-6);
+        assertEquals(BigFraction.of(1, 10000), inverse.scaleAsFraction());
     }
 
     @Test

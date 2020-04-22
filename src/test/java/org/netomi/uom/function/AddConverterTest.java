@@ -20,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.netomi.uom.UnitConverter;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -66,10 +67,28 @@ public class AddConverterTest {
     @Test
     public void scale() {
         AddConverter converter = new AddConverter(100);
-        assertFalse(converter.scale().isPresent());
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+           converter.scale();
+        });
+        assertThrows(UnsupportedOperationException.class, () -> {
+            converter.scaleAsFraction();
+        });
+        assertThrows(UnsupportedOperationException.class, () -> {
+            converter.scale(MathContext.DECIMAL128);
+        });
 
         AddConverter inverse = converter.inverse();
-        assertFalse(inverse.scale().isPresent());
+
+        assertThrows(UnsupportedOperationException.class, () -> {
+            inverse.scale();
+        });
+        assertThrows(UnsupportedOperationException.class, () -> {
+            inverse.scaleAsFraction();
+        });
+        assertThrows(UnsupportedOperationException.class, () -> {
+            inverse.scale(MathContext.DECIMAL128);
+        });
     }
 
     @Test
