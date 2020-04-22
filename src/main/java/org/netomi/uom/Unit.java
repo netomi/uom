@@ -19,11 +19,14 @@ import org.netomi.uom.function.UnitConverters;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.quantity.Quantities;
 import org.netomi.uom.unit.*;
+import org.netomi.uom.util.ConcurrentReferenceHashMap;
 import org.netomi.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
 import java.util.Map;
 import java.util.Objects;
+
+import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
 
 /**
  * Represents a unit of measurement to express the magnitude of a quantity.
@@ -35,6 +38,12 @@ import java.util.Objects;
  * @author Thomas Neidhart
  */
 public abstract class Unit<Q extends Quantity<Q>> {
+
+    /**
+     * A lazy initialized cache for {@link UnitConverter}s.
+     * It uses WEAK references for its keys, and SOFT references for its values.
+     */
+    private volatile Map<Unit<Q>, UnitConverter> converterCache;
 
     /**
      * Returns the symbol associated with this unit.
@@ -88,6 +97,12 @@ public abstract class Unit<Q extends Quantity<Q>> {
         return Objects.equals(this.getDimension(),  that.getDimension());
     }
 
+    /**
+     * Returns if this {@link Unit} is considered to be a system unit.
+     * <p>
+     * A system unit is defined as an unscaled unit of the reference system (fixed: SI).
+     * @return {@code true} if this unit is system unit, {@code false} otherwise.
+     */
     public boolean isSystemUnit() {
         return getSystemConverter().isIdentity();
     }
@@ -96,17 +111,49 @@ public abstract class Unit<Q extends Quantity<Q>> {
 
     public abstract UnitConverter getSystemConverter();
 
-    public UnitConverter getConverterTo(Unit<Q> unit) throws IncommensurableException {
-        TypeUtil.requireCommensurable(this, unit);
-
-        UnitConverter thisConverter = getSystemConverter();
-        UnitConverter thatConverter = unit.getSystemConverter().inverse();
-
-        return thisConverter.andThen(thatConverter);
+    private Map<Unit<Q>, UnitConverter> getConverterCache() {
+        // Lazy initialize the converter cache using a double checked locking pattern.
+        // It is fine to use as we target JDK 8+.
+        if (converterCache == null) {
+            synchronized (this) {
+                if (converterCache == null) {
+                    // use WEAK references for the keys
+                    // and SOFT references for the values
+                    // rationale:
+                    //   * the entries can be removed as soon as the unit is not strongly referenced anymore.
+                    //   * unit converters are usually not strongly referenced, using also a WEAK reference would
+                    //     remove them too soon from the cache, use SOFT instead which only removed them if the
+                    //     VM needs memory.
+                    converterCache = new ConcurrentReferenceHashMap<>(10, ReferenceType.WEAK, ReferenceType.SOFT);
+                }
+            }
+        }
+        return converterCache;
     }
 
-    public UnitConverter getConverterToAny(Unit<?> unit) {
-        return getConverterTo((Unit) unit);
+    /**
+     * Returns a {@link UnitConverter} to convert quantities expressed in this {@link Unit}
+     * to the other unit.
+     *
+     * @param unit the unit to get a converter to.
+     * @return a {@link UnitConverter} to convert quantities from this unit to the other.
+     * @throws IncommensurableException if the specified {@link Unit} is not compatible with
+     * this unit, i.e. their {@link Dimension} does not match.
+     */
+    public UnitConverter getConverterTo(Unit<Q> unit) throws IncommensurableException {
+        return getConverterCache().computeIfAbsent(unit, u -> {
+            TypeUtil.requireCommensurable(this, u);
+
+            UnitConverter thisConverter = getSystemConverter();
+            UnitConverter thatConverter = u.getSystemConverter().inverse();
+
+            return thisConverter.andThen(thatConverter);
+        });
+    }
+
+    @SuppressWarnings("rawtypes")
+    public UnitConverter getConverterToAny(Unit unit) {
+        return getConverterTo(unit);
     }
 
     public abstract Map<? extends Unit<?>, Fraction> getBaseUnits();
