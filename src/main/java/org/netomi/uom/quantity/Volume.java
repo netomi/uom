@@ -41,7 +41,7 @@ public interface Volume extends Quantity<Volume> {
      * @return a new {@link Volume} instance for the given value.
      */
     static Volume of(double value, Unit<Volume> unit) {
-        return Quantities.createQuantity(value, unit, Volume.class);
+        return Quantities.create(value, unit, Volume.class);
     }
 
     static Volume ofCubicMeter(double value) {

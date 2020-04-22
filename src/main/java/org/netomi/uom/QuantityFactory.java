@@ -30,5 +30,5 @@ public interface QuantityFactory<Q extends Quantity<Q>> {
 
     Q create(BigDecimal value, Unit<Q> unit);
 
-    Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit);
+    Q create(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

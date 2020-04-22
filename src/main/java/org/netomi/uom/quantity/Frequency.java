@@ -41,7 +41,7 @@ public interface Frequency extends Quantity<Frequency> {
      * @return a new {@link Frequency} instance for the given value.
      */
     static Frequency of(double value, Unit<Frequency> unit) {
-        return Quantities.createQuantity(value, unit, Frequency.class);
+        return Quantities.create(value, unit, Frequency.class);
     }
 
     static Frequency ofHertz(double value) {

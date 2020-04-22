@@ -41,7 +41,7 @@ public interface Power extends Quantity<Power> {
      * @return a new {@link Power} instance for the given value.
      */
     static Power of(double value, Unit<Power> unit) {
-        return Quantities.createQuantity(value, unit, Power.class);
+        return Quantities.create(value, unit, Power.class);
     }
 
     static Power ofWatt(double value) {

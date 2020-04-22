@@ -41,7 +41,7 @@ public interface ElectricConductance extends Quantity<ElectricConductance> {
      * @return a new {@link ElectricConductance} instance for the given value.
      */
     static ElectricConductance of(double value, Unit<ElectricConductance> unit) {
-        return Quantities.createQuantity(value, unit, ElectricConductance.class);
+        return Quantities.create(value, unit, ElectricConductance.class);
     }
 
     static ElectricConductance ofSiemens(double value) {

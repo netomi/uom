@@ -44,5 +44,5 @@ public interface DecimalQuantityFactory<Q extends Quantity<Q>> extends QuantityF
         return create(value, DEFAULT_MATH_CONTEXT, unit);
     }
 
-    Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit);
+    Q create(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

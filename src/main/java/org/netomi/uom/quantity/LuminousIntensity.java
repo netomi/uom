@@ -41,7 +41,7 @@ public interface LuminousIntensity extends Quantity<LuminousIntensity> {
      * @return a new {@link LuminousIntensity} instance for the given value.
      */
     static LuminousIntensity of(double value, Unit<LuminousIntensity> unit) {
-        return Quantities.createQuantity(value, unit, LuminousIntensity.class);
+        return Quantities.create(value, unit, LuminousIntensity.class);
     }
 
     static LuminousIntensity ofCandela(double value) {

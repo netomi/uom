@@ -41,7 +41,7 @@ public interface Area extends Quantity<Area> {
      * @return a new {@link Area} instance for the given value.
      */
     static Area of(double value, Unit<Area> unit) {
-        return Quantities.createQuantity(value, unit, Area.class);
+        return Quantities.create(value, unit, Area.class);
     }
 
     static Area ofSquareMeter(double value) {

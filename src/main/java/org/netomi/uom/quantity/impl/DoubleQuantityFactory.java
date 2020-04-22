@@ -40,7 +40,7 @@ public interface DoubleQuantityFactory<Q extends Quantity<Q>> extends QuantityFa
     }
 
     @Override
-    default Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
+    default Q create(BigDecimal value, MathContext mc, Unit<Q> unit) {
         return create(value.doubleValue(), unit);
     }
 }

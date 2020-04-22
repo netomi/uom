@@ -15,18 +15,21 @@
  */
 package org.netomi.uom.quantity.impl;
 
+import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 
 class GenericDoubleQuantity extends AbstractDoubleQuantity {
 
-    public static DoubleQuantityFactory factory() {
+    public static <Q extends Quantity<Q>> GenericDoubleQuantityFactory<Q> factory() {
         return GenericDoubleQuantity::new;
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     GenericDoubleQuantity(double value, Unit unit) {
         super(value, unit);
     }
 
+    @SuppressWarnings("rawtypes")
     @Override
     public DoubleQuantity with(double value, Unit unit) {
         return new GenericDoubleQuantity(value, unit);

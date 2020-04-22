@@ -16,9 +16,7 @@
 package org.netomi.uom.quantity.impl;
 
 import org.netomi.uom.Quantity;
-import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
-import org.netomi.uom.UnitConverter;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -32,27 +30,27 @@ import java.math.MathContext;
  */
 public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
-    static QuantityFactory factory() {
+    static <Q extends Quantity<Q>> GenericDecimalQuantityFactory<Q> factory() {
         return GenericDecimalQuantity.factory();
     }
 
-    static <Q extends Quantity<Q>> QuantityFactory<Q> factory(Class<Q> quantityClass) {
+    static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(Class<Q> quantityClass) {
         return ProxyDecimalQuantity.factory(quantityClass);
     }
 
     MathContext getMathContext();
 
-    Q to(Unit<Q> toUnit, MathContext context);
+    Q to(Unit<Q> toUnit, MathContext mc);
 
     default Q toSystemUnit() {
         return toSystemUnit(getMathContext());
     }
 
-    Q toSystemUnit(MathContext mathContext);
+    Q toSystemUnit(MathContext mc);
 
     default Q with(BigDecimal value, Unit<Q> unit) {
         return with(value, getMathContext(), unit);
     }
 
-    Q with(BigDecimal value, MathContext mathContext, Unit<Q> unit);
+    Q with(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

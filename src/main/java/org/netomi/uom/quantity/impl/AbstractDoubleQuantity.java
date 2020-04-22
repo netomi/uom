@@ -134,7 +134,7 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     public <R extends Quantity<R>> R multiply(Quantity<?> multiplier, Class<R> quantityClass) {
         @SuppressWarnings("unchecked")
         Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplier.getUnit()).getSystemUnit();
-        return Quantities.createQuantity(multiplyInternal(this, multiplier), combinedSystemUnit, quantityClass);
+        return Quantities.create(multiplyInternal(this, multiplier), combinedSystemUnit, quantityClass);
     }
 
     private double multiplyInternal(Quantity<?> multiplicand, Quantity<?> multiplier) {
@@ -154,7 +154,7 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     public <R extends Quantity<R>> R divide(Quantity<?> divisor, Class<R> quantityClass) {
         @SuppressWarnings("unchecked")
         Unit<R> combinedSystemUnit = (Unit<R>) unit.divide(divisor.getUnit()).getSystemUnit();
-        return Quantities.createQuantity(divideInternal(this, divisor), combinedSystemUnit, quantityClass);
+        return Quantities.create(divideInternal(this, divisor), combinedSystemUnit, quantityClass);
     }
 
     private double divideInternal(Quantity<?> dividend, Quantity<?> divisor) {
@@ -204,7 +204,10 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     }
 
     private Quantity<?> genericDoubleQuantity(double value, Unit<?> unit) {
-        return new GenericDoubleQuantity(value, unit);
+        Class<?> quantityClass = Quantities.getQuantityType(unit);
+        return quantityClass == null ?
+            new GenericDoubleQuantity(value, unit) :
+            Quantities.create(value, unit);
     }
 
     @Override

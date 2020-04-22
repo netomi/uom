@@ -43,7 +43,7 @@ public interface Dimensionless extends Quantity<Dimensionless> {
      * @return a new {@link Dimensionless} instance for the given value.
      */
     static Dimensionless of(double value, Unit<Dimensionless> unit) {
-        return Quantities.createQuantity(value, unit, Dimensionless.class);
+        return Quantities.create(value, unit, Dimensionless.class);
     }
 
     static Dimensionless of(double value) {

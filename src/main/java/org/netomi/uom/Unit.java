@@ -229,9 +229,10 @@ public abstract class Unit<Q extends Quantity<Q>> {
      * not match the dimension of the quantity.
      */
     public <T extends Quantity<T>> Unit<T> forQuantity(Class<T> quantityClass) {
+        // TODO: make this clean using TypeUtil.requireCommensurable
         // try to create a quantity of the requested type with this unit.
         // if it works, we can safely cast.
-        Quantities.createQuantity(0, (Unit) this, quantityClass);
+        Quantities.create(0, (Unit) this, quantityClass);
         @SuppressWarnings("unchecked")
         Unit<T> castUnit = (Unit<T>) this;
         return castUnit;

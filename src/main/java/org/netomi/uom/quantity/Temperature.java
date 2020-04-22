@@ -41,7 +41,7 @@ public interface Temperature extends Quantity<Temperature> {
      * @return a new {@link Temperature} instance for the given value.
      */
     static Temperature of(double value, Unit<Temperature> unit) {
-        return Quantities.createQuantity(value, unit, Temperature.class);
+        return Quantities.create(value, unit, Temperature.class);
     }
 
     static Temperature ofKelvin(double value) {

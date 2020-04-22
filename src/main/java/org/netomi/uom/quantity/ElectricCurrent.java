@@ -41,7 +41,7 @@ public interface ElectricCurrent extends Quantity<ElectricCurrent> {
      * @return a new {@link ElectricCurrent} instance for the given value.
      */
     static ElectricCurrent of(double value, Unit<ElectricCurrent> unit) {
-        return Quantities.createQuantity(value, unit, ElectricCurrent.class);
+        return Quantities.create(value, unit, ElectricCurrent.class);
     }
 
     static ElectricCurrent ofAmpere(double value) {

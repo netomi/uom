@@ -48,12 +48,12 @@ abstract class AbstractConverter implements UnitConverter {
     }
 
     @Override
-    public BigDecimal scale(MathContext mathContext) {
+    public BigDecimal scale(MathContext mc) {
         if (!isLinear()) {
             throw new UnsupportedOperationException("scale() is only supported for linear converters.");
         }
 
-        return convert(BigDecimal.ONE, mathContext);
+        return convert(BigDecimal.ONE, mc);
     }
 
     @Override

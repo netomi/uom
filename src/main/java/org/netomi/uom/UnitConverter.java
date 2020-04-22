@@ -68,7 +68,7 @@ public interface UnitConverter {
      * if this is a linear converter, otherwise an {@link UnsupportedOperationException}
      * is thrown.
      */
-    BigDecimal scale(MathContext mathContext);
+    BigDecimal scale(MathContext mc);
 
     /**
      * Returns a {@link UnitConverter} instance that is the inverse of this
@@ -99,11 +99,11 @@ public interface UnitConverter {
      * Converts the given decimal value with using the
      * specified {@link MathContext}.
      *
-     * @param value    the decimal value to convert.
-     * @param context  the {@link MathContext} to use.
+     * @param value the decimal value to convert.
+     * @param mc    the {@link MathContext} to use.
      * @return the converted value.
      */
-    BigDecimal convert(BigDecimal value, MathContext context);
+    BigDecimal convert(BigDecimal value, MathContext mc);
 
     /**
      * Returns a composed {@link UnitConverter} that first applies the @{code before}

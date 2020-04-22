@@ -41,7 +41,7 @@ public interface LuminousFlux extends Quantity<LuminousFlux> {
      * @return a new {@link LuminousFlux} instance for the given value.
      */
     static LuminousFlux of(double value, Unit<LuminousFlux> unit) {
-        return Quantities.createQuantity(value, unit, LuminousFlux.class);
+        return Quantities.create(value, unit, LuminousFlux.class);
     }
 
     static LuminousFlux ofLumen(double value) {

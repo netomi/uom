@@ -41,7 +41,7 @@ public interface Angle extends Quantity<Angle> {
      * @return a new {@link Angle} instance for the given value.
      */
     static Angle of(double value, Unit<Angle> unit) {
-        return Quantities.createQuantity(value, unit, Angle.class);
+        return Quantities.create(value, unit, Angle.class);
     }
 
     static Angle ofRadian(double value) {

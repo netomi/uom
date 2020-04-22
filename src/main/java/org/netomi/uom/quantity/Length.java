@@ -41,7 +41,7 @@ public interface Length extends Quantity<Length> {
      * @return a new {@link Length} instance for the given value.
      */
     static Length of(double value, Unit<Length> unit) {
-        return Quantities.createQuantity(value, unit, Length.class);
+        return Quantities.create(value, unit, Length.class);
     }
 
     static Length ofMeter(double value) {

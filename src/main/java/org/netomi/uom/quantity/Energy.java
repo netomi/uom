@@ -41,7 +41,7 @@ public interface Energy extends Quantity<Energy> {
      * @return a new {@link Energy} instance for the given value.
      */
     static Energy of(double value, Unit<Energy> unit) {
-        return Quantities.createQuantity(value, unit, Energy.class);
+        return Quantities.create(value, unit, Energy.class);
     }
 
     static Energy ofJoule(double value) {

@@ -41,7 +41,7 @@ public interface ElectricResistance extends Quantity<ElectricResistance> {
      * @return a new {@link ElectricResistance} instance for the given value.
      */
     static ElectricResistance of(double value, Unit<ElectricResistance> unit) {
-        return Quantities.createQuantity(value, unit, ElectricResistance.class);
+        return Quantities.create(value, unit, ElectricResistance.class);
     }
 
     static ElectricResistance ofOhm(double value) {

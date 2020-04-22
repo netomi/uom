@@ -15,26 +15,32 @@
  */
 package org.netomi.uom.quantity.impl;
 
+import org.netomi.uom.GenericQuantityFactory;
 import org.netomi.uom.Quantity;
+import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-class GenericDecimalQuantity extends AbstractDecimalQuantity {
-
-    public static <Q extends Quantity<Q>> GenericDecimalQuantityFactory<Q> factory() {
-        return GenericDecimalQuantity::new;
-    }
-
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    GenericDecimalQuantity(BigDecimal value, MathContext mc, Unit unit) {
-        super(value, mc, unit);
-    }
-
-    @SuppressWarnings("rawtypes")
+/**
+ * A {@link QuantityFactory} that generates generic quantity instances with double precision.
+ *
+ * @param <Q> the quantity type parameter
+ *
+ * @author Thomas Neidhart
+ */
+public interface GenericDoubleQuantityFactory<Q extends Quantity<Q>> extends GenericQuantityFactory<Q> {
     @Override
-    public DecimalQuantity with(BigDecimal value, MathContext mc, Unit unit) {
-        return new GenericDecimalQuantity(value, mc, unit);
+    Quantity<Q> create(double value, Unit<Q> unit);
+
+    @Override
+    default Quantity<Q> create(BigDecimal value, Unit<Q> unit) {
+        return create(value.doubleValue(), unit);
+    }
+
+    @Override
+    default Quantity<Q> create(BigDecimal value, MathContext mc, Unit<Q> unit) {
+        return create(value.doubleValue(), unit);
     }
 }

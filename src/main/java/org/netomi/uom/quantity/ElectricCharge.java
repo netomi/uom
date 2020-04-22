@@ -41,7 +41,7 @@ public interface ElectricCharge extends Quantity<ElectricCharge> {
      * @return a new {@link ElectricCharge} instance for the given value.
      */
     static ElectricCharge of(double value, Unit<ElectricCharge> unit) {
-        return Quantities.createQuantity(value, unit, ElectricCharge.class);
+        return Quantities.create(value, unit, ElectricCharge.class);
     }
 
     static ElectricCharge ofCoulomb(double value) {

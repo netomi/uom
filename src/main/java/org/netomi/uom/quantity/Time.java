@@ -41,7 +41,7 @@ public interface Time extends Quantity<Time> {
      * @return a new {@link Time} instance for the given value.
      */
     static Time of(double value, Unit<Time> unit) {
-        return Quantities.createQuantity(value, unit, Time.class);
+        return Quantities.create(value, unit, Time.class);
     }
 
     static Time ofSecond(double value) {

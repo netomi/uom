@@ -265,7 +265,7 @@ public final class UnitConverters {
         }
 
         @Override
-        public BigDecimal scale(MathContext mathContext) {
+        public BigDecimal scale(MathContext mc) {
             return BigDecimal.ONE;
         }
 
@@ -295,7 +295,7 @@ public final class UnitConverters {
         }
 
         @Override
-        public BigDecimal convert(BigDecimal value, MathContext context) {
+        public BigDecimal convert(BigDecimal value, MathContext mc) {
             return value;
         }
 
@@ -348,8 +348,8 @@ public final class UnitConverters {
         }
 
         @Override
-        public BigDecimal convert(BigDecimal value, MathContext context) {
-            return after.convert(before.convert(value, context), context);
+        public BigDecimal convert(BigDecimal value, MathContext mc) {
+            return after.convert(before.convert(value, mc), mc);
         }
 
         @Override

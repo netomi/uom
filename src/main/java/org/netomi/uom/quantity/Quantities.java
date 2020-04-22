@@ -15,12 +15,8 @@
  */
 package org.netomi.uom.quantity;
 
-import org.netomi.uom.Dimension;
-import org.netomi.uom.Quantity;
-import org.netomi.uom.QuantityFactory;
-import org.netomi.uom.Unit;
-import org.netomi.uom.quantity.impl.DecimalQuantity;
-import org.netomi.uom.quantity.impl.DoubleQuantity;
+import org.netomi.uom.*;
+import org.netomi.uom.quantity.impl.*;
 import org.netomi.uom.util.Proxies;
 
 import java.math.BigDecimal;
@@ -43,19 +39,25 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public final class Quantities {
 
-    static Map<Class<? extends Quantity<?>>, QuantityFactory<?>> quantityFactories;
+    private static final Map<Class<? extends Quantity<?>>, QuantityFactory<?>> quantityFactories;
+
+    private static final Map<Unit<?>, Class<? extends Quantity<?>>> unitToQuantityMap;
 
     // quantity factories for generic quantities, i.e. quantities for which the quantity type
     // is not known.
-    static QuantityFactory<?> genericFactory =
-            DelegateQuantityFactory.of(DoubleQuantity.factory(),
-                                       DecimalQuantity.factory());
+    private static final GenericQuantityFactory<?> genericFactory =
+            CombinedGenericQuantityFactory.of(DoubleQuantity.factory(),
+                                              DecimalQuantity.factory());
 
 
     static {
         quantityFactories = new ConcurrentHashMap<>(Type.values().length * 2);
         // register default factories for all built-in quantities.
         registerDefaultFactories();
+
+        unitToQuantityMap = new ConcurrentHashMap<>(Type.values().length * 2);
+        // register system unit -> quantity type mapping.
+        registerSystemUnits();
     }
 
     // hide constructor.
@@ -75,69 +77,164 @@ public final class Quantities {
             Class quantityClass = type.getQuantityType();
 
             quantityFactories.putIfAbsent(quantityClass,
-                                          DelegateQuantityFactory.of(DoubleQuantity.factory(quantityClass),
+                                          CombinedQuantityFactory.of(DoubleQuantity.factory(quantityClass),
                                                                      DecimalQuantity.factory(quantityClass)));
         }
 
     }
 
+    private static void registerSystemUnits() {
+        for (Type type : Type.values()) {
+            unitToQuantityMap.put(type.getSystemUnit(), type.getQuantityType());
+        }
+    }
+
     @SuppressWarnings("unchecked")
     private static <Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<Q> quantityType) {
-        return (QuantityFactory<Q>) quantityFactories.getOrDefault(quantityType, genericFactory);
+        return (QuantityFactory<Q>)
+                quantityFactories.computeIfAbsent(quantityType, key -> {
+                    if (!Quantity.class.isAssignableFrom(quantityType)) {
+                        throw new IllegalArgumentException(quantityType + " is not a Quantity.");
+                    }
+                    return CombinedQuantityFactory.of(DoubleQuantity.factory(quantityType),
+                                                      DecimalQuantity.factory(quantityType));
+                });
     }
 
-    // create methods for generic quantities.
+    @SuppressWarnings("unchecked")
+    public static <Q extends Quantity<Q>> Class<Q> getQuantityType(Unit<?> unit) {
+        return (Class<Q>) unitToQuantityMap.get(unit.getSystemUnit());
+    }
+
+    // create methods for quantities.
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(double value, Unit<Q> unit) {
+    public static <Q extends Quantity<Q>> Q create(double value, Unit<Q> unit) {
+        Class<Q> quantityType = getQuantityType(unit);
+
+        if (quantityType != null) {
+            return create(value, unit, quantityType);
+        } else {
+            throw new UnsupportedOperationException("unknown quantity type for unit " + unit);
+        }
+    }
+
+    /**
+     * Creates a new quantity for the specified quantity type.
+     *
+     * @throws IllegalArgumentException if the specified class does not implement the {@link Quantity} interface.
+     */
+    public static <Q extends Quantity<Q>> Q create(double   value,
+                                                   Unit<Q>  unit,
+                                                   Class<Q> quantityClass) {
+        return getQuantityFactory(quantityClass).create(value, unit);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <Q extends Quantity<Q>> Quantity<Q> createGeneric(double value, Unit<Q> unit) {
         return genericFactory.create(value, (Unit) unit);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal value, Unit<Q> unit) {
+    public static <Q extends Quantity<Q>> Q create(BigDecimal value, Unit<Q> unit) {
+        Class<Q> quantityType = getQuantityType(unit);
+
+        if (quantityType != null) {
+            return create(value, unit, quantityType);
+        } else {
+            throw new UnsupportedOperationException("unknown quantity type for unit " + unit);
+        }
+    }
+
+    public static <Q extends Quantity<Q>> Q create(BigDecimal value,
+                                                   Unit<Q>    unit,
+                                                   Class<Q>   quantityClass) {
+        return getQuantityFactory(quantityClass).create(value, unit);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <Q extends Quantity<Q>> Quantity<Q> createGeneric(BigDecimal value, Unit<Q> unit) {
         return genericFactory.create(value, (Unit) unit);
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal  value,
-                                                                     MathContext mathContext,
-                                                                     Unit<Q>     unit) {
-        return genericFactory.create(value, mathContext, (Unit) unit);
+    public static <Q extends Quantity<Q>> Q create(BigDecimal  value,
+                                                   MathContext mc,
+                                                   Unit<Q>     unit) {
+        Class<Q> quantityType = getQuantityType(unit);
+
+        if (quantityType != null) {
+            return create(value, mc, unit, quantityType);
+        } else {
+            throw new UnsupportedOperationException("unknown quantity type for unit " + unit);
+        }
     }
 
-    // create method for typed quantities.
-
-    public static <Q extends Quantity<Q>> Q createQuantity(double   value,
-                                                           Unit<Q>  unit,
-                                                           Class<Q> quantityClass) {
-        return getQuantityFactory(quantityClass).create(value, unit);
+    public static <Q extends Quantity<Q>> Q create(BigDecimal  value,
+                                                   MathContext mc,
+                                                   Unit<Q>     unit,
+                                                   Class<Q>    quantityClass) {
+        return getQuantityFactory(quantityClass).create(value, mc, unit);
     }
 
-    public static <Q extends Quantity<Q>> Q createQuantity(BigDecimal value,
-                                                           Unit<Q>    unit,
-                                                           Class<Q>   quantityClass) {
-        return getQuantityFactory(quantityClass).create(value, unit);
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public static <Q extends Quantity<Q>> Quantity<Q> createGeneric(BigDecimal  value,
+                                                                    MathContext mc,
+                                                                    Unit<Q>     unit) {
+        return genericFactory.create(value, mc, (Unit) unit);
     }
 
-    public static <Q extends Quantity<Q>> Q createQuantity(BigDecimal  value,
-                                                           MathContext mathContext,
-                                                           Unit<Q>     unit,
-                                                           Class<Q>    quantityClass) {
-        return getQuantityFactory(quantityClass).create(value, mathContext, unit);
-    }
+    // inner helper classes.
 
-    static class DelegateQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
+    static class CombinedGenericQuantityFactory<Q extends Quantity<Q>> implements GenericQuantityFactory<Q> {
 
-        private final QuantityFactory<Q> doubleQuantityFactory;
-        private final QuantityFactory<Q> decimalQuantityFactory;
+        private final GenericDoubleQuantityFactory<Q>  doubleQuantityFactory;
+        private final GenericDecimalQuantityFactory<Q> decimalQuantityFactory;
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        static DelegateQuantityFactory of(QuantityFactory doubleFactory, QuantityFactory decimalFactory) {
-            return new DelegateQuantityFactory(doubleFactory, decimalFactory);
+        static CombinedGenericQuantityFactory of(GenericDoubleQuantityFactory<?>  doubleFactory,
+                                                 GenericDecimalQuantityFactory<?> decimalFactory) {
+            return new CombinedGenericQuantityFactory(doubleFactory, decimalFactory);
         }
 
-        private DelegateQuantityFactory(QuantityFactory<Q> doubleQuantityFactory,
-                                        QuantityFactory<Q> decimalQuantityFactory) {
+        private CombinedGenericQuantityFactory(GenericDoubleQuantityFactory<Q>  doubleQuantityFactory,
+                                               GenericDecimalQuantityFactory<Q> decimalQuantityFactory) {
+            Objects.requireNonNull(doubleQuantityFactory);
+            Objects.requireNonNull(decimalQuantityFactory);
+
+            this.doubleQuantityFactory  = doubleQuantityFactory;
+            this.decimalQuantityFactory = decimalQuantityFactory;
+        }
+
+        @Override
+        public Quantity<Q> create(double value, Unit<Q> unit) {
+            return doubleQuantityFactory.create(value, unit);
+        }
+
+        @Override
+        public Quantity<Q> create(BigDecimal value, Unit<Q> unit) {
+            return decimalQuantityFactory.create(value, unit);
+        }
+
+        @Override
+        public Quantity<Q> create(BigDecimal value, MathContext mc, Unit<Q> unit) {
+            return decimalQuantityFactory.create(value, mc, unit);
+        }
+    }
+
+    static class CombinedQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
+
+        private final DoubleQuantityFactory<Q>  doubleQuantityFactory;
+        private final DecimalQuantityFactory<Q> decimalQuantityFactory;
+
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        static <Q extends Quantity<Q>> CombinedQuantityFactory of(DoubleQuantityFactory<Q>  doubleFactory,
+                                                                  DecimalQuantityFactory<Q> decimalFactory) {
+            return new CombinedQuantityFactory(doubleFactory, decimalFactory);
+        }
+
+        private CombinedQuantityFactory(DoubleQuantityFactory<Q>  doubleQuantityFactory,
+                                        DecimalQuantityFactory<Q> decimalQuantityFactory) {
             Objects.requireNonNull(doubleQuantityFactory);
             Objects.requireNonNull(decimalQuantityFactory);
 
@@ -152,12 +249,12 @@ public final class Quantities {
 
         @Override
         public Q create(BigDecimal value, Unit<Q> unit) {
-                return decimalQuantityFactory.create(value, unit);
+            return decimalQuantityFactory.create(value, unit);
         }
 
         @Override
-        public Q create(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
-                return decimalQuantityFactory.create(value, mathContext, unit);
+        public Q create(BigDecimal value, MathContext mc, Unit<Q> unit) {
+            return decimalQuantityFactory.create(value, mc, unit);
         }
     }
 

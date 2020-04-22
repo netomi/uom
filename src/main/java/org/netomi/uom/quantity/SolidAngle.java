@@ -41,7 +41,7 @@ public interface SolidAngle extends Quantity<SolidAngle> {
      * @return a new {@link SolidAngle} instance for the given value.
      */
     static SolidAngle of(double value, Unit<SolidAngle> unit) {
-        return Quantities.createQuantity(value, unit, SolidAngle.class);
+        return Quantities.create(value, unit, SolidAngle.class);
     }
 
     static SolidAngle ofSteradian(double value) {

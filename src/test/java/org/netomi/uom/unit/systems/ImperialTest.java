@@ -45,10 +45,10 @@ public class ImperialTest {
                                                           double  expectedValueOfTestUnit,
                                                           double  expectedValueOfSystemUnit) {
 
-        Quantity<Q> quantity = Quantities.createQuantity(1, systemUnit);
+        Q quantity = Quantities.create(1, systemUnit);
         assertEquals(expectedValueOfTestUnit, quantity.to(testUnit).doubleValue(), 1e-6);
 
-        Quantity<Q> reverseQuantity = Quantities.createQuantity(1, testUnit);
+        Q reverseQuantity = Quantities.create(1, testUnit);
         assertEquals(expectedValueOfSystemUnit, reverseQuantity.to(systemUnit).doubleValue(), 1e-6);
     }
 }

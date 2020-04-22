@@ -41,7 +41,7 @@ public interface Mass extends Quantity<Mass> {
      * @return a new {@link Mass} instance for the given value.
      */
     static Mass of(double value, Unit<Mass> unit) {
-        return Quantities.createQuantity(value, unit, Mass.class);
+        return Quantities.create(value, unit, Mass.class);
     }
 
     static Mass ofKilogram(double value) {

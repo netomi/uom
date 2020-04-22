@@ -41,7 +41,7 @@ public interface Acceleration extends Quantity<Acceleration> {
      * @return a new {@link Acceleration} instance for the given value.
      */
     static Acceleration of(double value, Unit<Acceleration> unit) {
-        return Quantities.createQuantity(value, unit, Acceleration.class);
+        return Quantities.create(value, unit, Acceleration.class);
     }
 
     static Acceleration ofMeterPerSquareSecond(double value) {

@@ -41,7 +41,7 @@ public interface Speed extends Quantity<Speed> {
      * @return a new {@link Speed} instance for the given value.
      */
     static Speed of(double value, Unit<Speed> unit) {
-        return Quantities.createQuantity(value, unit, Speed.class);
+        return Quantities.create(value, unit, Speed.class);
     }
 
     static Speed ofMeterPerSecond(double value) {

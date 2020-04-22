@@ -13,28 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.quantity.impl;
-
-import org.netomi.uom.Quantity;
-import org.netomi.uom.Unit;
+package org.netomi.uom;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
 
-class GenericDecimalQuantity extends AbstractDecimalQuantity {
+/**
+ * A factory interface to be able to create generic quantities.
+ *
+ * @param <Q> the quantity type
+ *
+ * @author Thomas Neidhart
+ */
+public interface GenericQuantityFactory<Q extends Quantity<Q>> {
+    Quantity<Q> create(double value, Unit<Q> unit);
 
-    public static <Q extends Quantity<Q>> GenericDecimalQuantityFactory<Q> factory() {
-        return GenericDecimalQuantity::new;
-    }
+    Quantity<Q> create(BigDecimal value, Unit<Q> unit);
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    GenericDecimalQuantity(BigDecimal value, MathContext mc, Unit unit) {
-        super(value, mc, unit);
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public DecimalQuantity with(BigDecimal value, MathContext mc, Unit unit) {
-        return new GenericDecimalQuantity(value, mc, unit);
-    }
+    Quantity<Q> create(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

@@ -16,7 +16,6 @@
 package org.netomi.uom.quantity.impl;
 
 import org.netomi.uom.Quantity;
-import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
 
 /**
@@ -28,11 +27,11 @@ import org.netomi.uom.Unit;
  */
 public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
-    static QuantityFactory factory() {
+    static <Q extends Quantity<Q>> GenericDoubleQuantityFactory<Q> factory() {
         return GenericDoubleQuantity.factory();
     }
 
-    static <Q extends Quantity<Q>> QuantityFactory<Q> factory(Class<Q> quantityClass) {
+    static <Q extends Quantity<Q>> DoubleQuantityFactory<Q> factory(Class<Q> quantityClass) {
         return ProxyDoubleQuantity.factory(quantityClass);
     }
 

@@ -41,7 +41,7 @@ public interface Pressure extends Quantity<Pressure> {
      * @return a new {@link Pressure} instance for the given value.
      */
     static Pressure of(double value, Unit<Pressure> unit) {
-        return Quantities.createQuantity(value, unit, Pressure.class);
+        return Quantities.create(value, unit, Pressure.class);
     }
 
     static Pressure ofPascal(double value) {

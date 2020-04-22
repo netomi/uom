@@ -352,8 +352,9 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return this quantity cast as the requested quantity type.
      * @throws IncommensurableException if this quantity is not compatible with the requested quantity type.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     default <R extends Quantity<R>> R asQuantity(Class<R> quantityClass) {
-        Quantity<R> quantity = Quantities.createQuantity(doubleValue(), (Unit) getUnit(), quantityClass);
+        Quantity<R> quantity = Quantities.create(doubleValue(), (Unit) getUnit(), quantityClass);
         TypeUtil.requireCommensurable(quantity, getUnit());
         return (R) quantity;
     }

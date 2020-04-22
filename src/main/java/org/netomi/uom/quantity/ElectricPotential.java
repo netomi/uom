@@ -41,7 +41,7 @@ public interface ElectricPotential extends Quantity<ElectricPotential> {
      * @return a new {@link ElectricPotential} instance for the given value.
      */
     static ElectricPotential of(double value, Unit<ElectricPotential> unit) {
-        return Quantities.createQuantity(value, unit, ElectricPotential.class);
+        return Quantities.create(value, unit, ElectricPotential.class);
     }
 
     static ElectricPotential ofVolt(double value) {

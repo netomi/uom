@@ -50,28 +50,28 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
     protected Q createQuantity(double value, Class<Number> numberClass) {
         if (Double.class.equals(numberClass)) {
-            return Quantities.createQuantity(value, getSystemUnit(), getQuantityClass());
+            return Quantities.create(value, getSystemUnit(), getQuantityClass());
         } else if (BigDecimal.class.equals(numberClass)) {
-            return Quantities.createQuantity(BigDecimal.valueOf(value), getSystemUnit(), getQuantityClass());
+            return Quantities.create(BigDecimal.valueOf(value), getSystemUnit(), getQuantityClass());
         }
         throw new AssertionError("unexpected number class " + numberClass);
     }
 
     protected Q createQuantity(double value) {
-        return Quantities.createQuantity(value, getSystemUnit(), getQuantityClass());
+        return Quantities.create(value, getSystemUnit(), getQuantityClass());
     }
 
     protected Q createQuantity(double value, Unit<Q> unit, Class<Number> numberClass) {
         if (Double.class.equals(numberClass)) {
-            return Quantities.createQuantity(value, unit, getQuantityClass());
+            return Quantities.create(value, unit, getQuantityClass());
         } else if (BigDecimal.class.equals(numberClass)) {
-            return Quantities.createQuantity(BigDecimal.valueOf(value), unit, getQuantityClass());
+            return Quantities.create(BigDecimal.valueOf(value), unit, getQuantityClass());
         }
         throw new AssertionError("unexpected number class " + numberClass);
     }
 
     protected Q createQuantity(double value, Unit<Q> unit) {
-        return Quantities.createQuantity(value, unit, getQuantityClass());
+        return Quantities.create(value, unit, getQuantityClass());
     }
 
     protected Unit<Q> getMilliUnit() {
@@ -84,10 +84,10 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
     @Test
     public void typedQuantityCreation() {
-        Q quantity = createQuantity(10);
+        Q quantity = createQuantity(100);
 
-        assertEquals(10, quantity.doubleValue(), eps);
-        assertEquals(BigDecimal.valueOf(10).doubleValue(), quantity.decimalValue().doubleValue(), eps);
+        assertEquals(100, quantity.doubleValue(), eps);
+        assertEquals(BigDecimal.valueOf(100).doubleValue(), quantity.decimalValue().doubleValue(), eps);
 
         assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
@@ -95,7 +95,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
     @Test
     public void genericQuantityCreation() {
-        Quantity<Q> quantity = Quantities.createQuantity(100, getSystemUnit());
+        Quantity<Q> quantity = Quantities.createGeneric(100, getSystemUnit());
 
         assertEquals(100, quantity.doubleValue(), eps);
         assertEquals(BigDecimal.valueOf(100).doubleValue(), quantity.decimalValue().doubleValue(), eps);
@@ -104,7 +104,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
         assertFalse(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
 
-        quantity = DoubleQuantity.factory().create(200, getSystemUnit());
+        quantity = DoubleQuantity.<Q>factory().create(200, getSystemUnit());
 
         assertEquals(200, quantity.doubleValue(), eps);
         assertEquals(BigDecimal.valueOf(200).doubleValue(), quantity.decimalValue().doubleValue(), eps);
@@ -119,7 +119,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
     public void compareTo(Class<Number> numberClass) {
         assertThrows(IncommensurableException.class, () -> {
             Q q1 = createQuantity(10, numberClass);
-            q1.compareTo((Quantity) Quantities.createQuantity(1, testUnit));
+            q1.compareTo((Quantity) Quantities.createGeneric(1, testUnit));
         });
 
         // 10 < 20
@@ -133,8 +133,8 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
         q1 = createQuantity(100, numberClass);
         q2 = createQuantity(100, numberClass);
 
-        assertTrue(q1.compareTo(q2) == 0);
-        assertTrue(q2.compareTo(q1) == 0);
+        assertEquals(0, q1.compareTo(q2));
+        assertEquals(0, q2.compareTo(q1));
 
         // 100 > 100milli
         q1 = createQuantity(100, numberClass);
@@ -149,7 +149,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
     public void isGreaterThan(Class<Number> numberClass) {
         assertThrows(IncommensurableException.class, () -> {
             Q q1 = createQuantity(10, numberClass);
-            q1.isGreaterThan((Quantity) Quantities.createQuantity(1, testUnit));
+            q1.isGreaterThan((Quantity) Quantities.createGeneric(1, testUnit));
         });
 
         // 10 < 20
@@ -179,7 +179,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
     public void isLessThan(Class<Number> numberClass) {
         assertThrows(IncommensurableException.class, () -> {
             Q q1 = createQuantity(10, numberClass);
-            q1.isLessThan((Quantity) Quantities.createQuantity(1, testUnit));
+            q1.isLessThan((Quantity) Quantities.createGeneric(1, testUnit));
         });
 
         // 10 < 20
@@ -209,7 +209,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
     public void isEqual(Class<Number> numberClass) {
         assertThrows(IncommensurableException.class, () -> {
             Q q1 = createQuantity(10, numberClass);
-            q1.isEqual((Quantity) Quantities.createQuantity(1, testUnit), eps);
+            q1.isEqual((Quantity) Quantities.createGeneric(1, testUnit), eps);
         });
 
         // 10 < 20

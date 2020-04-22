@@ -75,8 +75,8 @@ class MultiplyConverter extends AbstractConverter {
     }
 
     @Override
-    public BigDecimal scale(MathContext mathContext) {
-        return multiplier.bigDecimalValue(mathContext);
+    public BigDecimal scale(MathContext mc) {
+        return multiplier.bigDecimalValue(mc);
     }
 
     @Override
@@ -110,8 +110,8 @@ class MultiplyConverter extends AbstractConverter {
     }
 
     @Override
-    public BigDecimal convert(BigDecimal value, MathContext context) {
-        return value.multiply(multiplier.bigDecimalValue(context), context);
+    public BigDecimal convert(BigDecimal value, MathContext mc) {
+        return value.multiply(multiplier.bigDecimalValue(mc), mc);
     }
 
     @Override

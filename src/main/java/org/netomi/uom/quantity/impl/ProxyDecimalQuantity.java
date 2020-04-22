@@ -29,32 +29,32 @@ class ProxyDecimalQuantity<Q extends Quantity<Q>> extends AbstractDecimalQuantit
     private final Class<Q> quantityClass;
 
     public static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(Class<Q> quantityClass) {
-        return (value, mathContext, unit) -> {
-            ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mathContext, unit, quantityClass);
+        return (value, mc, unit) -> {
+            ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
             Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };
     }
 
-    public static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(MathContext mathContext, Class<Q> quantityClass) {
+    public static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(MathContext mc, Class<Q> quantityClass) {
         return (value, ignored, unit) -> {
-            ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mathContext, unit, quantityClass);
+            ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
             Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };
     }
 
-    ProxyDecimalQuantity(BigDecimal value, MathContext mathContext, Unit<Q> unit, Class<Q> quantityClass) {
-        super(value, mathContext, unit);
+    ProxyDecimalQuantity(BigDecimal value, MathContext mc, Unit<Q> unit, Class<Q> quantityClass) {
+        super(value, mc, unit);
 
         Objects.requireNonNull(quantityClass);
         this.quantityClass = quantityClass;
     }
 
     @Override
-    public Q with(BigDecimal value, MathContext mathContext, Unit<Q> unit) {
-        return factory(quantityClass).create(value, mathContext, unit);
+    public Q with(BigDecimal value, MathContext mc, Unit<Q> unit) {
+        return factory(quantityClass).create(value, mc, unit);
     }
 }

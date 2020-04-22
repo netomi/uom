@@ -41,7 +41,7 @@ public interface AmountOfSubstance extends Quantity<AmountOfSubstance> {
      * @return a new {@link AmountOfSubstance} instance for the given value.
      */
     static AmountOfSubstance of(double value, Unit<AmountOfSubstance> unit) {
-        return Quantities.createQuantity(value, unit, AmountOfSubstance.class);
+        return Quantities.create(value, unit, AmountOfSubstance.class);
     }
 
     static AmountOfSubstance ofMole(double value) {

@@ -41,7 +41,7 @@ public interface Force extends Quantity<Force> {
      * @return a new {@link Force} instance for the given value.
      */
     static Force of(double value, Unit<Force> unit) {
-        return Quantities.createQuantity(value, unit, Force.class);
+        return Quantities.create(value, unit, Force.class);
     }
 
     static Force ofNewton(double value) {

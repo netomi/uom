@@ -41,7 +41,7 @@ public interface ElectricCapacitance extends Quantity<ElectricCapacitance> {
      * @return a new {@link ElectricCapacitance} instance for the given value.
      */
     static ElectricCapacitance of(double value, Unit<ElectricCapacitance> unit) {
-        return Quantities.createQuantity(value, unit, ElectricCapacitance.class);
+        return Quantities.create(value, unit, ElectricCapacitance.class);
     }
 
     static ElectricCapacitance ofFarad(double value) {
