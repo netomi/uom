@@ -13,23 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.netomi.uom.unit;
+package org.netomi.uom;
 
 import org.netomi.uom.math.Fraction;
+import org.netomi.uom.unit.Dimensions;
 
 import java.util.Map;
 
 /**
- * Represents a physical dimension of a quantity / unit for the purpose of dimensional analysis.
+ * Represents a dimension of a unit for the purpose of dimensional analysis.
  * <p>
- * A dimension is represented in the form:
- *
- * <code>
- *     dim Q = L<sup>a</sup>M<sup>b</sup>T<sup>c</sup>I<sup>d</sup>Θ<sup>e</sup>N<sup>f</sup>J<sup>g</sup>
- * </code>
- *
- * with L, M, T, I, Θ, N and J representing the base dimensions with their respective dimensional exponent
- * as a fraction.
+ * Implementations exist for 2 different kind of dimensions:
+ * <ul>
+ *     <li>physical dimensions</li>
+ *     <li>custom dimensions</li>
+ * </ul>
+ * The different dimensions can be combined as needed, all of the predefined {@link Quantity}s and {@link Unit}s
+ * are based on physical dimensions which are highly optimized.
+ * <p>
+ * The pre-defined physical base dimensions can be accessed via the {@link Dimensions} class.
+ * <p>
+ * Note: in general it is not needed and advised to extend this class.
  *
  * @see <a href="https://en.wikipedia.org/wiki/Dimensional_analysis">Wikipedia: Dimensional analysis</a>
  *
@@ -51,7 +55,7 @@ public abstract class Dimension {
     public Dimension multiply(Dimension multiplicand) {
         return multiplicand == Dimensions.NONE ?
                 this :
-                ProductDimension.ofProduct(this, Fraction.ONE, multiplicand, Fraction.ONE);
+                Dimensions.productOf(this, Fraction.ONE, multiplicand, Fraction.ONE);
     }
 
     /**
@@ -68,7 +72,7 @@ public abstract class Dimension {
     public Dimension divide(Dimension divisor) {
         return divisor == Dimensions.NONE ?
                 this :
-                ProductDimension.ofProduct(this, Fraction.ONE, divisor, Fraction.of(-1));
+                Dimensions.productOf(this, Fraction.ONE, divisor, Fraction.of(-1));
     }
 
     /**
@@ -86,7 +90,7 @@ public abstract class Dimension {
             return this;
         }
 
-        return ProductDimension.ofProduct(this, Fraction.of(n));
+        return Dimensions.powOf(this, Fraction.of(n));
     }
 
     /**
@@ -109,7 +113,7 @@ public abstract class Dimension {
             return this;
         }
 
-        return ProductDimension.ofProduct(this, Fraction.of(1, n));
+        return Dimensions.powOf(this, Fraction.of(1, n));
     }
 
     /**

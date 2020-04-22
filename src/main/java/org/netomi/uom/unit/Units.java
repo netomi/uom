@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author Thomas Neidhart
  */
-public class Units {
+public final class Units {
 
     private static UnitFormatter DEFAULT_FORMATTER = UnitFormat.symbolAndDimension();
 
@@ -94,10 +94,25 @@ public class Units {
         return TransformedUnit.of(unit, unitConverter);
     }
 
+    // Internal methods with public scope.
+
+    /**
+     * Returns a {@link Unit} which is the product of the 2 given units and
+     * their associated fractions.
+     * <p>
+     * Note: this method is only used for internal purposes and should not be called
+     * otherwise.
+     */
     public static Unit<?> productOf(Unit<?> left, Fraction leftFraction, Unit<?> right, Fraction rightFraction) {
         return ProductUnit.ofProduct(left, leftFraction, right, rightFraction);
     }
 
+    /**
+     * Returns a new {@link Unit} that represents the nth power of this unit.
+     * <p>
+     * Note: this method is only used for internal purposes and should not be called
+     * otherwise.
+     */
     public static Unit<?> powerOf(Unit<?> unit, Fraction fraction) {
         return ProductUnit.ofProduct(unit, fraction);
     }

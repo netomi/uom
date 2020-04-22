@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.unit;
 
+import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.ConcurrentReferenceHashMap;
 import org.netomi.uom.util.ObjectPrinter;
@@ -26,9 +27,16 @@ import java.util.function.UnaryOperator;
 import static org.netomi.uom.util.ConcurrentReferenceHashMap.*;
 
 /**
- * An efficient implementation of a {@link Dimension} using an {@link EnumMap}
- * that stores the fraction for each physical dimension (see {@link Base} for
- * the list of base dimension types).
+ * An efficient implementation of a {@link Dimension} for physical dimensions
+ * using an {@link EnumMap} that stores the fraction for each physical dimension
+ * (see {@link Base} for the list of base dimension types).
+ * <p>
+ * A physical dimension is represented in the form:
+ * <code>
+ *   dim Q = L<sup>a</sup>M<sup>b</sup>T<sup>c</sup>I<sup>d</sup>Θ<sup>e</sup>N<sup>f</sup>J<sup>g</sup>
+ * </code>
+ * with L, M, T, I, Θ, N and J representing the physical base dimensions with their respective
+ * dimensional exponent as a fraction.
  * <p>
  * Created dimensions are cached in a synchronized {@link WeakHashMap} to avoid
  * creating too many dimension instances. This implementation guarantees that

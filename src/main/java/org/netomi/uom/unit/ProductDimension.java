@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.unit;
 
+import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 import org.netomi.uom.util.ObjectPrinter;
 

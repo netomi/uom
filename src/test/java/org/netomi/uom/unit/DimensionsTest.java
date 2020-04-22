@@ -17,11 +17,11 @@ package org.netomi.uom.unit;
 
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
+import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 

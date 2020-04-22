@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.unit;
 
+import org.netomi.uom.Dimension;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.Unit;
 import org.netomi.uom.UnitConverter;

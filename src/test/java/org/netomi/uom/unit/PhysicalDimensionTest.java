@@ -17,6 +17,7 @@ package org.netomi.uom.unit;
 
 import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
+import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 
 import java.util.Map;

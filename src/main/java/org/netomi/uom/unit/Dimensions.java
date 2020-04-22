@@ -15,6 +15,7 @@
  */
 package org.netomi.uom.unit;
 
+import org.netomi.uom.Dimension;
 import org.netomi.uom.math.Fraction;
 
 import java.util.*;
@@ -30,7 +31,7 @@ import java.util.*;
  */
 public final class Dimensions {
 
-    private static final Map<PhysicalDimension.Base, Dimension> basePhysicalDimensions =
+    private static final Map<PhysicalDimension.Base, Dimension> physicalBaseDimensions =
             new EnumMap<>(PhysicalDimension.Base.class);
 
     /**
@@ -79,19 +80,43 @@ public final class Dimensions {
 
     private static Dimension addPhysicalBaseDimension(PhysicalDimension.Base baseDimension) {
         Dimension dimension = PhysicalDimension.of(baseDimension);
-        basePhysicalDimensions.put(baseDimension, dimension);
+        physicalBaseDimensions.put(baseDimension, dimension);
         return dimension;
     }
 
     static Dimension getPhysicalBaseDimension(PhysicalDimension.Base baseDimension) {
-        return basePhysicalDimensions.get(baseDimension);
+        return physicalBaseDimensions.get(baseDimension);
     }
 
     /**
      * Returns an unmodifiable {@link Collection} containing all supported base dimensions.
      */
     public static Collection<Dimension> getPhysicalBaseDimensions() {
-        return Collections.unmodifiableCollection(basePhysicalDimensions.values());
+        return Collections.unmodifiableCollection(physicalBaseDimensions.values());
+    }
+
+    // Internal methods with public scope.
+
+    /**
+     * Returns a {@link Dimension} which is the product of the 2 given dimensions and
+     * their associated fractions.
+     * <p>
+     * Note: this method is only used for internal purposes and should not be called
+     * otherwise.
+     */
+    public static Dimension productOf(Dimension left,  Fraction leftFraction,
+                                      Dimension right, Fraction rightFraction) {
+        return ProductDimension.ofProduct(left, leftFraction, right, rightFraction);
+    }
+
+    /**
+     * Returns a new {@link Dimension} that represents the nth power of this dimension.
+     * <p>
+     * Note: this method is only used for internal purposes and should not be called
+     * otherwise.
+     */
+    public static Dimension powOf(Dimension dimension, Fraction fraction) {
+        return ProductDimension.ofProduct(dimension, fraction);
     }
 
     /**
