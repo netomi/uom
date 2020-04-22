@@ -15,60 +15,94 @@
  */
 package org.netomi.uom.quantity;
 
+import org.netomi.uom.Dimension;
 import org.netomi.uom.Quantity;
 import org.netomi.uom.QuantityFactory;
 import org.netomi.uom.Unit;
 import org.netomi.uom.quantity.impl.DecimalQuantity;
 import org.netomi.uom.quantity.impl.DoubleQuantity;
-import org.netomi.uom.Dimension;
 import org.netomi.uom.util.Proxies;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * A utility class to create concrete instances for specific {@link Quantity} types.
+ * <p>
+ * You can also register a custom factory for a specific quantity type to fit your needs.
+ * Some possible use-cases:
+ * <ul>
+ *     <li>a pool of quantity instances for commonly used values</li>
+ *     <li>replace default quantity factories with one that always creates an instance with a fixed decimal precision</li>
+ * </ul>
+ *
  * @author Thomas Neidhart
  */
-public class Quantities {
+public final class Quantities {
 
-    static Map<Class<? extends Quantity<?>>, QuantityFactory<?>> factoryMap;
+    static Map<Class<? extends Quantity<?>>, QuantityFactory<?>> quantityFactories;
 
-    static QuantityFactory<?> genericQuantityFactory;
+    // quantity factories for generic quantities, i.e. quantities for which the quantity type
+    // is not known.
+    static QuantityFactory<?> genericFactory =
+            DelegateQuantityFactory.of(DoubleQuantity.factory(),
+                                       DecimalQuantity.factory());
+
 
     static {
-        factoryMap = new HashMap<>();
-
-        // register built-in factories.
-        //registerInternalQuantityFactory(Dimensionless.class, DoubleDimensionless.factory(), DecimalDimensionless.factory());
-
-        //genericQuantityFactory = DelegateQuantityFactory.of(DoubleQuantity::factory, DecimalQuantity.factory());
-    }
-
-    public static <T extends Q, Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
-                                                                                    QuantityFactory factory) {
-        factoryMap.put(quantityClass, factory);
+        quantityFactories = new ConcurrentHashMap<>(Type.values().length * 2);
+        // register default factories for all built-in quantities.
+        registerDefaultFactories();
     }
 
     // hide constructor.
     private Quantities() {}
 
+    /**
+     * Register another {@link QuantityFactory} for a specified quantity type.
+     */
+    public static <Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
+                                                                       QuantityFactory<Q> factory) {
+        quantityFactories.put(quantityClass, factory);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static void registerDefaultFactories() {
+        for (Type type : Type.values()) {
+            Class quantityClass = type.getQuantityType();
+
+            quantityFactories.putIfAbsent(quantityClass,
+                                          DelegateQuantityFactory.of(DoubleQuantity.factory(quantityClass),
+                                                                     DecimalQuantity.factory(quantityClass)));
+        }
+
+    }
+
+    @SuppressWarnings("unchecked")
+    private static <Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<Q> quantityType) {
+        return (QuantityFactory<Q>) quantityFactories.getOrDefault(quantityType, genericFactory);
+    }
+
     // create methods for generic quantities.
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(double value, Unit<Q> unit) {
-        return (Quantity<Q>) DoubleQuantity.factory().create(value, unit);
+        return genericFactory.create(value, (Unit) unit);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal value, Unit<Q> unit) {
-        return (Quantity<Q>) DecimalQuantity.factory().create(value, unit);
+        return genericFactory.create(value, (Unit) unit);
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <Q extends Quantity<Q>> Quantity<Q> createQuantity(BigDecimal  value,
                                                                      MathContext mathContext,
                                                                      Unit<Q>     unit) {
-        return (Quantity<Q>) DecimalQuantity.factory().create(value, mathContext, unit);
+        return genericFactory.create(value, mathContext, (Unit) unit);
     }
 
     // create method for typed quantities.
@@ -76,20 +110,20 @@ public class Quantities {
     public static <Q extends Quantity<Q>> Q createQuantity(double   value,
                                                            Unit<Q>  unit,
                                                            Class<Q> quantityClass) {
-        return DoubleQuantity.factory(quantityClass).create(value, unit);
+        return getQuantityFactory(quantityClass).create(value, unit);
     }
 
     public static <Q extends Quantity<Q>> Q createQuantity(BigDecimal value,
                                                            Unit<Q>    unit,
                                                            Class<Q>   quantityClass) {
-        return DecimalQuantity.factory(quantityClass).create(value, unit);
+        return getQuantityFactory(quantityClass).create(value, unit);
     }
 
     public static <Q extends Quantity<Q>> Q createQuantity(BigDecimal  value,
                                                            MathContext mathContext,
                                                            Unit<Q>     unit,
                                                            Class<Q>    quantityClass) {
-        return DecimalQuantity.factory(quantityClass).create(value, mathContext, unit);
+        return getQuantityFactory(quantityClass).create(value, mathContext, unit);
     }
 
     static class DelegateQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
@@ -97,8 +131,8 @@ public class Quantities {
         private final QuantityFactory<Q> doubleQuantityFactory;
         private final QuantityFactory<Q> decimalQuantityFactory;
 
-        static <Q extends Quantity<Q>> DelegateQuantityFactory<Q>
-            of(QuantityFactory doubleFactory, QuantityFactory decimalFactory) {
+        @SuppressWarnings({"unchecked", "rawtypes"})
+        static DelegateQuantityFactory of(QuantityFactory doubleFactory, QuantityFactory decimalFactory) {
             return new DelegateQuantityFactory(doubleFactory, decimalFactory);
         }
 
