@@ -32,8 +32,6 @@ import java.util.Objects;
  */
 public final class ArithmeticUtils {
 
-    private static final BigDecimal ONE_HALF = BigDecimal.valueOf(5L, 1);
-
     /** Overflow gcd exception message for 2^63. */
     private static final String OVERFLOW_GCD_MESSAGE_2_POWER_63 = "overflow: gcd({0}, {1}) is 2^63";
 
