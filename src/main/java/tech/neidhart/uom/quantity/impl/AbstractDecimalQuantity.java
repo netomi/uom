@@ -195,6 +195,7 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
         return with(converter.convert(value, toMc), toUnit);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Q toSystemUnit(MathContext toMc) {
         if (unit.isSystemUnit()) {

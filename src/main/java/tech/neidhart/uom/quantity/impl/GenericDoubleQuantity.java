@@ -17,8 +17,12 @@ package tech.neidhart.uom.quantity.impl;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.unit.Units;
 
+@SuppressWarnings("rawtypes")
 class GenericDoubleQuantity extends AbstractDoubleQuantity {
+
+    static final Quantity<?> ONE = new GenericDoubleQuantity(1.0, Units.ONE);
 
     public static <Q extends Quantity<Q>> GenericDoubleQuantityFactory<Q> factory() {
         return GenericDoubleQuantity::new;

@@ -20,7 +20,6 @@ import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.function.UnitConverters;
 import tech.neidhart.uom.math.Fraction;
-import tech.neidhart.uom.quantity.Dimensionless;
 
 import java.util.Collections;
 import java.util.Map;
@@ -37,10 +36,11 @@ class AlternateSystemUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     private final String    name;
 
     static <Q extends Quantity<Q>> AlternateSystemUnit<Q> of(Unit<?> parentUnit, String symbol, String name) {
-        return new AlternateSystemUnit(parentUnit, symbol, name);
+        return new AlternateSystemUnit<>(parentUnit, symbol, name);
     }
 
-    AlternateSystemUnit(Unit<Dimensionless> parentUnit, String symbol, String name) {
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    AlternateSystemUnit(Unit<?> parentUnit, String symbol, String name) {
         super((Unit) parentUnit);
         Objects.requireNonNull(symbol);
 
@@ -85,11 +85,11 @@ class AlternateSystemUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
 
     @Override
     public Unit<Q> withSymbol(String symbol) {
-        return new AlternateSystemUnit<>((Unit<Dimensionless>) getDelegateUnit(), symbol, this.name);
+        return new AlternateSystemUnit<>(getDelegateUnit(), symbol, this.name);
     }
 
     @Override
     public Unit<Q> withName(String name) {
-        return new AlternateSystemUnit<>((Unit<Dimensionless>) getDelegateUnit(), this.symbol, name);
+        return new AlternateSystemUnit<>(getDelegateUnit(), this.symbol, name);
     }
 }

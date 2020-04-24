@@ -36,6 +36,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits {
         this.units = new ArrayList<>();
     }
 
+    @SuppressWarnings("unchecked")
     protected <Q extends Quantity<Q>> Unit<Q> addUnitForQuantity(Unit<?> unit, Class<Q> quantityClass) {
         this.units.add(unit);
         return (Unit<Q>) unit;

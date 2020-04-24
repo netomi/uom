@@ -60,6 +60,7 @@ public final class Units {
         }
     }
 
+    @SuppressWarnings("unchecked")
     public static <Q extends Quantity<Q>> Unit<Q> getNamedUnitIfPresent(Unit<Q> unit) {
         Unit<?> namedUnit = namedUnits.get(unit);
         return namedUnit != null ? (Unit<Q>) namedUnit : unit;

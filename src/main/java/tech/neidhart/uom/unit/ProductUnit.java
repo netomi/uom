@@ -247,6 +247,7 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
         }
     }
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private Unit<Q> calculateSystemUnit() {
         Unit<?> systemUnit = Units.ONE;
         for (UnitElement element : unitElements.elements) {

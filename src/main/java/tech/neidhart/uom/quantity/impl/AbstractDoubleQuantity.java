@@ -24,6 +24,8 @@ import tech.neidhart.uom.unit.Units;
 
 import java.math.BigDecimal;
 
+import static tech.neidhart.uom.quantity.impl.GenericDoubleQuantity.ONE;
+
 /**
  *
  * @param <Q>
@@ -32,8 +34,6 @@ import java.math.BigDecimal;
  */
 abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     implements DoubleQuantity<Q> {
-
-    private static final Quantity<?> ONE = new GenericDoubleQuantity(1.0, Units.ONE);
 
     protected final double  value;
     protected final Unit<Q> unit;
@@ -184,6 +184,7 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
         return with(converter.convert(value), toUnit);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public Q toSystemUnit() {
         if (unit.isSystemUnit()) {

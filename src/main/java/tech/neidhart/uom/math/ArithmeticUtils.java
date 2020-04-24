@@ -348,8 +348,8 @@ public final class ArithmeticUtils {
      * The code is derived from Richard J. Mathar as described in his paper
      * "A Java Math.BigDecimal Implementation of Core Mathematical Functions".
      *
-     * @see <a href=https://arxiv.org/abs/0908.3030v2">A Java Math.BigDecimal Implementation of Core Mathematical Functions</a>
-     * @see <a href=https://arxiv.org/src/0908.3030v2/anc">Ancillary files</a>
+     * @see <a href="https://arxiv.org/abs/0908.3030v2">A Java Math.BigDecimal Implementation of Core Mathematical Functions</a>
+     * @see <a href="https://arxiv.org/src/0908.3030v2/anc">Ancillary files</a>
      *
      * @param n the requested integral root.
      * @param bigDecimal the decimal number to

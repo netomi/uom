@@ -22,6 +22,10 @@ version          = '0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+compileJava {
+    options.compilerArgs << '-Xlint:unchecked'
+}
+
 test {
     useJUnitPlatform()
     testLogging {
@@ -84,7 +88,7 @@ modifyPom {
 extraArchive {
     sources = true
     tests   = false
-    javadoc = false
+    javadoc = true
 }
 
 nexus {

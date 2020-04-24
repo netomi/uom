@@ -153,7 +153,7 @@ public abstract class Unit<Q extends Quantity<Q>> {
         });
     }
 
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({"rawtypes", "unchecked"})
     public UnitConverter getConverterToAny(Unit unit) {
         return getConverterTo(unit);
     }
@@ -230,14 +230,13 @@ public abstract class Unit<Q extends Quantity<Q>> {
      * @throws IncommensurableException if the dimension of this unit does
      * not match the dimension of the quantity.
      */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     public <T extends Quantity<T>> Unit<T> forQuantity(Class<T> quantityClass) {
         // TODO: make this clean using TypeUtil.requireCommensurable
         // try to create a quantity of the requested type with this unit.
         // if it works, we can safely cast.
         Quantities.create(0, (Unit) this, quantityClass);
-        @SuppressWarnings("unchecked")
-        Unit<T> castUnit = (Unit<T>) this;
-        return castUnit;
+        return (Unit<T>) this;
     }
 
     // for internal use only.
