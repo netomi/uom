@@ -1,11 +1,23 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+    }
+}
+
 plugins {
     id 'java'
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.8.4'
 }
 
-group 'org.netomi.uom'
-version '1.0-SNAPSHOT'
+apply plugin: 'com.bmuschko.nexus'
+
+group            = 'tech.neidhart'
+archivesBaseName = 'uom'
+version          = '0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -34,6 +46,51 @@ jacocoTestReport {
             fileTree(dir: it, exclude: '**/ConcurrentReferenceHashMap**')
         }))
     }
+}
+
+modifyPom {
+    //noinspection GroovyAssignabilityCheck
+    project {
+        name          = 'Units of Measurements'
+        description   = 'A library to represent quantities and perform conversions between' +
+                        'units of measurements with double or arbitray precision.'
+        url           = 'https://github.com/netomi/uom'
+        inceptionYear = '2020'
+
+        scm {
+            url                 = 'https://github.com/netomi/uom'
+            connection          = 'scm:https://github.com/netomi/uom.git'
+            developerConnection = 'scm:git@github.com:netomi/uom.git'
+        }
+
+        licenses {
+            license {
+                name         = 'The Apache Software License, Version 2.0'
+                url          = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                distribution = 'repo'
+            }
+        }
+
+        developers {
+            developer {
+                id    = 'netomi'
+                name  = 'Thomas Neidhart'
+                email = 'thomas@neidhart.tech'
+            }
+        }
+    }
+}
+
+extraArchive {
+    sources = true
+    tests   = false
+    javadoc = false
+}
+
+nexus {
+    sign = true
+    repositoryUrl         = 'http://localhost:8081/nexus/content/repositories/internal/'
+    snapshotRepositoryUrl = 'http://localhost:8081/nexus/content/repositories/internal-snapshots/'
 }
 
 repositories {
