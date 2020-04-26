@@ -33,7 +33,7 @@ public class EnergyTest extends GenericQuantityTest<Energy> {
 
     @Override
     protected Unit<Energy> getSystemUnit() {
-        return SI.JOULE;
+        return SI.JOULE.getSystemUnit();
     }
 
     @Override

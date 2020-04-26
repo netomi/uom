@@ -1,0 +1,23 @@
+# Base unit definitions for the SI system of units.
+m:meter       !L
+s:second      !T
+kg:kilogram   !M
+A:ampere      !I
+K:kelvin      !Θ
+cd:candela    !J
+mol:mole      !N
+
+# redefined base units in other systems.
+cm            1e-2 m
+g             1e-3 kg
+
+# physical constants.
+c:speed_of_light   299792458 m/s
+
+# specialization of certain electrical units for the SI system of units.
+C:coulomb         A s
+statC:statcoulomb 10 coulomb cm / s c
+statA:statampere  statcoulomb / s
+
+# include common unit definitions.
+@include common.units

@@ -90,6 +90,10 @@ public final class Dimensions {
         return physicalBaseDimensions.get(baseDimension);
     }
 
+    static Dimension getPhysicalBaseDimension(char symbol) {
+        return physicalBaseDimensions.get(PhysicalDimension.Base.of(symbol));
+    }
+
     /**
      * Returns an unmodifiable {@link Collection} containing all supported base dimensions.
      */

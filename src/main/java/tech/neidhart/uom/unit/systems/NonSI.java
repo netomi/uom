@@ -18,7 +18,6 @@ package tech.neidhart.uom.unit.systems;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.quantity.*;
-import tech.neidhart.uom.unit.Prefixes;
 import tech.neidhart.uom.unit.Units;
 
 /**
@@ -32,32 +31,31 @@ public final class NonSI extends AbstractSystemOfUnits {
 
     public static final NonSI INSTANCE = new NonSI();
 
-    private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<?> unit, Class<Q> quantityClass) {
-        return INSTANCE.addUnitForQuantity(unit, quantityClass);
-    }
-
     // length units
-    public static final Unit<Length> NAUTICAL_MILE = addUnit(SI.METRE.multiply(1852, 1).withSymbol("nm").withName("NAUTICAL MILE"), Length.class);
+    public static final Unit<Length> NAUTICAL_MILE = addUnit("nm", Length.class);
 
     // area units
-    public static final Unit<Area> ARE       = addUnit(SI.METRE.pow(2).multiply(100, 1).withSymbol("a").withName("ARE"), Area.class);
-    public static final Unit<Area> HECTARE   = addUnit(SI.METRE.pow(2).multiply(10000, 1).withSymbol("ha").withName("HECTARE"), Area.class);
-    public static final Unit<Area> SQUARE_KM = addUnit(SI.METRE.withPrefix(Prefixes.Metric.KILO).pow(2).withSymbol("km\u00B2").withName("SQUARE KILOMETER"), Area.class);
+    public static final Unit<Area> ARE       = addUnit("a",        Area.class);
+    public static final Unit<Area> HECTARE   = addUnit("ha",       Area.class);
+    public static final Unit<Area> SQUARE_KM = addUnit("km\u00B2", Area.class);
 
     // time units
-    public static final Unit<Time>  MINUTE = addUnit(SI.SECOND.multiply(60, 1).withSymbol("m").withName("MINUTE"), Time.class);
-    public static final Unit<Time>  HOUR   = addUnit(MINUTE   .multiply(60, 1).withSymbol("h").withName("HOUR")  , Time.class);
+    public static final Unit<Time>  MINUTE = addUnit("min", Time.class);
+    public static final Unit<Time>  HOUR   = addUnit("h",   Time.class);
+    public static final Unit<Time>  DAY    = addUnit("d",   Time.class);
 
-    public static final Unit<Angle> DEGREE = addUnit(SI.RADIAN.multiply(Units.PI).multiply(1, 180).withSymbol("deg").withName("DEGREE"), Angle.class);
+    public static final Unit<Angle> DEGREE = addUnit("deg", Angle.class);
 
     // speed units
-    public static final Unit<Speed> KMH  = addUnit(SI.METRE.withPrefix(Prefixes.Metric.KILO).divide(HOUR).withSymbol("km/h").withName("KM PER HOUR"), Speed.class);
-    public static final Unit<Speed> KNOT = addUnit(NAUTICAL_MILE.divide(HOUR).withSymbol("kt").withName("KNOT"), Speed.class);
+    public static final Unit<Speed> KMH  = addUnit("km/h", Speed.class);
+    public static final Unit<Speed> KNOT = addUnit("kt",   Speed.class);
 
     // temperature units
-    public static final Unit<Temperature> FAHRENHEIT = addUnit(SI.KELVIN.shift(459.67).multiply(5, 9).withSymbol("°F").withName("FAHRENHEIT"), Temperature.class);
+    public static final Unit<Temperature> FAHRENHEIT = addUnit("°F", Temperature.class);
 
-    static {
-        Units.register(INSTANCE);
+    // private helper methods.
+
+    private static <Q extends Quantity<Q>> Unit<Q> addUnit(String symbol, Class<Q> quantityClass) {
+        return INSTANCE.addUnitForQuantity(Units.get(symbol, quantityClass), quantityClass);
     }
 }

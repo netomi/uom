@@ -33,7 +33,7 @@ public class TimeTest extends GenericQuantityTest<Time> {
 
     @Override
     protected Unit<Time> getSystemUnit() {
-        return SI.SECOND;
+        return SI.SECOND.getSystemUnit();
     }
 
     @Override

@@ -18,20 +18,20 @@ package tech.neidhart.uom.quantity;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.QuantityFactory;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.unit.systems.SI;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
+import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of volume.
+ * A {@link Quantity} representing a measure of a magnetic flux.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Volume">Wikipedia: Volume</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Magnetic_flux">Wikipedia: Magnetic flux</a>
  *
  * @author Thomas Neidhart
  */
-public interface Volume extends Quantity<Volume> {
+public interface MagneticFlux extends Quantity<MagneticFlux> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Volume}.
+     * Convenience method to create a {@link Quantity} of type {@link MagneticFlux}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -40,18 +40,18 @@ public interface Volume extends Quantity<Volume> {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Volume} instance for the given value.
+     * @return a new {@link MagneticFlux} instance for the given value.
      */
-    static Volume of(double value, Unit<Volume> unit) {
-        return Quantities.create(value, unit, Volume.class);
+    static MagneticFlux of(double value, Unit<MagneticFlux> unit) {
+        return Quantities.create(value, unit, MagneticFlux.class);
     }
 
-    static Volume ofCubicMeter(double value) {
-        return of(value, SI.CUBIC_METER);
+    static MagneticFlux ofWeber(double value) {
+        return of(value, SI.WEBER);
     }
 
     @Override
-    default Unit<Volume> getSystemUnit() {
-        return SI.CUBIC_METER.getSystemUnit();
+    default Unit<MagneticFlux> getSystemUnit() {
+        return SI.WEBER.getSystemUnit();
     }
 }

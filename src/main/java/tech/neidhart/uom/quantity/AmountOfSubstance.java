@@ -52,6 +52,6 @@ public interface AmountOfSubstance extends Quantity<AmountOfSubstance> {
 
     @Override
     default Unit<AmountOfSubstance> getSystemUnit() {
-        return SI.MOLE;
+        return SI.MOLE.getSystemUnit();
     }
 }

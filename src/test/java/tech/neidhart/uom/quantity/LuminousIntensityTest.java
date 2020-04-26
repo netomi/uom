@@ -33,7 +33,7 @@ public class LuminousIntensityTest extends GenericQuantityTest<LuminousIntensity
 
     @Override
     protected Unit<LuminousIntensity> getSystemUnit() {
-        return SI.CANDELA;
+        return SI.CANDELA.getSystemUnit();
     }
 
     @Override

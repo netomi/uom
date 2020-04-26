@@ -52,6 +52,6 @@ public interface LuminousIntensity extends Quantity<LuminousIntensity> {
 
     @Override
     default Unit<LuminousIntensity> getSystemUnit() {
-        return SI.CANDELA;
+        return SI.CANDELA.getSystemUnit();
     }
 }

@@ -52,6 +52,6 @@ public interface Power extends Quantity<Power> {
 
     @Override
     default Unit<Power> getSystemUnit() {
-        return SI.WATT;
+        return SI.WATT.getSystemUnit();
     }
 }

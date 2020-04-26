@@ -31,23 +31,20 @@ public final class CGS extends AbstractSystemOfUnits {
 
     public static final CGS INSTANCE = new CGS();
 
-    private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<?> unit, Class<Q> quantityClass) {
-        return INSTANCE.addUnitForQuantity(unit, quantityClass);
-    }
-
     // base units
-    public static final Unit<Length> CENTIMETRE = addUnit(SI.METRE.multiply(1, 100).withSymbol("cm").withName("CENTIMETER"), Length.class);
-    public static final Unit<Mass>   GRAM       = addUnit(SI.KILOGRAM.multiply(1, 1000).withSymbol("g") .withName("GRAM"), Mass.class);
-    public static final Unit<Time>   SECOND     = addUnit(SI.SECOND, Time.class);
+    public static final Unit<Length> CENTIMETRE = addUnit("cm", Length.class);
+    public static final Unit<Mass>   GRAM       = addUnit("g",  Mass.class);
+    public static final Unit<Time>   SECOND     = addUnit("s",  Time.class);
 
-    public static final Unit<Force>  DYNE = addUnit(GRAM.multiply(CENTIMETRE).divide(SECOND.pow(2)).withSymbol("dyn").withName("DYNE"), Force.class);
+    public static final Unit<Force>  DYNE = addUnit("dyn", Force.class);
 
-    public  static final Unit<?>              COULOMB_CONSTANT = SI.VOLT.multiply(SI.METRE).divide(SI.AMPERE.multiply(SECOND)).multiply(8.987551787368176E9).withName("COULOMB CONSTANT");
-    public  static final Unit<ElectricCharge> STATCOULOMB      = addUnit(DYNE.root(2).multiply(CENTIMETRE).divide(COULOMB_CONSTANT.root(2)).withSymbol("statC").withName("STATCOULOMB"), ElectricCharge.class);
-    // alternative conversion:
-    //public Unit<ElectricCharge> STATCOULOMB = SI.COULOMB.divide(SI.C).multiply(1, 10).asType(ElectricCharge.class).withSymbolAndName("statC", "STATCOULOMB");
+    //public  static final Unit<?>              COULOMB_CONSTANT = SI.VOLT.multiply(SI.METRE).divide(SI.AMPERE.multiply(SECOND)).multiply(8.987551787368176E9).withName("COULOMB CONSTANT");
+    public static final Unit<ElectricCharge>  STATCOULOMB = addUnit("statC", ElectricCharge.class);
+    public static final Unit<ElectricCurrent> STATAMPERE  = addUnit("statA", ElectricCurrent.class);
 
-    static {
-        Units.register(INSTANCE);
+    // private helper methods.
+
+    private static <Q extends Quantity<Q>> Unit<Q> addUnit(String symbol, Class<Q> quantityClass) {
+        return INSTANCE.addUnitForQuantity(Units.get(symbol, quantityClass), quantityClass);
     }
 }

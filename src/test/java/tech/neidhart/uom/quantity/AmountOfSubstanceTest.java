@@ -33,7 +33,7 @@ public class AmountOfSubstanceTest extends GenericQuantityTest<AmountOfSubstance
 
     @Override
     protected Unit<AmountOfSubstance> getSystemUnit() {
-        return SI.MOLE;
+        return SI.MOLE.getSystemUnit();
     }
 
     @Override

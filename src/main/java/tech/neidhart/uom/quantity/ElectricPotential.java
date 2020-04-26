@@ -52,7 +52,7 @@ public interface ElectricPotential extends Quantity<ElectricPotential> {
 
     @Override
     default Unit<ElectricPotential> getSystemUnit() {
-        return SI.VOLT;
+        return SI.VOLT.getSystemUnit();
     }
 
     default ElectricResistance divide(ElectricCurrent divisor) {

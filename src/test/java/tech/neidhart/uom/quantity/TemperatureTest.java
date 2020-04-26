@@ -33,7 +33,7 @@ public class TemperatureTest extends GenericQuantityTest<Temperature> {
 
     @Override
     protected Unit<Temperature> getSystemUnit() {
-        return SI.KELVIN;
+        return SI.KELVIN.getSystemUnit();
     }
 
     @Override

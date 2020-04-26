@@ -22,61 +22,69 @@ import tech.neidhart.uom.math.Fraction;
 import tech.neidhart.uom.quantity.Dimensionless;
 
 import java.math.BigDecimal;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Thomas Neidhart
  */
 public final class Units {
 
+    public enum UnitSystem {
+        SI   ("si.units"),
+        ESU  ("esu.units"),
+        EMU  ("emu.units"),
+        GAUSS("gauss.units");
+
+        private final String definitionFile;
+
+        UnitSystem(String definitionFile) {
+            this.definitionFile = definitionFile;
+        }
+
+        String getDefinitionFile() {
+            return definitionFile;
+        }
+    }
+
     private static UnitFormatter DEFAULT_FORMATTER = UnitFormat.symbolAndDimension();
 
-    private static Map<Unit<?>, Unit<?>> namedUnits = new ConcurrentHashMap<>();
+    private final static UnitRegistry unitReqistry = new UnitRegistry();
 
     // Some globally unique units / constants.
     public static final Unit<Dimensionless> ONE = new ProductUnit<>();
     public static final BigDecimal          PI  = BigDecimal.valueOf(StrictMath.PI);
 
+    static {
+        Map<String, Unit<?>> units = UnitDefinitionParser.parse(UnitSystem.SI.getDefinitionFile(), unitReqistry);
+        unitReqistry.addUnits(units);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <Q extends Quantity<Q>> Unit<Q> get(String symbol, Class<Q> quantityClass) {
+        return (Unit<Q>) unitReqistry.get(symbol);
+    }
+
     public static void register(SystemOfUnits systemOfUnits) {
         for (Unit<?> unit : systemOfUnits.getUnits()) {
-            // do not put dimensionless units into the set of named units.
-            // all dimensionless units are equal to each other.
-            if (unit.getDimension() == Dimensions.NONE) {
-                continue;
-            }
-
-            // do not use putIfAbsent to be compatible with android
-            // as much as possible.
-            if (!namedUnits.containsKey(unit)) {
-                namedUnits.put(unit, unit);
-                // refresh the ProductUnit cache with named system units.
-                if (unit.isSystemUnit()) {
-                    ProductUnit.putProductUnitIntoCache(unit);
-                }
-            }
+            unitReqistry.putIfAbsent(unit);
         }
     }
 
     @SuppressWarnings("unchecked")
     public static <Q extends Quantity<Q>> Unit<Q> getNamedUnitIfPresent(Unit<Q> unit) {
-        Unit<?> namedUnit = namedUnits.get(unit);
-        return namedUnit != null ? (Unit<Q>) namedUnit : unit;
-    }
-
-    public static Iterable<Unit<?>> namedUnits() {
-        return Collections.unmodifiableSet(namedUnits.keySet());
+        return (Unit<Q>) unitReqistry.getOrDefault(unit, unit);
     }
 
     public static <Q extends Quantity<Q>> Unit<Q> baseUnitForDimension(String symbol, String name, Dimension dimension) {
         return new BaseUnit<>(symbol, name, dimension);
     }
 
-    public static <Q extends Quantity<Q>> Unit<Q> alternateDimensionlessSystemUnit(String symbol, String name) {
+    static <Q extends Quantity<Q>> Unit<Q> alternateDimensionlessSystemUnit(String symbol, String name) {
         return AlternateSystemUnit.of(Units.ONE, symbol, name);
     }
+
+    // format related methods.
 
     public static UnitFormatter defaultFormatter() {
         return DEFAULT_FORMATTER;

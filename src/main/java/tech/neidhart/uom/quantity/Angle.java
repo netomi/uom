@@ -52,6 +52,6 @@ public interface Angle extends Quantity<Angle> {
 
     @Override
     default Unit<Angle> getSystemUnit() {
-        return SI.RADIAN;
+        return SI.RADIAN.getSystemUnit();
     }
 }

@@ -517,6 +517,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
         assertEquals(Prefixes.Metric.KILO.getUnitConverter().convert(BigDecimal.valueOf(123)).doubleValue(),
                      result.decimalValue().doubleValue(), eps);
 
+        // TODO: fails when using a CGS based unit system.
         assertSame(getSystemUnit(), result.getUnit());
     }
 
@@ -529,6 +530,7 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
         quantity = getFactoryMethodForSystemUnit().apply(20.0);
 
+        // TODO: fails when using a CGS based unit system.
         assertSame(getSystemUnit(), quantity.getUnit());
         assertEquals(20, quantity.doubleValue(), eps);
     }

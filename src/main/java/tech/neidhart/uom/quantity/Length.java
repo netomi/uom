@@ -52,7 +52,7 @@ public interface Length extends Quantity<Length> {
 
     @Override
     default Unit<Length> getSystemUnit() {
-        return SI.METRE;
+        return SI.METRE.getSystemUnit();
     }
 
     default Area multiply(Length multiplicand) {

@@ -52,7 +52,7 @@ public interface Time extends Quantity<Time> {
 
     @Override
     default Unit<Time> getSystemUnit() {
-        return SI.SECOND;
+        return SI.SECOND.getSystemUnit();
     }
 
     @Override

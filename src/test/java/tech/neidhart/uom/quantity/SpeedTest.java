@@ -33,7 +33,7 @@ public class SpeedTest extends GenericQuantityTest<Speed> {
 
     @Override
     protected Unit<Speed> getSystemUnit() {
-        return SI.METER_PER_SECOND;
+        return SI.METER_PER_SECOND.getSystemUnit();
     }
 
     @Override

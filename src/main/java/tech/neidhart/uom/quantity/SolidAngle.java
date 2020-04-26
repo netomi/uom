@@ -52,6 +52,6 @@ public interface SolidAngle extends Quantity<SolidAngle> {
 
     @Override
     default Unit<SolidAngle> getSystemUnit() {
-        return SI.STERADIAN;
+        return SI.STERADIAN.getSystemUnit();
     }
 }

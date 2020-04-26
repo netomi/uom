@@ -279,6 +279,8 @@ public final class Quantities {
         LENGTH(Length.class),
         LUMINOUS_FLUX(LuminousFlux.class),
         LUMINOUS_INTENSITY(LuminousIntensity.class),
+        MAGNETIC_FLUX(MagneticFlux.class),
+        MAGNETIC_INDUCTANCE(MagneticInductance.class),
         MASS(Mass.class),
         POWER(Power.class),
         PRESSURE(Pressure.class),

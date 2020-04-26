@@ -52,6 +52,6 @@ public interface Force extends Quantity<Force> {
 
     @Override
     default Unit<Force> getSystemUnit() {
-        return SI.NEWTON;
+        return SI.NEWTON.getSystemUnit();
     }
 }

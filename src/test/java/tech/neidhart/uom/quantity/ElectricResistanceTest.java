@@ -33,7 +33,7 @@ public class ElectricResistanceTest extends GenericQuantityTest<ElectricResistan
 
     @Override
     protected Unit<ElectricResistance> getSystemUnit() {
-        return SI.OHM;
+        return SI.OHM.getSystemUnit();
     }
 
     @Override

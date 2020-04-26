@@ -33,7 +33,7 @@ public class DimensionlessTest extends GenericQuantityTest<Dimensionless> {
 
     @Override
     protected Unit<Dimensionless> getSystemUnit() {
-        return Units.ONE;
+        return Units.ONE.getSystemUnit();
     }
 
     @Override

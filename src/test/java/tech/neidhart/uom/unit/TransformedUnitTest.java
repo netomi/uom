@@ -61,7 +61,7 @@ public class TransformedUnitTest {
         // m + 100
         Unit<?> unit = TransformedUnit.of(parentUnit, UnitConverters.shift(100));
 
-        assertEquals(parentUnit.getSymbol(), unit.getSymbol());
+        assertEquals("(transform m (+ x '100.0'))", unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
         Assertions.assertEquals(UnitConverters.shift(100).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
                      unit.getConverterToAny(Imperial.YARD));
@@ -69,7 +69,7 @@ public class TransformedUnitTest {
         // m + 200.23
         unit = TransformedUnit.of(parentUnit, UnitConverters.shift(BigDecimal.valueOf(200.23)));
 
-        assertEquals(parentUnit.getSymbol(), unit.getSymbol());
+        assertEquals("(transform m (+ x '200.23'))", unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
         Assertions.assertEquals(UnitConverters.shift(BigDecimal.valueOf(200.23)).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
                      unit.getConverterToAny(Imperial.YARD));
@@ -82,7 +82,7 @@ public class TransformedUnitTest {
         // m * 2.5
         Unit<?> unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(2.5));
 
-        assertEquals(parentUnit.getSymbol(), unit.getSymbol());
+        assertEquals("5|2" + parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
         Assertions.assertEquals(UnitConverters.multiply(2.5).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
                      unit.getConverterToAny(Imperial.YARD));
@@ -90,7 +90,7 @@ public class TransformedUnitTest {
         // m * 2.5
         unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(BigDecimal.valueOf(2.5)));
 
-        assertEquals(parentUnit.getSymbol(), unit.getSymbol());
+        assertEquals("5|2" + parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
         Assertions.assertEquals(UnitConverters.multiply(BigDecimal.valueOf(2.5)).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
                      unit.getConverterToAny(Imperial.YARD));
@@ -98,7 +98,7 @@ public class TransformedUnitTest {
         // m * 5/9
         unit = TransformedUnit.of(parentUnit, UnitConverters.multiply(5, 9));
 
-        assertEquals(parentUnit.getSymbol(), unit.getSymbol());
+        assertEquals("5|9" + parentUnit.getSymbol(), unit.getSymbol());
         assertEquals(parentUnit.getName(), unit.getName());
         Assertions.assertEquals(UnitConverters.multiply(5, 9).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
                      unit.getConverterToAny(Imperial.YARD));

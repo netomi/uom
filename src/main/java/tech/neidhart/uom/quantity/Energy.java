@@ -52,6 +52,6 @@ public interface Energy extends Quantity<Energy> {
 
     @Override
     default Unit<Energy> getSystemUnit() {
-        return SI.JOULE;
+        return SI.JOULE.getSystemUnit();
     }
 }

@@ -52,6 +52,6 @@ public interface ElectricCharge extends Quantity<ElectricCharge> {
 
     @Override
     default Unit<ElectricCharge> getSystemUnit() {
-        return SI.COULOMB;
+        return SI.COULOMB.getSystemUnit();
     }
 }

@@ -33,7 +33,7 @@ public class ElectricPotentialTest extends GenericQuantityTest<ElectricPotential
 
     @Override
     protected Unit<ElectricPotential> getSystemUnit() {
-        return SI.VOLT;
+        return SI.VOLT.getSystemUnit();
     }
 
     @Override

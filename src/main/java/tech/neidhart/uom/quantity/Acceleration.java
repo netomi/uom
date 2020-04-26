@@ -52,6 +52,6 @@ public interface Acceleration extends Quantity<Acceleration> {
 
     @Override
     default Unit<Acceleration> getSystemUnit() {
-        return SI.METER_PER_SECOND_SQUARED;
+        return SI.METER_PER_SECOND_SQUARED.getSystemUnit();
     }
 }

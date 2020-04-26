@@ -33,7 +33,7 @@ public class AreaTest extends GenericQuantityTest<Area> {
 
     @Override
     protected Unit<Area> getSystemUnit() {
-        return SI.SQUARE_METER;
+        return SI.SQUARE_METER.getSystemUnit();
     }
 
     @Override

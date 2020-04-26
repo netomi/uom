@@ -33,7 +33,7 @@ public class FrequencyTest extends GenericQuantityTest<Frequency> {
 
     @Override
     protected Unit<Frequency> getSystemUnit() {
-        return SI.HERTZ;
+        return SI.HERTZ.getSystemUnit();
     }
 
     @Override

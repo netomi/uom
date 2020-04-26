@@ -33,7 +33,7 @@ public class ElectricCurrentTest extends GenericQuantityTest<ElectricCurrent> {
 
     @Override
     protected Unit<ElectricCurrent> getSystemUnit() {
-        return SI.AMPERE;
+        return SI.AMPERE.getSystemUnit();
     }
 
     @Override

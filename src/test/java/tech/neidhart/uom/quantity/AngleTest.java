@@ -33,7 +33,7 @@ public class AngleTest extends GenericQuantityTest<Angle> {
 
     @Override
     protected Unit<Angle> getSystemUnit() {
-        return SI.RADIAN;
+        return SI.RADIAN.getSystemUnit();
     }
 
     @Override

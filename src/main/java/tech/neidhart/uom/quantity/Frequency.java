@@ -52,7 +52,7 @@ public interface Frequency extends Quantity<Frequency> {
 
     @Override
     default Unit<Frequency> getSystemUnit() {
-        return SI.HERTZ;
+        return SI.HERTZ.getSystemUnit();
     }
 
     @Override

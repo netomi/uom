@@ -22,8 +22,17 @@ version          = '0.1-SNAPSHOT'
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
+sourceSets {
+    main {
+        resources {
+            srcDirs "src/main/resources"
+            include "**/*.units"
+        }
+    }
+}
+
 compileJava {
-    options.compilerArgs << '-Xlint:unchecked'
+    //options.compilerArgs << '-Xlint:unchecked'
 }
 
 test {
@@ -35,7 +44,7 @@ test {
 
 test {
     jacoco {
-        excludes += ['org/netomi/uom/util/ConcurrentReferenceHashMap**']
+        excludes += ['tech/neidhart/uom/util/ConcurrentReferenceHashMap**']
     }
 }
 
@@ -53,7 +62,6 @@ jacocoTestReport {
 }
 
 modifyPom {
-    //noinspection GroovyAssignabilityCheck
     project {
         name          = 'Units of Measurements'
         description   = 'A library to represent quantities and perform conversions between' +

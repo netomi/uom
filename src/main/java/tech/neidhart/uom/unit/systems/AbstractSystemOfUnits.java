@@ -38,12 +38,9 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits {
 
     @SuppressWarnings("unchecked")
     protected <Q extends Quantity<Q>> Unit<Q> addUnitForQuantity(Unit<?> unit, Class<Q> quantityClass) {
+        Objects.requireNonNull(unit);
         this.units.add(unit);
         return (Unit<Q>) unit;
-    }
-
-    protected <Q extends Quantity<Q>> Unit<Q> buildUnit(Unit<?> unit, Class<Q> quantityClass) {
-        return unit.forQuantity(quantityClass);
     }
 
     @Override

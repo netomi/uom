@@ -125,7 +125,7 @@ public final class UnitConverters {
         return numerator.compareTo(denominator) == 0 ? identity() : multiply(BigFraction.of(numerator, denominator));
     }
 
-    static UnitConverter multiply(BigFraction multiplicand) {
+    public static UnitConverter multiply(BigFraction multiplicand) {
         return BigFraction.ONE.compareTo(multiplicand) == 0 ? identity() : new MultiplyConverter(multiplicand);
     }
 

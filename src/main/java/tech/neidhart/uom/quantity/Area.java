@@ -52,6 +52,6 @@ public interface Area extends Quantity<Area> {
 
     @Override
     default Unit<Area> getSystemUnit() {
-        return SI.SQUARE_METER;
+        return SI.SQUARE_METER.getSystemUnit();
     }
 }

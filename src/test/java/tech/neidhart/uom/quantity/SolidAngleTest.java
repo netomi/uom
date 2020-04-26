@@ -33,7 +33,7 @@ public class SolidAngleTest extends GenericQuantityTest<SolidAngle> {
 
     @Override
     protected Unit<SolidAngle> getSystemUnit() {
-        return SI.STERADIAN;
+        return SI.STERADIAN.getSystemUnit();
     }
 
     @Override

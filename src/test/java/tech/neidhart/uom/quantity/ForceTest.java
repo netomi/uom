@@ -33,7 +33,7 @@ public class ForceTest extends GenericQuantityTest<Force> {
 
     @Override
     protected Unit<Force> getSystemUnit() {
-        return SI.NEWTON;
+        return SI.NEWTON.getSystemUnit();
     }
 
     @Override

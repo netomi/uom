@@ -33,7 +33,7 @@ public class PowerTest extends GenericQuantityTest<Power> {
 
     @Override
     protected Unit<Power> getSystemUnit() {
-        return SI.WATT;
+        return SI.WATT.getSystemUnit();
     }
 
     @Override

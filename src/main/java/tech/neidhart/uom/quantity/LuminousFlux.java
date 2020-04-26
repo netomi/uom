@@ -52,6 +52,6 @@ public interface LuminousFlux extends Quantity<LuminousFlux> {
 
     @Override
     default Unit<LuminousFlux> getSystemUnit() {
-        return SI.LUMEN;
+        return SI.LUMEN.getSystemUnit();
     }
 }

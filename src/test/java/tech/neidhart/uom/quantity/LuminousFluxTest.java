@@ -33,7 +33,7 @@ public class LuminousFluxTest extends GenericQuantityTest<LuminousFlux> {
 
     @Override
     protected Unit<LuminousFlux> getSystemUnit() {
-        return SI.LUMEN;
+        return SI.LUMEN.getSystemUnit();
     }
 
     @Override

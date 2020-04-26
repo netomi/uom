@@ -52,6 +52,6 @@ public interface Pressure extends Quantity<Pressure> {
 
     @Override
     default Unit<Pressure> getSystemUnit() {
-        return SI.PASCAL;
+        return SI.PASCAL.getSystemUnit();
     }
 }

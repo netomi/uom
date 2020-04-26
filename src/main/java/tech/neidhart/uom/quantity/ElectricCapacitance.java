@@ -52,6 +52,6 @@ public interface ElectricCapacitance extends Quantity<ElectricCapacitance> {
 
     @Override
     default Unit<ElectricCapacitance> getSystemUnit() {
-        return SI.FARAD;
+        return SI.FARAD.getSystemUnit();
     }
 }

@@ -52,7 +52,7 @@ public interface ElectricResistance extends Quantity<ElectricResistance> {
 
     @Override
     default Unit<ElectricResistance> getSystemUnit() {
-        return SI.OHM;
+        return SI.OHM.getSystemUnit();
     }
 
     @Override

@@ -33,7 +33,7 @@ public class ElectricCapacitanceTest extends GenericQuantityTest<ElectricCapacit
 
     @Override
     protected Unit<ElectricCapacitance> getSystemUnit() {
-        return SI.FARAD;
+        return SI.FARAD.getSystemUnit();
     }
 
     @Override

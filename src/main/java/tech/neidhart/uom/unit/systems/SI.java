@@ -18,7 +18,6 @@ package tech.neidhart.uom.unit.systems;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.quantity.*;
-import tech.neidhart.uom.unit.Dimensions;
 import tech.neidhart.uom.unit.Units;
 
 /**
@@ -27,60 +26,57 @@ import tech.neidhart.uom.unit.Units;
 public final class SI extends AbstractSystemOfUnits {
     // hide constructor.
     private SI() {
-        super("SI");
+        super("International System of Units");
     }
 
     public static final SI INSTANCE = new SI();
 
-    private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<?> unit, Class<Q> quantityClass) {
-        return INSTANCE.addUnitForQuantity(unit, quantityClass);
-    }
-
     public static final Unit<Dimensionless>     ONE = Units.ONE;
 
-    // Base units of the International System of Units (SI).
-    public static final Unit<Length>            METRE    = addUnit(Units.baseUnitForDimension("m",   "METER",    Dimensions.LENGTH),              Length.class);
-    public static final Unit<Time>              SECOND   = addUnit(Units.baseUnitForDimension("s",   "SECOND",   Dimensions.TIME),                Time.class);
-    public static final Unit<Mass>              KILOGRAM = addUnit(Units.baseUnitForDimension("kg",  "KILOGRAM", Dimensions.MASS),                Mass.class);
-    public static final Unit<Temperature>       KELVIN   = addUnit(Units.baseUnitForDimension("K",   "KELVIN",   Dimensions.TEMPERATURE),         Temperature.class);
-    public static final Unit<ElectricCurrent>   AMPERE   = addUnit(Units.baseUnitForDimension("A",   "AMPERE",   Dimensions.ELECTRIC_CURRENT),    ElectricCurrent.class);
-    public static final Unit<LuminousIntensity> CANDELA  = addUnit(Units.baseUnitForDimension("cd",  "CANDELA",  Dimensions.LUMINOUS_INTENSITY),  LuminousIntensity.class);
-    public static final Unit<AmountOfSubstance> MOLE     = addUnit(Units.baseUnitForDimension("mol", "MOLE",     Dimensions.AMOUNT_OF_SUBSTANCE), AmountOfSubstance.class);
+    // base units of the International System of Units (SI).
+    public static final Unit<Length>            METRE    = addUnit("m",   Length.class);
+    public static final Unit<Time>              SECOND   = addUnit("s",   Time.class);
+    public static final Unit<Mass>              KILOGRAM = addUnit("kg",  Mass.class);
+    public static final Unit<Temperature>       KELVIN   = addUnit("K",   Temperature.class);
+    public static final Unit<ElectricCurrent>   AMPERE   = addUnit("A",   ElectricCurrent.class);
+    public static final Unit<LuminousIntensity> CANDELA  = addUnit("cd",  LuminousIntensity.class);
+    public static final Unit<AmountOfSubstance> MOLE     = addUnit("mol", AmountOfSubstance.class);
 
-    public static final Unit<Temperature>       CELSIUS  = addUnit(KELVIN.shift(273.15).withSymbol("°C").withName("DEGREE CELSIUS"), Temperature.class);
+    public static final Unit<Temperature>       CELSIUS  = addUnit("°C", Temperature.class);
 
     // System units for dimensionless quantities Angle and SolidAngle.
-    // Create an alternate dimensionless system unit which ensures that the created units
-    // are retained when creating product units. Otherwise CANDELA (cd) would be compatible
-    // with LUMEN (cd·sr) which we want to prevent.
-    public static final Unit<Angle>             RADIAN    = addUnit(Units.alternateDimensionlessSystemUnit("rad", "RADIAN"), Angle.class);
-    public static final Unit<SolidAngle>        STERADIAN = addUnit(Units.alternateDimensionlessSystemUnit("sr", "STERADIAN"), SolidAngle.class);
+    public static final Unit<Angle>        RADIAN    = addUnit("rad", Angle.class);
+    public static final Unit<SolidAngle>   STERADIAN = addUnit("sr", SolidAngle.class);
 
-    public static final Unit<Frequency>         HERTZ    = addUnit(Units.ONE.divide(SECOND).withSymbol("Hz") .withName("HERTZ"), Frequency.class);
+    public static final Unit<Frequency>    HERTZ     = addUnit("Hz", Frequency.class);
 
-    public static final Unit<Speed>             METER_PER_SECOND = addUnit(METRE.divide(SECOND).withSymbol("m/s").withName("METER PER SECOND"), Speed.class);
-    public static final Unit<Acceleration>      METER_PER_SECOND_SQUARED = addUnit(METER_PER_SECOND.divide(SECOND).withSymbol("m/s²").withName("METER PER SECOND SQUARED"), Acceleration.class);
+    public static final Unit<Speed>        METER_PER_SECOND         = addUnit("m/s",  Speed.class);
+    public static final Unit<Acceleration> METER_PER_SECOND_SQUARED = addUnit("m/s\u00B2", Acceleration.class);
 
-    public static final Unit<Area>              SQUARE_METER = addUnit(METRE.multiply(METRE).withSymbol("m\u00B2").withName("SQUARE METER"), Area.class);
-    public static final Unit<Volume>            CUBIC_METER  = addUnit(SQUARE_METER.multiply(METRE).withSymbol("m\u00B3").withName("CUBIC METER"), Volume.class);
+    public static final Unit<Area>         SQUARE_METER = addUnit("m\u00B2", Area.class);
+    public static final Unit<Volume>       CUBIC_METER  = addUnit("m\u00B3", Volume.class);
 
-    public static final Unit<Force>             NEWTON = addUnit(KILOGRAM.multiply(METRE).divide(SECOND.pow(2)).withSymbol("N").withName("NEWTON"), Force.class);
-    public static final Unit<Pressure>          PASCAL = addUnit(NEWTON.divide(SQUARE_METER).withSymbol("Pa").withName("PASCAL"), Pressure.class);
-    public static final Unit<Energy>            JOULE  = addUnit(NEWTON.multiply(METRE).withSymbol("J").withName("JOULE"), Energy.class);
-    public static final Unit<Power>             WATT   = addUnit(JOULE.divide(SECOND).withSymbol("W").withName("WATT"), Power.class);
+    public static final Unit<Force>        NEWTON = addUnit("N",  Force.class);
+    public static final Unit<Pressure>     PASCAL = addUnit("Pa", Pressure.class);
+    public static final Unit<Energy>       JOULE  = addUnit("J",  Energy.class);
+    public static final Unit<Power>        WATT   = addUnit("W",  Power.class);
 
-    public static final Unit<LuminousFlux>      LUMEN  = addUnit(CANDELA.multiply(STERADIAN).withSymbol("lm").withName("LUMEN"), LuminousFlux.class);
+    public static final Unit<LuminousFlux> LUMEN  = addUnit("lm", LuminousFlux.class);
 
-    public static final Unit<ElectricCharge>      COULOMB = addUnit(AMPERE.multiply(SECOND).withSymbol("C").withName("COULOMB"), ElectricCharge.class);
-    public static final Unit<ElectricPotential>   VOLT    = addUnit(JOULE.divide(COULOMB).withSymbol("V").withName("VOLT"), ElectricPotential.class);
-    public static final Unit<ElectricCapacitance> FARAD   = addUnit(COULOMB.divide(VOLT).withSymbol("F").withName("FARAD"), ElectricCapacitance.class);
-    public static final Unit<ElectricResistance>  OHM     = addUnit(VOLT.divide(AMPERE).withSymbol("Ω").withName("OHM"), ElectricResistance.class);
-    public static final Unit<ElectricConductance> SIEMENS = addUnit(Units.ONE.divide(OHM).withSymbol("S").withName("SIEMENS"), ElectricConductance.class);
+    // electric units.
+    public static final Unit<ElectricCharge>      COULOMB = addUnit("C", ElectricCharge.class);
+    public static final Unit<ElectricPotential>   VOLT    = addUnit("V", ElectricPotential.class);
+    public static final Unit<ElectricCapacitance> FARAD   = addUnit("F", ElectricCapacitance.class);
+    public static final Unit<ElectricResistance>  OHM     = addUnit("Ω", ElectricResistance.class);
+    public static final Unit<ElectricConductance> SIEMENS = addUnit("S", ElectricConductance.class);
 
-    // Constants expressed in SI units.
-    //public static final Unit<Speed>       C                = INSTANCE.buildUnit(METER_PER_SECOND.multiply(299792458, 1).withName("SPEED OF LIGHT"), Speed.class);
+    // units related to the magnetic field.
+    public static final Unit<MagneticFlux>       WEBER = addUnit("Wb", MagneticFlux.class);
+    public static final Unit<MagneticInductance> TESLA = addUnit("T",  MagneticInductance.class);
 
-    static {
-        Units.register(INSTANCE);
+    // private helper methods.
+
+    private static <Q extends Quantity<Q>> Unit<Q> addUnit(String symbol, Class<Q> quantityClass) {
+        return INSTANCE.addUnitForQuantity(Units.get(symbol, quantityClass), quantityClass);
     }
 }

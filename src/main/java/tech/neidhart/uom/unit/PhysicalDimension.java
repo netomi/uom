@@ -69,6 +69,15 @@ class PhysicalDimension extends Dimension {
         public char getSymbol() {
             return symbol;
         }
+
+        static Base of(char symbol) {
+            for (Base dimension : values()) {
+                if (symbol == dimension.symbol) {
+                    return dimension;
+                }
+            }
+            return null;
+        }
     }
 
     /**

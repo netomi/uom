@@ -33,7 +33,7 @@ public class ElectricChargeTest extends GenericQuantityTest<ElectricCharge> {
 
     @Override
     protected Unit<ElectricCharge> getSystemUnit() {
-        return SI.COULOMB;
+        return SI.COULOMB.getSystemUnit();
     }
 
     @Override

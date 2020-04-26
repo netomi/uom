@@ -52,6 +52,6 @@ public interface ElectricCurrent extends Quantity<ElectricCurrent> {
 
     @Override
     default Unit<ElectricCurrent> getSystemUnit() {
-        return SI.AMPERE;
+        return SI.AMPERE.getSystemUnit();
     }
 }

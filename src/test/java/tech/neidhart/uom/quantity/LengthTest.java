@@ -33,7 +33,7 @@ public class LengthTest extends GenericQuantityTest<Length> {
 
     @Override
     protected Unit<Length> getSystemUnit() {
-        return SI.METRE;
+        return SI.METRE.getSystemUnit();
     }
 
     @Override

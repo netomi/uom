@@ -52,6 +52,6 @@ public interface Temperature extends Quantity<Temperature> {
 
     @Override
     default Unit<Temperature> getSystemUnit() {
-        return SI.KELVIN;
+        return SI.KELVIN.getSystemUnit();
     }
 }

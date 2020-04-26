@@ -19,8 +19,10 @@ import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.function.UnitConverters;
+import tech.neidhart.uom.math.BigFraction;
 import tech.neidhart.uom.math.Fraction;
 
+import java.math.BigInteger;
 import java.util.Objects;
 
 /**
@@ -70,7 +72,26 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
 
     @Override
     public String getSymbol() {
-        return symbol != null ? symbol : super.getSymbol();
+        if (symbol != null) {
+            return symbol;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        if (converterToDelegate.isLinear()) {
+            BigFraction fraction = getSystemConverter().scaleAsFraction();
+            sb.append(fraction.getNumerator());
+            if (fraction.getDenominator().compareTo(BigInteger.ONE) != 0) {
+                sb.append('|');
+                sb.append(fraction.getDenominator());
+            }
+            if (!getDelegateUnit().equals(Units.ONE)) {
+                sb.append(super.getSymbol());
+            }
+        } else {
+            sb.append(String.format("(transform %s %s)", super.getSymbol(), getSystemConverter()));
+        }
+
+        return sb.toString();
     }
 
     @Override
@@ -94,6 +115,13 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     }
 
     @Override
+    public Unit<?> multiply(Unit<?> that) {
+        return getDelegateUnit() == Units.ONE ?
+                Units.transformedWith(that, getSystemConverter()) :
+                super.multiply(that);
+    }
+
+    @Override
     public TransformedUnit<Q> withSymbol(String symbol) {
         return new TransformedUnit<>(getDelegateUnit(), symbol, this.name, converterToDelegate);
     }
@@ -107,6 +135,6 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     public String toString() {
         return symbol != null ?
                 super.toString() :
-                String.format("(transform %s %s)", getDelegateUnit(), getSystemConverter());
+                getSymbol();
     }
 }

@@ -33,7 +33,7 @@ public class ElectricConductanceTest extends GenericQuantityTest<ElectricConduct
 
     @Override
     protected Unit<ElectricConductance> getSystemUnit() {
-        return SI.SIEMENS;
+        return SI.SIEMENS.getSystemUnit();
     }
 
     @Override

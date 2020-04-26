@@ -18,20 +18,20 @@ package tech.neidhart.uom.quantity;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.QuantityFactory;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.unit.systems.SI;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
+import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of volume.
+ * A {@link Quantity} representing a measure of a magnetic inductance or magnetic flux density.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Volume">Wikipedia: Volume</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Magnetic_field">Wikipedia: Magnetic field</a>
  *
  * @author Thomas Neidhart
  */
-public interface Volume extends Quantity<Volume> {
+public interface MagneticInductance extends Quantity<MagneticInductance> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Volume}.
+     * Convenience method to create a {@link Quantity} of type {@link MagneticInductance}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -40,18 +40,18 @@ public interface Volume extends Quantity<Volume> {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Volume} instance for the given value.
+     * @return a new {@link MagneticInductance} instance for the given value.
      */
-    static Volume of(double value, Unit<Volume> unit) {
-        return Quantities.create(value, unit, Volume.class);
+    static MagneticInductance of(double value, Unit<MagneticInductance> unit) {
+        return Quantities.create(value, unit, MagneticInductance.class);
     }
 
-    static Volume ofCubicMeter(double value) {
-        return of(value, SI.CUBIC_METER);
+    static MagneticInductance ofTesla(double value) {
+        return of(value, SI.TESLA);
     }
 
     @Override
-    default Unit<Volume> getSystemUnit() {
-        return SI.CUBIC_METER.getSystemUnit();
+    default Unit<MagneticInductance> getSystemUnit() {
+        return SI.TESLA.getSystemUnit();
     }
 }

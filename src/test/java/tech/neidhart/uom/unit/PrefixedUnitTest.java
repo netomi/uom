@@ -20,6 +20,7 @@ import tech.neidhart.uom.Prefix;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.function.UnitConverters;
+import tech.neidhart.uom.quantity.Frequency;
 import tech.neidhart.uom.quantity.Length;
 import tech.neidhart.uom.quantity.Temperature;
 import tech.neidhart.uom.unit.systems.Imperial;
@@ -34,10 +35,10 @@ public class PrefixedUnitTest {
 
     @Test
     public void systemUnit() {
-        PrefixedUnit<Length> unit = PrefixedUnit.of(SI.METRE, Prefixes.Metric.KILO);
+        PrefixedUnit<Frequency> unit = PrefixedUnit.of(SI.HERTZ, Prefixes.Metric.KILO);
 
         assertFalse(unit.isSystemUnit());
-        assertSame(SI.METRE, unit.getSystemUnit());
+        assertSame(SI.HERTZ, unit.getSystemUnit());
     }
 
     @Test

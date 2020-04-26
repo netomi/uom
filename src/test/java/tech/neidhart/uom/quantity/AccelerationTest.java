@@ -33,7 +33,7 @@ public class AccelerationTest extends GenericQuantityTest<Acceleration> {
 
     @Override
     protected Unit<Acceleration> getSystemUnit() {
-        return SI.METER_PER_SECOND_SQUARED;
+        return SI.METER_PER_SECOND_SQUARED.getSystemUnit();
     }
 
     @Override

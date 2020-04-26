@@ -22,27 +22,27 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Unit test for the {@link Mass} quantity.
+ * Unit test for the {@link MagneticFlux} quantity.
  */
-public class MassTest extends GenericQuantityTest<Mass> {
+public class MagneticFluxText extends GenericQuantityTest<MagneticFlux> {
 
     @Override
-    protected Class<Mass> getQuantityClass() {
-        return Mass.class;
+    protected Class<MagneticFlux> getQuantityClass() {
+        return MagneticFlux.class;
     }
 
     @Override
-    protected Unit<Mass> getSystemUnit() {
-        return SI.KILOGRAM.getSystemUnit();
+    protected Unit<MagneticFlux> getSystemUnit() {
+        return SI.WEBER.getSystemUnit();
     }
 
     @Override
-    protected BiFunction<Double, Unit<Mass>, Mass> getFactoryMethod() {
-        return Mass::of;
+    protected BiFunction<Double, Unit<MagneticFlux>, MagneticFlux> getFactoryMethod() {
+        return MagneticFlux::of;
     }
 
     @Override
-    protected Function<Double, Mass> getFactoryMethodForSystemUnit() {
-        return Mass::ofKilogram;
+    protected Function<Double, MagneticFlux> getFactoryMethodForSystemUnit() {
+        return MagneticFlux::ofWeber;
     }
 }

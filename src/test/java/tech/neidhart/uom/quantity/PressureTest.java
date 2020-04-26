@@ -33,7 +33,7 @@ public class PressureTest extends GenericQuantityTest<Pressure> {
 
     @Override
     protected Unit<Pressure> getSystemUnit() {
-        return SI.PASCAL;
+        return SI.PASCAL.getSystemUnit();
     }
 
     @Override

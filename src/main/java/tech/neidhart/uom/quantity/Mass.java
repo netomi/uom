@@ -52,6 +52,6 @@ public interface Mass extends Quantity<Mass> {
 
     @Override
     default Unit<Mass> getSystemUnit() {
-        return SI.KILOGRAM;
+        return SI.KILOGRAM.getSystemUnit();
     }
 }

@@ -33,7 +33,7 @@ public class VolumeTest extends GenericQuantityTest<Volume> {
 
     @Override
     protected Unit<Volume> getSystemUnit() {
-        return SI.CUBIC_METER;
+        return SI.CUBIC_METER.getSystemUnit();
     }
 
     @Override
