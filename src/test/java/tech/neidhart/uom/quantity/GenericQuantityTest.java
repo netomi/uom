@@ -507,6 +507,8 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
         UnitConverter converter = Prefixes.Metric.MILLI.getUnitConverter().inverse();
         assertEquals(converter.convert(123), quantity.to(milliUnit).doubleValue(), eps);
         assertEquals(converter.convert(123), quantity.to(milliUnit).decimalValue().doubleValue(), eps);
+
+        assertSame(quantity, quantity.to(quantity.getUnit()));
     }
 
     @ParameterizedTest
@@ -523,6 +525,9 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
         // TODO: fails when using a CGS based unit system.
         assertSame(getSystemUnit(), result.getUnit());
+
+        quantity = createQuantity(100);
+        assertSame(quantity, quantity.toSystemUnit());
     }
 
     @Test
