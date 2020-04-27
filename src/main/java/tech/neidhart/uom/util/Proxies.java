@@ -37,7 +37,12 @@ public final class Proxies {
             public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
                 if (!method.isDefault()) {
                     try {
-                        return method.invoke(delegate, args);
+                        Object result = method.invoke(delegate, args);
+                        // if the delegated method returns the delegate instance itself,
+                        // return the proxy instance instead.
+                        return result == delegate ?
+                                proxy :
+                                result;
                     } catch (InvocationTargetException ex) {
                         throw ex.getCause();
                     }

@@ -197,7 +197,11 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Q to(Unit<Q> toUnit) {
+        if (getUnit().equals(toUnit)) {
+            return (Q) this;
+        }
         TypeUtil.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
         return with(converter.convert(value), toUnit);

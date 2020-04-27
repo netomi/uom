@@ -212,7 +212,11 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Q to(Unit<Q> toUnit, MathContext toMc) {
+        if (getUnit().equals(toUnit)) {
+            return (Q) this;
+        }
         TypeUtil.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
         return with(converter.convert(value, toMc), toUnit);
