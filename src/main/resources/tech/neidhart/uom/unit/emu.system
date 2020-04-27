@@ -1,4 +1,4 @@
-# Base unit definitions for the ESU system of units.
+# Base unit definitions for the EMU system of units.
 cm:centimeter !L
 s:second      !T
 g:gram        !M
