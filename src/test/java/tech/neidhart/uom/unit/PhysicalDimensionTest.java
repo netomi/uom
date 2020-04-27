@@ -34,7 +34,7 @@ public class PhysicalDimensionTest {
     public void noneDimension() {
         Dimension none = Dimensions.NONE;
 
-        assertEquals("", none.toString());
+        assertEquals("1", none.toString());
         assertTrue(none.getBaseDimensions().isEmpty());
 
         // NONE * something = something
