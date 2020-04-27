@@ -40,7 +40,7 @@ public class DimensionsTest {
         assertSame(Dimensions.NONE, none.pow(2));
         assertSame(Dimensions.NONE, none.root(2));
 
-        assertEquals("", none.toString());
+        assertEquals("1", none.toString());
 
         assertSame(length, none.multiply(length));
         assertSame(length, length.multiply(none));
