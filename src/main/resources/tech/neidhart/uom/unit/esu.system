@@ -7,7 +7,7 @@ K:kelvin      !Θ
 cd:candela    !J
 mol:mole      !N
 
-# redefined base units in other systems.
+# redefined si base units.
 m             1e2 cm
 kg            1e3 g
 

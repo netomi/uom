@@ -1,64 +1,9 @@
 # units with definitions common to each unit of systems.
 
 # basic constants
-pi               3.14159265358979323846
+pi:pi              3.141592653589793238462643383279 # pi with 30 digits of precision
+c:speed_of_light   299792458 m/s
 
-# named SI units
-
-# temperature units.
-°C:degree_celsius     K = x + 273.15
-°F:degree_fahrenheit °C = (x - 32) * 5|9
-
-# dimensionless units.
-rad:radian      !1
-sr:steradian    !1
-
-# mechanical unis.
-m/s:meter_per_second          m / s
-m/s²:meter_per_second_squared m / s^2
-m²:square_meter               m^2
-m³:cubic_meter                m^3
-
-Hz:hertz  1 / s
-
-N:newton    kg m / s^2
-Pa:pascal   N / m^2
-J:joule     N m
-W:watt      J / s
-
-lm:lumen    cd sr
-
-# electrical units
-C:coulomb   A s
-V:volt      J / C
-F:farad     C / V
-Ω:ohm       V / A
-S:siemens   1 / ohm
-H:henry     V s / A
-
-# magnetic field units.
-Wb:weber    ohm C
-T:tesla     weber / m^2
-
-dyn:dyne          cm g / s^2
-statA:statampere  statcoulomb / s
-statV:statvolt    dyne cm / statampere s
-statΩ:statohm     statvolt / statampere
-statmho:statmho   1 / statohm
-
-# non-SI units
-
-deg:degree    1|180 pi rad
-
-min:minute    60 s
-h:hour        60 min
-d:day         24 h
-
-km:kilometer              1e3 m
-nm:nautical_mile          1852 m
-km/h:kilometer_per_hour   km / h
-kt:knot                   nm / h
-
-a:are                1e2 m^2
-ha:hectare           1e4 m^2
-km²:square_kilometer km^2
+@include si.units
+@include nonsi.units
+@include cgs.units

@@ -75,6 +75,10 @@ public final class SI extends AbstractSystemOfUnits {
     public static final Unit<MagneticFlux>       WEBER = addUnit("Wb", MagneticFlux.class);
     public static final Unit<MagneticInductance> TESLA = addUnit("T",  MagneticInductance.class);
 
+    // derived units
+    public static final Unit<Length> KM        = addUnit("km", Length.class);
+    public static final Unit<Area>   SQUARE_KM = addUnit("km\u00B2", Area.class);
+
     // private helper methods.
 
     private static <Q extends Quantity<Q>> Unit<Q> addUnit(String symbol, Class<Q> quantityClass) {

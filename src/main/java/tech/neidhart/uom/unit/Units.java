@@ -21,20 +21,25 @@ import tech.neidhart.uom.format.UnitFormatter;
 import tech.neidhart.uom.math.Fraction;
 import tech.neidhart.uom.quantity.Dimensionless;
 
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Properties;
 
 /**
  * @author Thomas Neidhart
  */
 public final class Units {
 
+    private static final String CONFIG_FILE            = "uom.properties";
+    private static final String CONFIG_UNIT_SYSTEM_KEY = "units.system";
+
     public enum UnitSystem {
-        SI   ("si.units"),
-        ESU  ("esu.units"),
-        EMU  ("emu.units"),
-        GAUSS("gauss.units");
+        SI      ("si.system"),
+        ESU     ("esu.system"),
+        EMU     ("emu.system"),
+        GAUSSIAN("gaussian.system");
 
         private final String definitionFile;
 
@@ -49,15 +54,36 @@ public final class Units {
 
     private static UnitFormatter DEFAULT_FORMATTER = UnitFormat.symbolAndDimension();
 
-    private final static UnitRegistry unitReqistry = new UnitRegistry();
+    private static final UnitSystem   unitSystem;
+    private static final UnitRegistry unitReqistry = new UnitRegistry();
 
     // Some globally unique units / constants.
     public static final Unit<Dimensionless> ONE = new ProductUnit<>();
-    public static final BigDecimal          PI  = BigDecimal.valueOf(StrictMath.PI);
 
     static {
-        Map<String, Unit<?>> units = UnitDefinitionParser.parse(UnitSystem.SI.getDefinitionFile(), unitReqistry);
+        Properties properties = loadProperties();
+        unitSystem = UnitSystem.valueOf(properties.getProperty(CONFIG_UNIT_SYSTEM_KEY));
+
+        Map<String, Unit<?>> units = UnitDefinitionParser.parse(unitSystem.getDefinitionFile(), unitReqistry);
         unitReqistry.addUnits(units);
+    }
+
+    private static Properties loadProperties() {
+        Properties properties = new Properties();
+
+        properties.setProperty(CONFIG_UNIT_SYSTEM_KEY, "SI");
+
+        try (InputStream is = Units.class.getResourceAsStream("/" + CONFIG_FILE)) {
+            if (is != null) {
+                properties.load(is);
+            }
+        } catch (IOException ignored) {}
+
+        return properties;
+    }
+
+    public static UnitSystem getUnitSystem() {
+        return unitSystem;
     }
 
     @SuppressWarnings("unchecked")

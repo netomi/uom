@@ -21,15 +21,15 @@ import tech.neidhart.uom.quantity.*;
 import tech.neidhart.uom.unit.Units;
 
 /**
- * The CGS system of units.
+ * The ESU-CGS system of units.
  */
-public final class CGS extends AbstractSystemOfUnits {
+public final class Gaussian extends AbstractSystemOfUnits {
     // hide constructor.
-    private CGS() {
-        super("CGS");
+    private Gaussian() {
+        super("Gaussian-CGS");
     }
 
-    public static final CGS INSTANCE = new CGS();
+    public static final Gaussian INSTANCE = new Gaussian();
 
     // base units
     public static final Unit<Length> CENTIMETRE = addUnit("cm", Length.class);
@@ -38,9 +38,10 @@ public final class CGS extends AbstractSystemOfUnits {
 
     public static final Unit<Force>  DYNE = addUnit("dyn", Force.class);
 
-    //public  static final Unit<?>              COULOMB_CONSTANT = SI.VOLT.multiply(SI.METRE).divide(SI.AMPERE.multiply(SECOND)).multiply(8.987551787368176E9).withName("COULOMB CONSTANT");
-    public static final Unit<ElectricCharge>  STATCOULOMB = addUnit("statC", ElectricCharge.class);
-    public static final Unit<ElectricCurrent> STATAMPERE  = addUnit("statA", ElectricCurrent.class);
+    public static final Unit<ElectricCharge>     FRANKLIN            = addUnit("Fr",    ElectricCharge.class);
+    public static final Unit<ElectricCurrent>    FRANKLIN_PER_SECOND = addUnit("Fr/s",  ElectricCurrent.class);
+    public static final Unit<ElectricPotential>  STATVOLT            = addUnit("statV", ElectricPotential.class);
+    public static final Unit<ElectricResistance> STATOHM             = addUnit("statΩ", ElectricResistance.class);
 
     // private helper methods.
 

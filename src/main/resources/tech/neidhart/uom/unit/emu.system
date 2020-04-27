@@ -1,0 +1,20 @@
+# Base unit definitions for the ESU system of units.
+cm:centimeter !L
+s:second      !T
+g:gram        !M
+# ampere is defined later on, as it is derived from statcoulomb
+K:kelvin      !Θ
+cd:candela    !J
+mol:mole      !N
+
+# redefined si base units.
+m             1e2 cm
+kg            1e3 g
+
+# specialization of certain electrical units for the EMU system of units.
+dyn:dyne          cm g / s^2
+abA:abampere      dyne^1|2
+A:ampere          1|10 abampere
+
+# include common unit definitions.
+@include common.units

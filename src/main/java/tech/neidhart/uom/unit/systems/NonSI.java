@@ -37,7 +37,6 @@ public final class NonSI extends AbstractSystemOfUnits {
     // area units
     public static final Unit<Area> ARE       = addUnit("a",        Area.class);
     public static final Unit<Area> HECTARE   = addUnit("ha",       Area.class);
-    public static final Unit<Area> SQUARE_KM = addUnit("km\u00B2", Area.class);
 
     // time units
     public static final Unit<Time>  MINUTE = addUnit("min", Time.class);

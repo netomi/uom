@@ -1,23 +1,40 @@
-# Base unit definitions for the SI system of units.
-m:meter       !L
-s:second      !T
-kg:kilogram   !M
-A:ampere      !I
-K:kelvin      !Θ
-cd:candela    !J
-mol:mole      !N
+# named SI units
 
-# redefined base units in other systems.
-cm            1e-2 m
-g             1e-3 kg
+# temperature units.
+°C:degree_celsius     K = x + 273.15
+°F:degree_fahrenheit °C = (x - 32) * 5|9
 
-# physical constants.
-c:speed_of_light   299792458 m/s
+# dimensionless units.
+rad:radian      !1
+sr:steradian    !1
 
-# specialization of certain electrical units for the SI system of units.
-C:coulomb         A s
-statC:statcoulomb 10 coulomb cm / s c
-statA:statampere  statcoulomb / s
+# mechanical unis.
+m/s:meter_per_second          m / s
+m/s²:meter_per_second_squared m / s^2
+m²:square_meter               m^2
+m³:cubic_meter                m^3
 
-# include common unit definitions.
-@include common.units
+Hz:hertz  1 / s
+
+N:newton    kg m / s^2
+Pa:pascal   N / m^2
+J:joule     N m
+W:watt      J / s
+
+lm:lumen    cd sr
+
+# electrical units
+C:coulomb   A s
+V:volt      J / C
+F:farad     C / V
+Ω:ohm       V / A
+S:siemens   1 / ohm
+H:henry     V s / A
+
+# magnetic field units.
+Wb:weber    ohm C
+T:tesla     weber / m^2
+
+# derived or commonly used prefixed units
+km:kilometer         1e3 m
+km²:square_kilometer km^2

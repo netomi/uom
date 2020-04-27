@@ -1,0 +1,15 @@
+# Base unit definitions for the SI system of units.
+m:meter       !L
+s:second      !T
+kg:kilogram   !M
+A:ampere      !I
+K:kelvin      !Θ
+cd:candela    !J
+mol:mole      !N
+
+# redefined base units in other systems.
+cm            1e-2 m
+g             1e-3 kg
+
+# include common unit definitions.
+@include common.units

@@ -1,0 +1,14 @@
+# non-SI units
+
+deg:degree    1|180 pi rad
+
+min:minute    60 s
+h:hour        60 min
+d:day         24 h
+
+nm:nautical_mile          1852 m
+km/h:kilometer_per_hour   km / h
+kt:knot                   nm / h
+
+a:are                1e2 m^2
+ha:hectare           1e4 m^2
