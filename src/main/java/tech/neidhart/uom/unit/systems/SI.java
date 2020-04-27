@@ -69,6 +69,7 @@ public final class SI extends AbstractSystemOfUnits {
     public static final Unit<ElectricCapacitance> FARAD   = addUnit("F", ElectricCapacitance.class);
     public static final Unit<ElectricResistance>  OHM     = addUnit("Ω", ElectricResistance.class);
     public static final Unit<ElectricConductance> SIEMENS = addUnit("S", ElectricConductance.class);
+    public static final Unit<ElectricInductance>  HENRY   = addUnit("H", ElectricInductance.class);
 
     // units related to the magnetic field.
     public static final Unit<MagneticFlux>       WEBER = addUnit("Wb", MagneticFlux.class);

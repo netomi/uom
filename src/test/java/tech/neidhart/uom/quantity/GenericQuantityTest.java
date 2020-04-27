@@ -94,6 +94,10 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
         assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
+
+        // Test if quantity is properly registered in class Quantities.
+        quantity = Quantities.create(100, getSystemUnit());
+        assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
     }
 
     @Test

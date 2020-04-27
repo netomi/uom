@@ -269,6 +269,7 @@ public final class Quantities {
         ELECTRIC_CHARGE(ElectricCharge.class),
         ELECTRIC_CONDUCTANCE(ElectricConductance.class),
         ELECTRIC_CURRENT(ElectricCurrent.class),
+        ELECTRIC_INDUCTANCE(ElectricInductance.class),
         ELECTRIC_POTENTIAL(ElectricPotential.class),
         ELECTRIC_RESISTANCE(ElectricResistance.class),
         ENERGY(Energy.class),

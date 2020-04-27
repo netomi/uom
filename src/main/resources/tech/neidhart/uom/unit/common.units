@@ -34,6 +34,7 @@ V:volt      J / C
 F:farad     C / V
 Ω:ohm       V / A
 S:siemens   1 / ohm
+H:henry     V s / A
 
 # magnetic field units.
 Wb:weber    ohm C
