@@ -58,6 +58,8 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *
      * @param unit the {@link Unit} to convert to.
      * @return a new {@link Quantity} with this value expressed in the given {@link Unit}.
+     * @throws IncommensurableException if the specified {@link Unit} is not compatible with
+     * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     Q to(Unit<Q> unit);
 
@@ -188,6 +190,8 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *
      * @param addend the {@link Quantity} to add to this quantity.
      * @return a new {@link Quantity} representing the sum of this and the other quantity.
+     * @throws IncommensurableException if the specified {@link Quantity} is not compatible with
+     * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     Q add(Quantity<Q> addend);
 
@@ -201,6 +205,8 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @param addend the {@link Quantity} to add to this quantity.
      * @param unit   the {@link Unit} of the resulting quantity.
      * @return a new {@link Quantity} representing the sum of this and the other quantity
+     * @throws IncommensurableException if the specified {@link Quantity} or {@link Unit} is
+     * not compatible with this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     default Q add(Quantity<Q> addend, Unit<Q> unit) {
         return this.to(unit).add(addend.to(unit));
@@ -213,6 +219,8 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *
      * @param subtrahend the {@link Quantity} to subtract from this quantity.
      * @return a new {@link Quantity} which is the result of subtracting the other quantity from this.
+     * @throws IncommensurableException if the specified {@link Quantity} is not compatible with
+     * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     Q subtract(Quantity<Q> subtrahend);
 
@@ -226,6 +234,8 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @param subtrahend the {@link Quantity} to subtract from this quantity.
      * @param unit       the {@link Unit} of the resulting quantity.
      * @return a new {@link Quantity} which is the result of subtracting the other quantity from this.
+     * @throws IncommensurableException if the specified {@link Quantity} or {@link Unit} is
+     * not compatible with this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     default Q subtract(Quantity<Q> subtrahend, Unit<Q> unit) {
         return this.to(unit).subtract(subtrahend.to(unit));

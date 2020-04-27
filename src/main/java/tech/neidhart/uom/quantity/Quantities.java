@@ -21,6 +21,7 @@ import tech.neidhart.uom.util.Proxies;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -108,7 +109,6 @@ public final class Quantities {
 
     // create methods for quantities.
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <Q extends Quantity<Q>> Q create(double value, Unit<Q> unit) {
         Class<Q> quantityType = getQuantityType(unit);
 
@@ -135,7 +135,6 @@ public final class Quantities {
         return genericFactory.create(value, (Unit) unit);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <Q extends Quantity<Q>> Q create(BigDecimal value, Unit<Q> unit) {
         Class<Q> quantityType = getQuantityType(unit);
 
@@ -157,7 +156,6 @@ public final class Quantities {
         return genericFactory.create(value, (Unit) unit);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
     public static <Q extends Quantity<Q>> Q create(BigDecimal  value,
                                                    MathContext mc,
                                                    Unit<Q>     unit) {
@@ -293,6 +291,14 @@ public final class Quantities {
         private final Class<? extends Quantity<?>> quantityType;
         private final Unit<?>                      systemUnit;
 
+        private static final Map<Class<?>, Unit<?>> quantityToSystemUnitMap = new HashMap<>();
+
+        static {
+            for (Type type : values()) {
+                quantityToSystemUnitMap.put(type.getQuantityType(), type.getSystemUnit());
+            }
+        }
+
         Type(Class<? extends Quantity<?>> quantityType) {
             this.quantityType = quantityType;
 
@@ -310,6 +316,14 @@ public final class Quantities {
 
         public Dimension getDimension() {
             return systemUnit.getDimension();
+        }
+
+        public static <Q extends Quantity<Q>> Unit<?> systemUnitFor(Class<Q> quantityType, Unit<Q> defaultUnit) {
+            if (!Quantity.class.isAssignableFrom(quantityType)) {
+                throw new IllegalArgumentException(quantityType + " is not a Quantity.");
+            }
+
+            return quantityToSystemUnitMap.getOrDefault(quantityType, defaultUnit);
         }
     }
 }

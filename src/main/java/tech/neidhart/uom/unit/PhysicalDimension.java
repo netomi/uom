@@ -48,6 +48,8 @@ import static tech.neidhart.uom.util.ConcurrentReferenceHashMap.*;
  */
 class PhysicalDimension extends Dimension {
 
+    private static final String DIMENSIONLESS_SYMBOL = "1";
+
     /**
      * An enum containing supported base dimensions.
      */
@@ -273,6 +275,8 @@ class PhysicalDimension extends Dimension {
     }
 
     private String calculateToString() {
-        return ObjectPrinter.instance().print(dimensionMap, base -> String.valueOf(base.getSymbol()));
+        return dimensionMap.isEmpty() ?
+                DIMENSIONLESS_SYMBOL :
+                ObjectPrinter.instance().print(dimensionMap, base -> String.valueOf(base.getSymbol()));
     }
 }

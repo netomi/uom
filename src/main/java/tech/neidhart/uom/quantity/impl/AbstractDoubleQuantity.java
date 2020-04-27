@@ -20,7 +20,9 @@ import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.quantity.Quantities;
+import tech.neidhart.uom.unit.Dimensions;
 import tech.neidhart.uom.unit.Units;
+import tech.neidhart.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
 
@@ -131,9 +133,18 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R extends Quantity<R>> R multiply(Quantity<?> multiplier, Class<R> quantityClass) {
-        @SuppressWarnings("unchecked")
         Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplier.getUnit()).getSystemUnit();
+
+        // special case: if the resulting unit has dimension 1, get the specific
+        // system unit for this quantity, which might be an alternative, e.g for Angle or SolidAngle.
+        if (combinedSystemUnit.getDimension() == Dimensions.NONE) {
+            Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, combinedSystemUnit);
+            TypeUtil.requireCommensurable(combinedSystemUnit, systemUnit);
+            combinedSystemUnit = systemUnit;
+        }
+
         return Quantities.create(multiplyInternal(this, multiplier), combinedSystemUnit, quantityClass);
     }
 
@@ -151,9 +162,18 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public <R extends Quantity<R>> R divide(Quantity<?> divisor, Class<R> quantityClass) {
-        @SuppressWarnings("unchecked")
         Unit<R> combinedSystemUnit = (Unit<R>) unit.divide(divisor.getUnit()).getSystemUnit();
+
+        // special case: if the resulting unit has dimension 1, get the specific
+        // system unit for this quantity, which might be an alternative, e.g for Angle or SolidAngle.
+        if (combinedSystemUnit.getDimension() == Dimensions.NONE) {
+            Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, combinedSystemUnit);
+            TypeUtil.requireCommensurable(combinedSystemUnit, systemUnit);
+            combinedSystemUnit = systemUnit;
+        }
+
         return Quantities.create(divideInternal(this, divisor), combinedSystemUnit, quantityClass);
     }
 
@@ -180,12 +200,13 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
 
     @Override
     public Q to(Unit<Q> toUnit) {
+        TypeUtil.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
         return with(converter.convert(value), toUnit);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
+    @SuppressWarnings("unchecked")
     public Q toSystemUnit() {
         if (unit.isSystemUnit()) {
             Unit<Q> namedUnit = Units.getNamedUnitIfPresent(unit);
