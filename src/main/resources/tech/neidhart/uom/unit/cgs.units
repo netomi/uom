@@ -1,6 +1,7 @@
 # units of CGS and its subsystems (ESU, EMU and Gaussian).
 
 dyn:dyne          cm g / s^2
+erg:erg           cm dyne
 
 # esu specific units.
 statC:statcoulomb 10 coulomb cm / s c

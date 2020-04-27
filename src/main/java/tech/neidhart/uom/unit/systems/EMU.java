@@ -23,20 +23,16 @@ import tech.neidhart.uom.unit.Units;
 /**
  * The ESU-CGS system of units.
  */
-public final class EMU extends AbstractSystemOfUnits {
+public final class EMU extends CGS {
     // hide constructor.
     private EMU() {
         super("EMU-CGS");
     }
 
+    // TODO: add units from CGS parent.
     public static final EMU INSTANCE = new EMU();
 
-    // base units
-    public static final Unit<Length> CENTIMETRE = addUnit("cm", Length.class);
-    public static final Unit<Mass>   GRAM       = addUnit("g",  Mass.class);
-    public static final Unit<Time>   SECOND     = addUnit("s",  Time.class);
-
-    public static final Unit<Force>  DYNE = addUnit("dyn", Force.class);
+    // electrical units.
 
     public static final Unit<ElectricCharge>     ABCOULOMB = addUnit("abC", ElectricCharge.class);
     public static final Unit<ElectricCurrent>    ABAMPERE  = addUnit("abA", ElectricCurrent.class);

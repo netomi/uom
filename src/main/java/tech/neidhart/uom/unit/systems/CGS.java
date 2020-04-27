@@ -21,23 +21,27 @@ import tech.neidhart.uom.quantity.*;
 import tech.neidhart.uom.unit.Units;
 
 /**
- * The ESU-CGS system of units.
+ * The CGS system of units.
  */
-public final class ESU extends CGS {
+public class CGS extends AbstractSystemOfUnits {
     // hide constructor.
-    private ESU() {
-        super("ESU-CGS");
+    private CGS() {
+        super("CGS");
     }
 
-    // TODO: add units from CGS parent.
-    public static final ESU INSTANCE = new ESU();
+    protected CGS(String name) {
+        super(name);
+    }
 
-    // electrical units.
+    public static final CGS INSTANCE = new CGS();
 
-    public static final Unit<ElectricCharge>     STATCOULOMB = addUnit("statC", ElectricCharge.class);
-    public static final Unit<ElectricCurrent>    STATAMPERE  = addUnit("statA", ElectricCurrent.class);
-    public static final Unit<ElectricPotential>  STATVOLT    = addUnit("statV", ElectricPotential.class);
-    public static final Unit<ElectricResistance> STATOHM     = addUnit("statΩ", ElectricResistance.class);
+    // base units
+    public static final Unit<Length> CENTIMETRE = addUnit("cm", Length.class);
+    public static final Unit<Mass>   GRAM       = addUnit("g",  Mass.class);
+    public static final Unit<Time>   SECOND     = addUnit("s",  Time.class);
+
+    public static final Unit<Force>  DYNE = addUnit("dyn", Force.class);
+    public static final Unit<Energy> ERG  = addUnit("erg", Energy.class);
 
     // private helper methods.
 

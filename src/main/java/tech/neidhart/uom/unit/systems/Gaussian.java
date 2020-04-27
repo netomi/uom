@@ -23,20 +23,16 @@ import tech.neidhart.uom.unit.Units;
 /**
  * The ESU-CGS system of units.
  */
-public final class Gaussian extends AbstractSystemOfUnits {
+public final class Gaussian extends CGS {
     // hide constructor.
     private Gaussian() {
         super("Gaussian-CGS");
     }
 
+    // TODO: add units from CGS parent.
     public static final Gaussian INSTANCE = new Gaussian();
 
-    // base units
-    public static final Unit<Length> CENTIMETRE = addUnit("cm", Length.class);
-    public static final Unit<Mass>   GRAM       = addUnit("g",  Mass.class);
-    public static final Unit<Time>   SECOND     = addUnit("s",  Time.class);
-
-    public static final Unit<Force>  DYNE = addUnit("dyn", Force.class);
+    // electrical units.
 
     public static final Unit<ElectricCharge>     FRANKLIN            = addUnit("Fr",    ElectricCharge.class);
     public static final Unit<ElectricCurrent>    FRANKLIN_PER_SECOND = addUnit("Fr/s",  ElectricCurrent.class);
