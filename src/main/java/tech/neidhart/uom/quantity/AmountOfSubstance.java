@@ -17,9 +17,10 @@ package tech.neidhart.uom.quantity;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.QuantityFactory;
+import tech.neidhart.uom.TypedQuantity;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.unit.systems.SI;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
+import tech.neidhart.uom.unit.systems.SI;
 
 /**
  * A {@link Quantity} representing a measure of an amount of substance.
@@ -28,15 +29,14 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface AmountOfSubstance extends Quantity<AmountOfSubstance> {
+public interface AmountOfSubstance extends TypedQuantity<AmountOfSubstance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link AmountOfSubstance}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
-     * with double precision ({@link DoubleQuantity}
-     * will be returned.
+     * with double precision ({@link DoubleQuantity} will be returned.
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.

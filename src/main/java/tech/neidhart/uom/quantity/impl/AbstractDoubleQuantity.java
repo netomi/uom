@@ -15,10 +15,7 @@
  */
 package tech.neidhart.uom.quantity.impl;
 
-import tech.neidhart.uom.IncommensurableException;
-import tech.neidhart.uom.Quantity;
-import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.UnitConverter;
+import tech.neidhart.uom.*;
 import tech.neidhart.uom.quantity.Quantities;
 import tech.neidhart.uom.unit.Dimensions;
 import tech.neidhart.uom.unit.Units;
@@ -35,7 +32,8 @@ import static tech.neidhart.uom.quantity.impl.GenericDoubleQuantity.ONE;
  * @author Thomas Neidhart
  */
 abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
-    implements DoubleQuantity<Q> {
+        implements DoubleQuantity<Q>,
+                   TypedQuantity<Q> {
 
     protected final double  value;
     protected final Unit<Q> unit;

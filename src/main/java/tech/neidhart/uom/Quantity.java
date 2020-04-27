@@ -61,7 +61,21 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @throws IncommensurableException if the specified {@link Unit} is not compatible with
      * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    Q to(Unit<Q> unit);
+    Quantity<Q> to(Unit<Q> unit);
+
+    /**
+     * Returns a new {@link Quantity} with its value expressed in the
+     * given {@link Unit}.
+     *
+     * @param unit the {@link Unit} to convert to.
+     * @return a new {@link Quantity} with this value expressed in the given {@link Unit}.
+     * @throws IncommensurableException if the specified {@link Unit} is not compatible with
+     * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    default Quantity<Q> toAny(Unit unit) {
+        return (Quantity<Q>) to(unit);
+    }
 
     /**
      * Returns a new {@link Quantity} with its value expressed in the
@@ -70,7 +84,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *
      * @return a new {@link Quantity} with this value expressed in the corresponding system unit.
      */
-    Q toSystemUnit();
+    Quantity<Q> toSystemUnit();
 
     /**
      * Returns the system unit of this quantity.
@@ -193,7 +207,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @throws IncommensurableException if the specified {@link Quantity} is not compatible with
      * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    Q add(Quantity<Q> addend);
+    Quantity<Q> add(Quantity<Q> addend);
 
     /**
      * Returns a new {@link Quantity} that is the result of adding the given quantity
@@ -208,7 +222,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @throws IncommensurableException if the specified {@link Quantity} or {@link Unit} is
      * not compatible with this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    default Q add(Quantity<Q> addend, Unit<Q> unit) {
+    default Quantity<Q> add(Quantity<Q> addend, Unit<Q> unit) {
         return this.to(unit).add(addend.to(unit));
     }
 
@@ -222,7 +236,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @throws IncommensurableException if the specified {@link Quantity} is not compatible with
      * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    Q subtract(Quantity<Q> subtrahend);
+    Quantity<Q> subtract(Quantity<Q> subtrahend);
 
     /**
      * Returns a new {@link Quantity} that is the result of subtracting the given quantity
@@ -237,7 +251,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @throws IncommensurableException if the specified {@link Quantity} or {@link Unit} is
      * not compatible with this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    default Q subtract(Quantity<Q> subtrahend, Unit<Q> unit) {
+    default Quantity<Q> subtract(Quantity<Q> subtrahend, Unit<Q> unit) {
         return this.to(unit).subtract(subtrahend.to(unit));
     }
 
@@ -246,7 +260,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      *
      * @return a new {@link Quantity} whose value is {@code -this}.
      */
-    Q negate();
+    Quantity<Q> negate();
 
     /**
      * Returns a quantity that is the result of multiplying this quantity with the

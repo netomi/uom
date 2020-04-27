@@ -17,9 +17,10 @@ package tech.neidhart.uom.quantity;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.QuantityFactory;
+import tech.neidhart.uom.TypedQuantity;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.unit.Units;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
+import tech.neidhart.uom.unit.Units;
 
 /**
  * A {@link Quantity} representing a measure without any phyiscal dimension.
@@ -30,15 +31,14 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface Dimensionless extends Quantity<Dimensionless> {
+public interface Dimensionless extends TypedQuantity<Dimensionless> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Dimensionless}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
-     * with double precision ({@link DoubleQuantity}
-     * will be returned.
+     * with double precision ({@link DoubleQuantity} will be returned.
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.

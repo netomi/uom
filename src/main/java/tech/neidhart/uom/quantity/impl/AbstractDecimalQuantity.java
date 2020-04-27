@@ -16,6 +16,7 @@
 package tech.neidhart.uom.quantity.impl;
 
 import tech.neidhart.uom.Quantity;
+import tech.neidhart.uom.TypedQuantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.quantity.Quantities;
@@ -33,7 +34,8 @@ import java.math.MathContext;
  * @author Thomas Neidhart
  */
 abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
-    implements DecimalQuantity<Q> {
+        implements DecimalQuantity<Q>,
+                   TypedQuantity<Q> {
 
     protected final BigDecimal  value;
     protected final MathContext mc;
@@ -214,6 +216,11 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
         TypeUtil.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
         return with(converter.convert(value, toMc), toUnit);
+    }
+
+    @Override
+    public Q toSystemUnit() {
+        return toSystemUnit(mc);
     }
 
     @Override

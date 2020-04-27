@@ -28,15 +28,14 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface Time extends Quantity<Time> {
+public interface Time extends TypedQuantity<Time> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Time}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
-     * with double precision ({@link DoubleQuantity}
-     * will be returned.
+     * with double precision ({@link DoubleQuantity} will be returned.
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
