@@ -16,6 +16,8 @@
 package tech.neidhart.uom.quantity;
 
 import tech.neidhart.uom.*;
+import tech.neidhart.uom.format.QuantityFormat;
+import tech.neidhart.uom.format.QuantityFormatter;
 import tech.neidhart.uom.quantity.impl.*;
 import tech.neidhart.uom.util.Proxies;
 
@@ -39,6 +41,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Thomas Neidhart
  */
 public final class Quantities {
+
+    private static volatile QuantityFormatter DEFAULT_FORMATTER = QuantityFormat.defaultFormatter();
 
     private static final Map<Class<? extends Quantity<?>>, QuantityFactory<?>> quantityFactories;
 
@@ -180,6 +184,17 @@ public final class Quantities {
                                                                     MathContext mc,
                                                                     Unit<Q>     unit) {
         return genericFactory.create(value, mc, (Unit) unit);
+    }
+
+    // format related methods.
+
+    public static QuantityFormatter defaultFormatter() {
+        return DEFAULT_FORMATTER;
+    }
+
+    public static void setDefaultFormatter(QuantityFormatter quantityFormatter) {
+        Objects.requireNonNull(quantityFormatter);
+        DEFAULT_FORMATTER = quantityFormatter;
     }
 
     // inner helper classes.

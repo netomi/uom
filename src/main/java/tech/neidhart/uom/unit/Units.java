@@ -52,7 +52,7 @@ public final class Units {
         }
     }
 
-    private static UnitFormatter DEFAULT_FORMATTER = UnitFormat.symbolAndDimension();
+    private static volatile UnitFormatter DEFAULT_FORMATTER = UnitFormat.symbolAndDimension();
 
     private static final UnitSystem   unitSystem;
     private static final UnitRegistry unitReqistry = new UnitRegistry();

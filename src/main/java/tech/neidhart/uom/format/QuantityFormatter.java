@@ -15,37 +15,37 @@
  */
 package tech.neidhart.uom.format;
 
-import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.Quantity;
 
 import java.io.IOException;
 
 /**
- * Formats instances of {@link Unit} to and from a String.
+ * Formats instances of {@link Quantity} to and from a String.
  *
- * Instances of {@code UnitFormatter} can be created by {@link UnitFormatterBuilder}.
+ * Instances of {@code QuantityFormatter} can be created by {@link QuantityFormatterBuilder}.
  *
  * This class is immutable and thread-safe.
  *
  * @author Thomas Neidhart
  */
-public final class UnitFormatter {
+public final class QuantityFormatter {
 
-    private final InternalFormatter<Unit<?>>[] formatters;
+    private final InternalFormatter<Quantity<?>>[] formatters;
 
-    UnitFormatter(InternalFormatter<Unit<?>>[] formatters) {
+    QuantityFormatter(InternalFormatter<Quantity<?>>[] formatters) {
         this.formatters = formatters;
     }
 
-    public String format(Unit<?> unit) throws FormatException {
+    public String format(Quantity<?> quantity) throws FormatException {
         StringBuilder stringBuilder = new StringBuilder();
-        formatTo(unit, stringBuilder);
+        formatTo(quantity, stringBuilder);
         return stringBuilder.toString();
     }
 
-    public void formatTo(Unit<?> unit, Appendable appendable) throws FormatException {
+    public void formatTo(Quantity<?> quantity, Appendable appendable) throws FormatException {
         try {
-            for (InternalFormatter<Unit<?>> formatter : formatters) {
-                formatter.format(unit, appendable);
+            for (InternalFormatter<Quantity<?>> formatter : formatters) {
+                formatter.format(quantity, appendable);
             }
         } catch (IOException ex) {
             throw new FormatException(ex);

@@ -236,6 +236,6 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
 
     @Override
     public String toString() {
-        return String.format("%e %s", doubleValue(), getUnit().getSymbol());
+        return Quantities.defaultFormatter().format(this);
     }
 }

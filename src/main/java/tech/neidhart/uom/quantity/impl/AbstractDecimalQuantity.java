@@ -256,6 +256,6 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
 
     @Override
     public String toString() {
-        return String.format("%s %s", value, unit.getSymbol());
+        return Quantities.defaultFormatter().format(this);
     }
 }
