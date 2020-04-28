@@ -371,6 +371,16 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         assertEquals(0.01002, sum.decimalValue().doubleValue(), eps);
 
         assertEquals(getKiloUnit(), sum.getUnit());
+
+        Quantity<Q> q3 = Quantities.createGeneric(10, getSystemUnit());
+        Quantity<Q> q4 = Quantities.createGeneric(20, getMilliUnit());
+
+        sum = q3.add(q4, getKiloUnit());
+
+        assertEquals(0.01002, sum.doubleValue(), eps);
+        assertEquals(0.01002, sum.decimalValue().doubleValue(), eps);
+
+        assertEquals(getKiloUnit(), sum.getUnit());
     }
 
     @ParameterizedTest
@@ -405,6 +415,16 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         Q q2 = createQuantity(20, getMilliUnit(), numberClass);
 
         Quantity<Q> diff = q1.subtract(q2, getKiloUnit());
+
+        assertEquals(0.00998, diff.doubleValue(), eps);
+        assertEquals(0.00998, diff.decimalValue().doubleValue(), eps);
+
+        assertEquals(getKiloUnit(), diff.getUnit());
+
+        Quantity<Q> q3 = createQuantity(10, numberClass);
+        Quantity<Q> q4 = createQuantity(20, getMilliUnit(), numberClass);
+
+        diff = q3.subtract(q4, getKiloUnit());
 
         assertEquals(0.00998, diff.doubleValue(), eps);
         assertEquals(0.00998, diff.decimalValue().doubleValue(), eps);
@@ -522,6 +542,10 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         assertEquals(converter.convert(123), quantity.toAny(milliUnit).decimalValue().doubleValue(), eps);
 
         assertSame(quantity, quantity.toAny(quantity.getUnit()));
+
+        quantity = Quantities.createGeneric(123, getSystemUnit());
+        assertSame(quantity, quantity.toAny(getSystemUnit()));
+        assertEquals(converter.convert(123), quantity.toAny(milliUnit).doubleValue(), eps);
     }
 
     @ParameterizedTest
@@ -553,6 +577,10 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         assertThrows(IncommensurableException.class, () -> {
             quantity.asQuantity(TestQuantity.class);
         });
+
+        assertThrows(IncommensurableException.class, () -> {
+            quantity.asQuantity(TestQuantityInvalid.class);
+        });
     }
 
     @Test
@@ -569,11 +597,13 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         assertEquals(20, quantity.doubleValue(), eps);
     }
 
-    private static interface TestQuantity extends Quantity<TestQuantity> {
+    private interface TestQuantity extends Quantity<TestQuantity> {
         @Override
         default Unit<TestQuantity> getSystemUnit() {
             return testUnit;
         }
     }
+    private interface TestQuantityInvalid extends Quantity<TestQuantityInvalid> {}
+
     private static Unit<TestQuantity> testUnit = Units.baseUnitForDimension("test", "TEST", Dimensions.ofName("TEST"));
 }

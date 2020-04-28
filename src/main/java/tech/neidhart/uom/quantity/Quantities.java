@@ -101,6 +101,16 @@ public final class Quantities {
                     if (!Quantity.class.isAssignableFrom(quantityType)) {
                         throw new IllegalArgumentException(quantityType + " is not a Quantity.");
                     }
+
+                    try {
+                        // Check if the specified quantity has overridden its getSystemUnit() method.
+                        Quantity<?> testQuantity = Proxies.delegatingProxy(new Object(), quantityType);
+                        testQuantity.getSystemUnit();
+                    } catch (Exception ex) {
+                        throw new UnsupportedOperationException(quantityType +
+                                                                " has not overridden its getSystemUnit() method.");
+                    }
+
                     return CombinedQuantityFactory.of(DoubleQuantity.factory(quantityType),
                                                       DecimalQuantity.factory(quantityType));
                 });

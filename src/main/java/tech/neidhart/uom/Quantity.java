@@ -385,11 +385,14 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
         if (quantityClass.isAssignableFrom(this.getClass())) {
             return (R) this;
         } else {
-            // FIXME: if a custom quantity has not overridden the default getSystemUnit() method
-            //        this will not detect that the quantity is incommensurable.
-            Quantity<R> quantity = Quantities.create(doubleValue(), (Unit) getUnit(), quantityClass);
-            TypeUtil.requireCommensurable(quantity, getUnit());
-            return (R) quantity;
+            try {
+                Quantity<R> quantity = Quantities.create(doubleValue(), (Unit) getUnit(), quantityClass);
+                TypeUtil.requireCommensurable(quantity, getUnit());
+                return (R) quantity;
+            } catch (UnsupportedOperationException ex) {
+                throw new IncommensurableException("Incompatible quantity class: " + quantityClass.getSimpleName() +
+                                                   " has not overridden its getSystemUnit() method.");
+            }
         }
     }
 }
