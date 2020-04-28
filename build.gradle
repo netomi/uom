@@ -34,7 +34,7 @@ sourceSets {
 }
 
 compileJava {
-    //options.compilerArgs << '-Xlint:unchecked'
+    options.compilerArgs << '-Xlint:unchecked'
 }
 
 test {

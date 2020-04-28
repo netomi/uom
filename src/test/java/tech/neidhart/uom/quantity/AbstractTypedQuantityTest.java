@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @param <Q> the quantity type
  */
-public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
+public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
 
     private static final double eps = 1e-6;
 
@@ -513,6 +513,19 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
 
     @ParameterizedTest
     @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void toAny(Class<Number> numberClass) {
+        Quantity<?> quantity = createQuantity(123, numberClass);
+
+        Unit<?> milliUnit = getSystemUnit().withPrefix(Prefixes.Metric.MILLI);
+        UnitConverter converter = Prefixes.Metric.MILLI.getUnitConverter().inverse();
+        assertEquals(converter.convert(123), quantity.toAny(milliUnit).doubleValue(), eps);
+        assertEquals(converter.convert(123), quantity.toAny(milliUnit).decimalValue().doubleValue(), eps);
+
+        assertSame(quantity, quantity.toAny(quantity.getUnit()));
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
     public void toSystemUnit(Class<Number> numberClass) {
         Unit<Q> kiloUnit = getSystemUnit().withPrefix(Prefixes.Metric.KILO);
         Q quantity = createQuantity(123, kiloUnit, numberClass);
@@ -531,6 +544,18 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
     }
 
     @Test
+    public void asQuantity() {
+        Quantity<?> quantity = createQuantity(42);
+
+        Q typedQuantity = quantity.asQuantity(getQuantityClass());
+        assertSame(quantity, typedQuantity);
+
+        assertThrows(IncommensurableException.class, () -> {
+            quantity.asQuantity(TestQuantity.class);
+        });
+    }
+
+    @Test
     public void factoryMethod() {
         Q quantity = getFactoryMethod().apply(10.0, getSystemUnit());
 
@@ -544,6 +569,11 @@ public abstract class GenericQuantityTest<Q extends Quantity<Q>> {
         assertEquals(20, quantity.doubleValue(), eps);
     }
 
-    private static interface TestQuantity extends Quantity<TestQuantity> {}
+    private static interface TestQuantity extends Quantity<TestQuantity> {
+        @Override
+        default Unit<TestQuantity> getSystemUnit() {
+            return testUnit;
+        }
+    }
     private static Unit<TestQuantity> testUnit = Units.baseUnitForDimension("test", "TEST", Dimensions.ofName("TEST"));
 }

@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Angle} quantity.
  */
-public class AngleTest extends GenericQuantityTest<Angle> {
+public class AngleTest extends AbstractTypedQuantityTest<Angle> {
 
     @Override
     protected Class<Angle> getQuantityClass() {

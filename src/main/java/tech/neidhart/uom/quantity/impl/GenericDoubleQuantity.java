@@ -28,12 +28,11 @@ class GenericDoubleQuantity extends AbstractDoubleQuantity {
         return GenericDoubleQuantity::new;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     GenericDoubleQuantity(double value, Unit unit) {
         super(value, unit);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public DoubleQuantity with(double value, Unit unit) {
         return new GenericDoubleQuantity(value, unit);

@@ -20,6 +20,7 @@ import tech.neidhart.uom.util.TypeUtil;
 import tech.neidhart.uom.unit.Units;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 /**
  * Represents a physical quantity expressed in a specific unit of measurement.
@@ -89,7 +90,7 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
     /**
      * Returns the system unit of this quantity.
      * <p>
-     * The default implementation returns {@link #getSystemUnit()} of the unit
+     * The default implementation returns the system unit of the unit
      * in which this quantity is expressed. For full type-safety when using custom
      * quantities, overwrite this method to return the correct system unit of
      * this quantity.
@@ -379,8 +380,16 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
     default <R extends Quantity<R>> R asQuantity(Class<R> quantityClass) {
-        Quantity<R> quantity = Quantities.create(doubleValue(), (Unit) getUnit(), quantityClass);
-        TypeUtil.requireCommensurable(quantity, getUnit());
-        return (R) quantity;
+        Objects.requireNonNull(quantityClass);
+
+        if (quantityClass.isAssignableFrom(this.getClass())) {
+            return (R) this;
+        } else {
+            // FIXME: if a custom quantity has not overridden the default getSystemUnit() method
+            //        this will not detect that the quantity is incommensurable.
+            Quantity<R> quantity = Quantities.create(doubleValue(), (Unit) getUnit(), quantityClass);
+            TypeUtil.requireCommensurable(quantity, getUnit());
+            return (R) quantity;
+        }
     }
 }

@@ -21,18 +21,18 @@ import tech.neidhart.uom.Unit;
 import java.math.BigDecimal;
 import java.math.MathContext;
 
+@SuppressWarnings("rawtypes")
 class GenericDecimalQuantity extends AbstractDecimalQuantity {
 
     public static <Q extends Quantity<Q>> GenericDecimalQuantityFactory<Q> factory() {
         return GenericDecimalQuantity::new;
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     GenericDecimalQuantity(BigDecimal value, MathContext mc, Unit unit) {
         super(value, mc, unit);
     }
 
-    @SuppressWarnings("rawtypes")
     @Override
     public DecimalQuantity with(BigDecimal value, MathContext mc, Unit unit) {
         return new GenericDecimalQuantity(value, mc, unit);
