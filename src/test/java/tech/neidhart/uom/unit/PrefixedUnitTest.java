@@ -15,6 +15,7 @@
  */
 package tech.neidhart.uom.unit;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import tech.neidhart.uom.Prefix;
 import tech.neidhart.uom.Unit;
@@ -123,5 +124,17 @@ public class PrefixedUnitTest {
         assertThrows(IllegalArgumentException.class, () -> {
             unit.withPrefix(Prefixes.Metric.KILO);
         });
+    }
+
+    @Test
+    public void equality() {
+        new EqualsTester()
+                .addEqualityGroup(PrefixedUnit.of(SI.CANDELA, Prefixes.Metric.CENTI))
+                .addEqualityGroup(PrefixedUnit.of(SI.LUMEN, Prefixes.Metric.CENTI))
+                .addEqualityGroup(Units.ONE)
+                .addEqualityGroup(SI.METRE)
+                .addEqualityGroup(new TransformedUnit<>(SI.CANDELA, UnitConverters.multiply(10)))
+                .addEqualityGroup("blabla")
+                .testEquals();
     }
 }

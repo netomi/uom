@@ -15,10 +15,12 @@
  */
 package tech.neidhart.uom.unit;
 
+import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.function.UnitConverters;
 import tech.neidhart.uom.quantity.Length;
+import tech.neidhart.uom.unit.systems.SI;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -57,5 +59,16 @@ public class AlternateSystemUnitTest {
         Unit<Length> prefixedUnit = unit.withPrefix(Prefixes.Metric.KILO);
         assertNotSame(unit, prefixedUnit);
         assertEquals(UnitConverters.multiply(1000), prefixedUnit.getSystemConverter());
+    }
+
+    @Test
+    public void equality() {
+        new EqualsTester()
+                .addEqualityGroup(new AlternateSystemUnit<>(Units.ONE, "rad", null), new AlternateSystemUnit<>(Units.ONE, "rad", null))
+                .addEqualityGroup(new BaseUnit<>("rad", null, Dimensions.NONE))
+                .addEqualityGroup(Units.ONE, SI.METRE.divide(SI.METRE))
+                .addEqualityGroup(new TransformedUnit<>(Units.ONE, UnitConverters.multiply(10)))
+                .addEqualityGroup("blabla")
+                .testEquals();
     }
 }
