@@ -19,8 +19,11 @@ import com.google.common.testing.EqualsTester;
 import org.junit.jupiter.api.Test;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.function.UnitConverters;
+import tech.neidhart.uom.math.Fraction;
 import tech.neidhart.uom.quantity.Length;
 import tech.neidhart.uom.unit.systems.SI;
+
+import java.util.Collections;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,6 +38,17 @@ public class AlternateSystemUnitTest {
 
         assertTrue(unit.isSystemUnit());
         assertSame(unit, unit.getSystemUnit());
+    }
+
+    @Test
+    public void baseUnits() {
+        // dimensionless alternate system units should be considered as base unit.
+        assertEquals(Collections.singletonMap(SI.RADIAN, Fraction.ONE), SI.RADIAN.getBaseUnits());
+        assertEquals(Collections.singletonMap(SI.STERADIAN, Fraction.ONE), SI.STERADIAN.getBaseUnits());
+
+        // other alternate units should only return the normal base units.
+        assertEquals(Collections.singletonMap(SI.SECOND, Fraction.of(-1)), SI.BECQUEREL.getBaseUnits());
+        assertEquals(Collections.singletonMap(SI.SECOND, Fraction.of(-1)), SI.HERTZ.getBaseUnits());
     }
 
     @Test

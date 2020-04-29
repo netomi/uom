@@ -21,6 +21,8 @@ import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.function.UnitConverters;
 import tech.neidhart.uom.math.Fraction;
 
+import java.util.Collections;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -33,6 +35,8 @@ class AlternateSystemUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     private final String    symbol;
     private final String    name;
 
+    private final Map<Unit<Q>, Fraction> baseUnitMap;
+
     static <Q extends Quantity<Q>> AlternateSystemUnit<Q> of(Unit<?> parentUnit, String symbol, String name) {
         return new AlternateSystemUnit<>(parentUnit, symbol, name);
     }
@@ -44,6 +48,10 @@ class AlternateSystemUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
 
         this.symbol = symbol;
         this.name   = name;
+
+        this.baseUnitMap = parentUnit.getDimension() == Dimensions.NONE ?
+                Collections.singletonMap(this, Fraction.ONE) :
+                null;
     }
 
     @Override
@@ -69,6 +77,13 @@ class AlternateSystemUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     @Override
     public UnitConverter getSystemConverter() {
         return UnitConverters.identity();
+    }
+
+    @Override
+    public Map<? extends Unit<?>, Fraction> getBaseUnits() {
+        return baseUnitMap != null ?
+                baseUnitMap :
+                super.getBaseUnits();
     }
 
     @Override
