@@ -308,6 +308,7 @@ public final class Quantities {
         MASS(Mass.class),
         POWER(Power.class),
         PRESSURE(Pressure.class),
+        RADIOACTIVITY(RadioActivity.class),
         SOLID_ANGLE(SolidAngle.class),
         SPEED(Speed.class),
         TEMPERATURE(Temperature.class),

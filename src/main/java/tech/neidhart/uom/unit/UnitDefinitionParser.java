@@ -15,6 +15,7 @@
  */
 package tech.neidhart.uom.unit;
 
+import tech.neidhart.uom.Dimension;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.function.UnitConverters;
@@ -33,21 +34,22 @@ class UnitDefinitionParser {
     private static final String COMMENT = "#";
     private static final String INCLUDE = "@include";
 
-    private static final String SPACE         = " ";
-    private static final String BASE_UNIT_ID  = "!";
-    private static final String MULTIPLY      = "*";
-    private static final String DIVIDE        = "/";
-    private static final String ADD           = "+";
-    private static final String SUBTRACT      = "-";
-    private static final String OPEN_BRACKET  = "(";
-    private static final String CLOSE_BRACKET = ")";
-    private static final String COLON         = ":";
-    private static final String ASSIGNMENT    = "=";
-    private static final char   EXPONENT      = '^';
-    private static final char   FRACTION      = '|';
+    private static final String SPACE          = " ";
+    private static final String BASE_UNIT_ID   = "!";
+    private static final String ALTERNATE_UNIT = "~";
+    private static final String MULTIPLY       = "*";
+    private static final String DIVIDE         = "/";
+    private static final String ADD            = "+";
+    private static final String SUBTRACT       = "-";
+    private static final String OPEN_BRACKET   = "(";
+    private static final String CLOSE_BRACKET  = ")";
+    private static final String COLON          = ":";
+    private static final String ASSIGNMENT     = "=";
+    private static final char   EXPONENT       = '^';
+    private static final char   FRACTION       = '|';
 
     private static final String DELIMITERS          = SPACE;
-    private static final String DELIMITERS_FORMULA  = SPACE + MULTIPLY + DIVIDE + OPEN_BRACKET + CLOSE_BRACKET + BASE_UNIT_ID + ASSIGNMENT;
+    private static final String DELIMITERS_FORMULA  = SPACE + MULTIPLY + DIVIDE + OPEN_BRACKET + CLOSE_BRACKET + BASE_UNIT_ID + ALTERNATE_UNIT + ASSIGNMENT;
     private static final String DELIMITERS_FUNCTION = SPACE + ADD + SUBTRACT + MULTIPLY + DIVIDE + OPEN_BRACKET + CLOSE_BRACKET;
 
     private final Map<String, Unit<?>> knownUnits;
@@ -112,16 +114,14 @@ class UnitDefinitionParser {
             return null;
         }
 
-        Unit<?> unit = parseUnitFormula(symbol, name, st);
-
-        unit = unit.withSymbol(symbol).withName(name);
-        return unit;
+        return parseUnitFormula(symbol, name, st);
     }
 
     private Unit<?> parseUnitFormula(String symbol, String name, StringTokenizer st) {
 
         Unit<?> currentUnit = Units.ONE;
         boolean multiply    = true;
+        boolean alternate   = false;
 
         while (st.hasMoreTokens()) {
             String token = st.nextToken(DELIMITERS_FORMULA);
@@ -135,6 +135,14 @@ class UnitDefinitionParser {
 
             case COMMENT:
             case CLOSE_BRACKET:
+                if (symbol != null) {
+                    currentUnit = currentUnit.withSymbol(symbol);
+                }
+
+                if (name != null) {
+                    currentUnit = currentUnit.withName(name);
+                }
+
                 return currentUnit;
 
             case DIVIDE:
@@ -151,15 +159,17 @@ class UnitDefinitionParser {
             case ASSIGNMENT:
                 UnitConverter converter = parseFunction(st);
                 currentUnit = currentUnit.transform(converter);
-                return currentUnit;
+                return currentUnit.withSymbol(symbol).withName(name);
 
             case BASE_UNIT_ID:
                 String dimensionSymbol = st.nextToken();
-                currentUnit = dimensionSymbol.equals("1") ?
-                        Units.alternateDimensionlessSystemUnit(symbol, name) :
-                        Units.baseUnitForDimension(symbol, name,
-                                                   Dimensions.getPhysicalBaseDimension(dimensionSymbol.charAt(0)));
+                Dimension dimension    = Dimensions.getPhysicalBaseDimension(dimensionSymbol.charAt(0));
+                currentUnit = Units.baseUnitForDimension(symbol, name, dimension);
                 return currentUnit;
+
+            case ALTERNATE_UNIT:
+                alternate = true;
+                continue;
 
             default:
                 break;
@@ -210,7 +220,9 @@ class UnitDefinitionParser {
             }
         }
 
-        return currentUnit;
+        return alternate ?
+                Units.alternateSystemUnit(currentUnit, symbol, name) :
+                currentUnit.withSymbol(symbol).withName(name);
     }
 
     private UnitConverter parseFunction(StringTokenizer st) {

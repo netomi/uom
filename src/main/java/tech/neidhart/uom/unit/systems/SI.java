@@ -61,6 +61,8 @@ public final class SI extends AbstractSystemOfUnits {
     public static final Unit<Energy>       JOULE  = addUnit("J",  Energy.class);
     public static final Unit<Power>        WATT   = addUnit("W",  Power.class);
 
+    public static final Unit<RadioActivity> BECQUEREL = addUnit("Bq", RadioActivity.class);
+
     public static final Unit<LuminousFlux> LUMEN  = addUnit("lm", LuminousFlux.class);
 
     // electric units.

@@ -132,6 +132,21 @@ class TransformedUnit<Q extends Quantity<Q>> extends DelegateUnit<Q> {
     }
 
     @Override
+    public int hashCode() {
+        return Objects.hash(getDelegateUnit(), getSystemConverter());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TransformedUnit)) return false;
+
+        TransformedUnit<?> otherUnit = (TransformedUnit<?>) o;
+        return Objects.equals(getDelegateUnit(),    otherUnit.getDelegateUnit()) &&
+               Objects.equals(getSystemConverter(), otherUnit.getSystemConverter());
+    }
+
+    @Override
     public String toString() {
         return symbol != null ?
                 super.toString() :

@@ -18,7 +18,6 @@ package tech.neidhart.uom;
 import tech.neidhart.uom.function.UnitConverters;
 import tech.neidhart.uom.math.Fraction;
 import tech.neidhart.uom.quantity.Quantities;
-import tech.neidhart.uom.unit.Dimensions;
 import tech.neidhart.uom.unit.UnitElement;
 import tech.neidhart.uom.unit.Units;
 import tech.neidhart.uom.util.ConcurrentReferenceHashMap;
@@ -245,9 +244,7 @@ public abstract class Unit<Q extends Quantity<Q>> {
 
     @Override
     public int hashCode() {
-        return getDimension() == Dimensions.NONE ?
-                Objects.hash(getDimension(), getSystemConverter(), getSymbol()) :
-                Objects.hash(getDimension(), getSystemConverter());
+        return Objects.hash(getDimension(), getSystemConverter());
     }
 
     @Override
@@ -255,13 +252,9 @@ public abstract class Unit<Q extends Quantity<Q>> {
         if (this == o) return true;
         if (!(o instanceof Unit)) return false;
 
-        // Two units are considered to be equal if their dimension and
-        // system converter are equal. Special case for dimensionless units:
-        // they are not considered to be equal when their symbol differs.
         Unit<?> otherUnit = (Unit<?>) o;
         return Objects.equals(getDimension(),       otherUnit.getDimension()) &&
-               Objects.equals(getSystemConverter(), otherUnit.getSystemConverter()) &&
-               (getDimension() != Dimensions.NONE || getSymbol().equals(otherUnit.getSymbol()));
+               Objects.equals(getSystemConverter(), otherUnit.getSystemConverter());
     }
 
     @Override

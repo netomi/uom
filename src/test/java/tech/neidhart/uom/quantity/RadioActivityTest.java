@@ -22,32 +22,27 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
- * Unit test for the {@link Time} quantity.
+ * Unit test for the {@link RadioActivity} quantity.
  */
-public class TimeTest extends AbstractTypedQuantityTest<Time> {
+public class RadioActivityTest extends AbstractTypedQuantityTest<RadioActivity> {
 
     @Override
-    protected Class<Time> getQuantityClass() {
-        return Time.class;
+    protected Class<RadioActivity> getQuantityClass() {
+        return RadioActivity.class;
     }
 
     @Override
-    protected Unit<Time> getSystemUnit() {
-        return SI.SECOND.getSystemUnit();
+    protected Unit<RadioActivity> getSystemUnit() {
+        return SI.BECQUEREL.getSystemUnit();
     }
 
     @Override
-    protected Unit<?> getReciprocalSystemUnit() {
-        return SI.HERTZ.getSystemUnit();
+    protected BiFunction<Double, Unit<RadioActivity>, RadioActivity> getFactoryMethod() {
+        return RadioActivity::of;
     }
 
     @Override
-    protected BiFunction<Double, Unit<Time>, Time> getFactoryMethod() {
-        return Time::of;
-    }
-
-    @Override
-    protected Function<Double, Time> getFactoryMethodForSystemUnit() {
-        return Time::ofSecond;
+    protected Function<Double, RadioActivity> getFactoryMethodForSystemUnit() {
+        return RadioActivity::ofBecquerel;
     }
 }

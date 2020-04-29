@@ -17,7 +17,6 @@ package tech.neidhart.uom.quantity.impl;
 
 import tech.neidhart.uom.*;
 import tech.neidhart.uom.quantity.Quantities;
-import tech.neidhart.uom.unit.Dimensions;
 import tech.neidhart.uom.unit.Units;
 import tech.neidhart.uom.util.TypeUtil;
 
@@ -133,17 +132,15 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     @Override
     @SuppressWarnings("unchecked")
     public <R extends Quantity<R>> R multiply(Quantity<?> multiplier, Class<R> quantityClass) {
-        Unit<R> combinedSystemUnit = (Unit<R>) unit.multiply(multiplier.getUnit()).getSystemUnit();
+        Unit<R> calculatedSystemUnit = (Unit<R>) unit.multiply(multiplier.getUnit()).getSystemUnit();
 
-        // special case: if the resulting unit has dimension 1, get the specific
-        // system unit for this quantity, which might be an alternative, e.g for Angle or SolidAngle.
-        if (combinedSystemUnit.getDimension() == Dimensions.NONE) {
-            Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, combinedSystemUnit);
-            TypeUtil.requireCommensurable(combinedSystemUnit, systemUnit);
-            combinedSystemUnit = systemUnit;
+        Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, calculatedSystemUnit);
+        if (systemUnit != calculatedSystemUnit) {
+            TypeUtil.requireCommensurable(calculatedSystemUnit, systemUnit);
+            calculatedSystemUnit = systemUnit;
         }
 
-        return Quantities.create(multiplyInternal(this, multiplier), combinedSystemUnit, quantityClass);
+        return Quantities.create(multiplyInternal(this, multiplier), calculatedSystemUnit, quantityClass);
     }
 
     private double multiplyInternal(Quantity<?> multiplicand, Quantity<?> multiplier) {
@@ -162,17 +159,15 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     @Override
     @SuppressWarnings("unchecked")
     public <R extends Quantity<R>> R divide(Quantity<?> divisor, Class<R> quantityClass) {
-        Unit<R> combinedSystemUnit = (Unit<R>) unit.divide(divisor.getUnit()).getSystemUnit();
+        Unit<R> calculatedSystemUnit = (Unit<R>) unit.divide(divisor.getUnit()).getSystemUnit();
 
-        // special case: if the resulting unit has dimension 1, get the specific
-        // system unit for this quantity, which might be an alternative, e.g for Angle or SolidAngle.
-        if (combinedSystemUnit.getDimension() == Dimensions.NONE) {
-            Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, combinedSystemUnit);
-            TypeUtil.requireCommensurable(combinedSystemUnit, systemUnit);
-            combinedSystemUnit = systemUnit;
+        Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, calculatedSystemUnit);
+        if (systemUnit != calculatedSystemUnit) {
+            TypeUtil.requireCommensurable(calculatedSystemUnit, systemUnit);
+            calculatedSystemUnit = systemUnit;
         }
 
-        return Quantities.create(divideInternal(this, divisor), combinedSystemUnit, quantityClass);
+        return Quantities.create(divideInternal(this, divisor), calculatedSystemUnit, quantityClass);
     }
 
     private double divideInternal(Quantity<?> dividend, Quantity<?> divisor) {

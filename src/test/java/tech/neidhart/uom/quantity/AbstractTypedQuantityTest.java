@@ -15,7 +15,6 @@
  */
 package tech.neidhart.uom.quantity;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -46,6 +45,10 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
     protected abstract Class<Q> getQuantityClass();
 
     protected abstract Unit<Q> getSystemUnit();
+
+    protected Unit<?> getReciprocalSystemUnit() {
+        return Units.ONE.divide(getSystemUnit());
+    }
 
     protected abstract BiFunction<Double, Unit<Q>, Q> getFactoryMethod();
 
@@ -500,7 +503,7 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         assertEquals(1. / 100., result.doubleValue(), eps);
         assertEquals(1. / 100., result.decimalValue().doubleValue(), eps);
 
-        Assertions.assertEquals(Units.ONE.divide(getSystemUnit()), result.getUnit());
+        assertEquals(getReciprocalSystemUnit(), result.getUnit());
 
         // convert to milli unit.
         Q quantityInMilli = (Q) quantity.to(getSystemUnit().withPrefix(Prefixes.Metric.MILLI));
@@ -514,8 +517,7 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         assertEquals(1. / 100., result.doubleValue(), eps);
         assertEquals(1. / 100., result.decimalValue().doubleValue(), eps);
 
-        Assertions.assertEquals(Units.ONE.divide(getSystemUnit().withPrefix(Prefixes.Metric.MILLI)).getSystemUnit(),
-                     result.getUnit());
+        assertEquals(getReciprocalSystemUnit(), result.getUnit());
     }
 
     @ParameterizedTest

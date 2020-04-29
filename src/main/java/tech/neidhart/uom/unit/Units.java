@@ -106,8 +106,8 @@ public final class Units {
         return new BaseUnit<>(symbol, name, dimension);
     }
 
-    static <Q extends Quantity<Q>> Unit<Q> alternateDimensionlessSystemUnit(String symbol, String name) {
-        return AlternateSystemUnit.of(Units.ONE, symbol, name);
+    public static <Q extends Quantity<Q>> Unit<Q> alternateSystemUnit(Unit<?> parentUnit, String symbol, String name) {
+        return AlternateSystemUnit.of(parentUnit, symbol, name);
     }
 
     // format related methods.

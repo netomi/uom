@@ -286,8 +286,11 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
     }
 
     private Map<Unit<?>, Fraction> calculateBaseUnitMap() {
-        Map<Unit<?>, Fraction> baseUnitMap = new LinkedHashMap<>();
+        if (unitElements.elements.length == 0) {
+            return Collections.emptyMap();
+        }
 
+        Map<Unit<?>, Fraction> baseUnitMap = new LinkedHashMap<>();
         for (UnitElement e : unitElements.elements) {
             Map<? extends Unit<?>, Fraction> currentMap = e.getUnit().getBaseUnits();
 
@@ -336,7 +339,7 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
         if (this == o) return true;
         if (!(o instanceof ProductUnit)) return false;
 
-        // specific equals for a product units: two units are considered
+        // specific equals for product units: two units are considered
         // to be equal if their dimension and system converter are equal.
         // additionally make sure that their unit elements are equal, this
         // is needed to distinguish between units with dimensionless components,

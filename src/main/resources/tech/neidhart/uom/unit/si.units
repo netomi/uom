@@ -5,8 +5,8 @@
 °F:degree_fahrenheit °C = (x - 32) * 5|9
 
 # dimensionless units.
-rad:radian      !1
-sr:steradian    !1
+rad:radian      ~
+sr:steradian    ~
 
 # mechanical unis.
 m/s:meter_per_second          m / s
@@ -14,7 +14,8 @@ m/s²:meter_per_second_squared m / s^2
 m²:square_meter               m^2
 m³:cubic_meter                m^3
 
-Hz:hertz  1 / s
+Hz:hertz     ~ 1 / s
+Bq:becquerel ~ 1 / s
 
 N:newton    kg m / s^2
 Pa:pascal   N / m^2
