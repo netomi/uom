@@ -23,7 +23,7 @@ import tech.neidhart.uom.function.UnitConverters;
 import tech.neidhart.uom.quantity.Frequency;
 import tech.neidhart.uom.quantity.Length;
 import tech.neidhart.uom.quantity.Temperature;
-import tech.neidhart.uom.unit.systems.Imperial;
+import tech.neidhart.uom.unit.systems.Intl;
 import tech.neidhart.uom.unit.systems.SI;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,8 +50,8 @@ public class PrefixedUnitTest {
 
         assertEquals(prefix.getSymbol() + parentUnit.getSymbol(), km.getSymbol());
         assertEquals(prefix.getName() + parentUnit.getName(), km.getName());
-        assertEquals(UnitConverters.multiply(1000, 1).andThen(parentUnit.getConverterToAny(Imperial.YARD)),
-                     km.getConverterToAny(Imperial.YARD));
+        assertEquals(UnitConverters.multiply(1000, 1).andThen(parentUnit.getConverterToAny(Intl.YARD)),
+                     km.getConverterToAny(Intl.YARD));
     }
 
     @Test
@@ -80,8 +80,8 @@ public class PrefixedUnitTest {
     public void prefixWithLinearConverter() {
         PrefixedUnit<Length> mm = PrefixedUnit.of(SI.METRE, Prefixes.Metric.MILLI);
 
-        UnitConverter withPrefix = mm.getConverterTo(Imperial.YARD);
-        UnitConverter withoutPrefix = SI.METRE.getConverterTo(Imperial.YARD);
+        UnitConverter withPrefix = mm.getConverterTo(Intl.YARD);
+        UnitConverter withoutPrefix = SI.METRE.getConverterTo(Intl.YARD);
 
         // 0.02 m converted to yd should be equal to 20 mm.
         assertEquals(withoutPrefix.convert(20 * 1e-3), withPrefix.convert(20), 1e-6);
@@ -91,8 +91,8 @@ public class PrefixedUnitTest {
         // microdegree Celsius.
         Unit<Length> µm = SI.METRE.withPrefix(Prefixes.Metric.MICRO);
 
-        withPrefix = µm.getConverterTo(Imperial.YARD);
-        withoutPrefix = SI.METRE.getConverterTo(Imperial.YARD);
+        withPrefix = µm.getConverterTo(Intl.YARD);
+        withoutPrefix = SI.METRE.getConverterTo(Intl.YARD);
 
         assertEquals(withoutPrefix.convert(10 * 1e-6), withPrefix.convert(10), 1e-6);
         assertEquals(withoutPrefix.inverse().convert(10), withPrefix.inverse().convert(10) * 1e-6, 1e-6);

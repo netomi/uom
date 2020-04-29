@@ -22,34 +22,39 @@ import tech.neidhart.uom.quantity.Length;
 import tech.neidhart.uom.unit.Units;
 
 /**
- * The US survey system of units.
+ * The US customary system of units.
  */
 public final class US extends AbstractSystemOfUnits {
     // hide constructor.
     private US() {
-        super("US Survey");
+        super("US Customary");
     }
 
     public static final US INSTANCE = new US();
 
-    private static <Q extends Quantity<Q>> Unit<Q> addUnit(Unit<?> unit, Class<Q> quantityClass) {
-        return INSTANCE.addUnitForQuantity(unit, quantityClass);
-    }
-
     // length units
-    public static final Unit<Length> FOOT  = addUnit(SI.METRE.multiply(1200, 3937).withSymbol("ft (US)").withName("FOOT (US)"), Length.class);
-    public static final Unit<Length> LINK  = addUnit(FOOT.multiply(66, 100).withSymbol("lnk (US)").withName("LINK (US)"), Length.class);
-    public static final Unit<Length> CHAIN = addUnit(FOOT.multiply(66, 1).withSymbol("ch (US)") .withName("CHAIN (US)")  , Length.class);
-    public static final Unit<Length> MILE  = addUnit(FOOT.multiply(5280, 1) .withSymbol("mi (US)") .withName("MILE (US)"), Length.class);
+    public static final Unit<Length> INCH    = addUnit("in us", Length.class);
+    public static final Unit<Length> FOOT    = addUnit("ft us", Length.class);
+    public static final Unit<Length> YARD    = addUnit("yd us", Length.class);
+    public static final Unit<Length> ROD     = addUnit("rd us", Length.class);
+    public static final Unit<Length> LINK    = addUnit("lk us", Length.class);
+    public static final Unit<Length> CHAIN   = addUnit("ch us", Length.class);
+    public static final Unit<Length> FURLONG = addUnit("fur us", Length.class);
+    public static final Unit<Length> MILE    = addUnit("mi us", Length.class);
+
+    public static final Unit<Length> FATHOM  = addUnit("fth us", Length.class);
 
     // area units
-    public static final Unit<Area> SQUARE_FOOT  = addUnit(FOOT.multiply(FOOT).withSymbol("sq ft").withName("SQUARE FOOT (US)"), Area.class);
-    public static final Unit<Area> SQUARE_LINK  = addUnit(LINK.multiply(LINK).withSymbol("sq lnk").withName("SQUARE LINK (US)"), Area.class);
-    public static final Unit<Area> SQUARE_CHAIN = addUnit(CHAIN.multiply(CHAIN).withSymbol("sq ch").withName("SQUARE CHAIN (US)"), Area.class);
-    public static final Unit<Area> ACRE         = addUnit(SQUARE_CHAIN.multiply(10, 1).withSymbol("ac").withName("ACRE (US)"), Area.class);
-    public static final Unit<Area> SQUARE_MILE  = addUnit(MILE.multiply(MILE).withSymbol("sq mi").withName("SQUARE MILE (US)"), Area.class);
+    public static final Unit<Area> SQUARE_FOOT  = addUnit("sq ft us", Area.class);
+    public static final Unit<Area> SQUARE_ROD   = addUnit("sq rd us", Area.class);
+    public static final Unit<Area> SQUARE_CHAIN = addUnit("sq ch us", Area.class);
 
-    static {
-        Units.register(INSTANCE);
+    public static final Unit<Area> ACRE         = addUnit("ac us",    Area.class);
+    public static final Unit<Area> SQUARE_MILE  = addUnit("sq mi us", Area.class);
+
+    // private helper methods.
+
+    private static <Q extends Quantity<Q>> Unit<Q> addUnit(String symbol, Class<Q> quantityClass) {
+        return INSTANCE.addUnitForQuantity(Units.get(symbol, quantityClass), quantityClass);
     }
 }

@@ -104,7 +104,7 @@ class UnitDefinitionParser {
 
         String[] symbolAndName = st.nextToken().split(COLON);
 
-        String symbol = symbolAndName[0];
+        String symbol = symbolAndName[0].replaceAll("_", " ");
         String name   = symbolAndName.length > 1 ? symbolAndName[1].replaceAll("_", " ") : symbol;
 
         // if we have already parsed a unit with the same name, ignore it.
@@ -296,7 +296,9 @@ class UnitDefinitionParser {
     }
 
     private Unit<?> getUnit(String symbolicName) {
-        Unit<?> unit = parsedUnits.getOrDefault(symbolicName, knownUnits.get(symbolicName));
+        // FIXME: make this more sane to avoid the need to replace _
+        String name = symbolicName.replaceAll("_", " ");
+        Unit<?> unit = parsedUnits.getOrDefault(name, knownUnits.get(name));
         if (unit == null) {
             throw new RuntimeException("undefined unit with name " + symbolicName);
         }

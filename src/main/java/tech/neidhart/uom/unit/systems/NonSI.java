@@ -31,9 +31,6 @@ public final class NonSI extends AbstractSystemOfUnits {
 
     public static final NonSI INSTANCE = new NonSI();
 
-    // length units
-    public static final Unit<Length> NAUTICAL_MILE = addUnit("nm", Length.class);
-
     // area units
     public static final Unit<Area> ARE       = addUnit("a",        Area.class);
     public static final Unit<Area> HECTARE   = addUnit("ha",       Area.class);
@@ -47,7 +44,6 @@ public final class NonSI extends AbstractSystemOfUnits {
 
     // speed units
     public static final Unit<Speed> KMH  = addUnit("km/h", Speed.class);
-    public static final Unit<Speed> KNOT = addUnit("kt",   Speed.class);
 
     // temperature units
     public static final Unit<Temperature> FAHRENHEIT = addUnit("°F", Temperature.class);

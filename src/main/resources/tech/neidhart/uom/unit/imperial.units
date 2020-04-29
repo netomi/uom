@@ -1,0 +1,48 @@
+# international customary units
+
+in:inch            2.54 cm
+th:thou          1|1000 inch
+ft:foot              12 inch
+yd:yard               3 foot
+ch:chain             22 yard
+fur:furlong          10 chain
+mi:mile               8 furlong
+lea:league            3 mile
+
+fth:fathom            6 foot
+cable:cable         100 fathom
+nmi:nautical_mile    10 cable
+
+kt:knot                 nmi / h
+
+sq_in:square_inch        in^2 # [sin_i] in UCUM
+sq_ft:square_foot        ft^2 # [sft_i] in UCUM
+sq_yd:square_yard        yd^2 # [syd_i] in UCUM
+sq_ch:square_chain       ch^2
+sq_mi:square_mile        mi^2
+ac:acre                  furlong chain
+
+lb:pound      0.45359237 kg
+oz:ounce            1|16 pound
+gr:grain          1|7000 pound
+
+
+# US customary units
+
+ft_us:foot_(US)                  1200|3937 m
+in_us:inch_(US)                       1|12 ft_us
+yd_us:yard_(US)                          3 ft_us
+rd_us:rod_(US)                        16.5 ft_us
+ch_us:surveyor's_chain_(US)              4 rd_us
+lk_us:link_for_gunter's_chain_(US)   1|100 ch_us
+fur_us:furlong_(US)                     40 rd_us
+mi_us:mile_(US)                          8 fur_us
+
+fth_us:fathom_(US)                       6 ft_us
+
+sq_in_us:square_inch_(US)                  in_us^2
+sq_ft_us:square_foot_(US)              144 sq_in_us
+sq_rd_us:square_rod_(US)                   rd_us^2
+sq_ch_us:square_chain_(US)              16 sq_rd_us
+ac_us:acre_(US)                        160 rd_us^2
+sq_mi_us:square_mile_(US)                  mi_us^2
