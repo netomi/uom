@@ -52,7 +52,7 @@ Conversion of units between different system of units, e.g. SI and CGS
 
 ```java
 ElectricCharge e1 = ElectricCharge.of(1, SI.COULOMB);
-ElectricCharge e2 = e1.to(CGS.STATCOULOMB);
+ElectricCharge e2 = e1.to(ESU.STATCOULOMB);
 
 System.out.println(e2);
 ```
