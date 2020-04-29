@@ -64,6 +64,8 @@ public final class SI extends AbstractSystemOfUnits {
     public static final Unit<RadioActivity> BECQUEREL = addUnit("Bq", RadioActivity.class);
 
     public static final Unit<LuminousFlux> LUMEN  = addUnit("lm", LuminousFlux.class);
+    public static final Unit<Illuminance>  LUX    = addUnit("lux", Illuminance.class);
+
 
     // electric units.
     public static final Unit<ElectricCharge>      COULOMB = addUnit("C", ElectricCharge.class);

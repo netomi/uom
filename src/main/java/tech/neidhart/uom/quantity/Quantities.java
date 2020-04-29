@@ -300,6 +300,7 @@ public final class Quantities {
         ENERGY(Energy.class),
         FORCE(Force.class),
         FREQUENCY(Frequency.class),
+        ILLUMINANCE(Illuminance.class),
         LENGTH(Length.class),
         LUMINOUS_FLUX(LuminousFlux.class),
         LUMINOUS_INTENSITY(LuminousIntensity.class),

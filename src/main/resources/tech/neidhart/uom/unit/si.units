@@ -23,6 +23,7 @@ J:joule     N m
 W:watt      J / s
 
 lm:lumen    cd sr
+lux:lux     lumen / m^2
 
 # electrical units
 C:coulomb   A s
