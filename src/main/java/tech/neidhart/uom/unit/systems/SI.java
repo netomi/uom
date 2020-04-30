@@ -18,6 +18,22 @@ package tech.neidhart.uom.unit.systems;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.quantity.*;
+import tech.neidhart.uom.quantity.electromagnetic.*;
+import tech.neidhart.uom.quantity.kinematic.Acceleration;
+import tech.neidhart.uom.quantity.Frequency;
+import tech.neidhart.uom.quantity.kinematic.Speed;
+import tech.neidhart.uom.quantity.Energy;
+import tech.neidhart.uom.quantity.mechanical.Area;
+import tech.neidhart.uom.quantity.mechanical.Force;
+import tech.neidhart.uom.quantity.mechanical.Power;
+import tech.neidhart.uom.quantity.mechanical.Volume;
+import tech.neidhart.uom.quantity.molar.AmountOfSubstance;
+import tech.neidhart.uom.quantity.nuclear.RadioActivity;
+import tech.neidhart.uom.quantity.photometric.Illuminance;
+import tech.neidhart.uom.quantity.photometric.LuminousFlux;
+import tech.neidhart.uom.quantity.photometric.LuminousIntensity;
+import tech.neidhart.uom.quantity.thermodynamic.Pressure;
+import tech.neidhart.uom.quantity.thermodynamic.Temperature;
 import tech.neidhart.uom.unit.Units;
 
 /**

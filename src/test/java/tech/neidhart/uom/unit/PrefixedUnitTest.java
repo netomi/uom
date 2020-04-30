@@ -23,7 +23,7 @@ import tech.neidhart.uom.UnitConverter;
 import tech.neidhart.uom.function.UnitConverters;
 import tech.neidhart.uom.quantity.Frequency;
 import tech.neidhart.uom.quantity.Length;
-import tech.neidhart.uom.quantity.Temperature;
+import tech.neidhart.uom.quantity.thermodynamic.Temperature;
 import tech.neidhart.uom.unit.systems.Intl;
 import tech.neidhart.uom.unit.systems.SI;
 

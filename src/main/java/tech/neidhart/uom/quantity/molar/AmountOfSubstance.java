@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.neidhart.uom.quantity;
+package tech.neidhart.uom.quantity.molar;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.QuantityFactory;
+import tech.neidhart.uom.TypedQuantity;
 import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.quantity.Quantities;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
 import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of distance which is a synonym for length.
+ * A {@link Quantity} representing a measure of an amount of substance.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Distance">Wikipedia: Distance</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Amount_of_substance">Wikipedia: Amount of substance</a>
  *
  * @author Thomas Neidhart
  */
-public interface Distance extends Length {
+public interface AmountOfSubstance extends TypedQuantity<AmountOfSubstance, AmountOfSubstance> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Distance}.
+     * Convenience method to create a {@link Quantity} of type {@link AmountOfSubstance}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -39,13 +41,18 @@ public interface Distance extends Length {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Distance} instance for the given value.
+     * @return a new {@link AmountOfSubstance} instance for the given value.
      */
-    static Distance of(double value, Unit<Length> unit) {
-        return Quantities.create(value, unit, Distance.class);
+    static AmountOfSubstance of(double value, Unit<AmountOfSubstance> unit) {
+        return Quantities.create(value, unit, AmountOfSubstance.class);
     }
 
-    static Distance ofMeter(double value) {
-        return of(value, SI.METRE);
+    static AmountOfSubstance ofMole(double value) {
+        return of(value, SI.MOLE);
+    }
+
+    @Override
+    default Unit<AmountOfSubstance> getSystemUnit() {
+        return SI.MOLE.getSystemUnit();
     }
 }

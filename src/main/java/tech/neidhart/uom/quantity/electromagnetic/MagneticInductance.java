@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.neidhart.uom.quantity;
+package tech.neidhart.uom.quantity.electromagnetic;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.QuantityFactory;
+import tech.neidhart.uom.TypedQuantity;
 import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.quantity.Quantities;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
 import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of distance which is a synonym for length.
+ * A {@link Quantity} representing a measure of a magnetic inductance or magnetic flux density.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Distance">Wikipedia: Distance</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Magnetic_field">Wikipedia: Magnetic field</a>
  *
  * @author Thomas Neidhart
  */
-public interface Distance extends Length {
+public interface MagneticInductance extends TypedQuantity<MagneticInductance, MagneticInductance> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Distance}.
+     * Convenience method to create a {@link Quantity} of type {@link MagneticInductance}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -39,13 +41,18 @@ public interface Distance extends Length {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Distance} instance for the given value.
+     * @return a new {@link MagneticInductance} instance for the given value.
      */
-    static Distance of(double value, Unit<Length> unit) {
-        return Quantities.create(value, unit, Distance.class);
+    static MagneticInductance of(double value, Unit<MagneticInductance> unit) {
+        return Quantities.create(value, unit, MagneticInductance.class);
     }
 
-    static Distance ofMeter(double value) {
-        return of(value, SI.METRE);
+    static MagneticInductance ofTesla(double value) {
+        return of(value, SI.TESLA);
+    }
+
+    @Override
+    default Unit<MagneticInductance> getSystemUnit() {
+        return SI.TESLA.getSystemUnit();
     }
 }

@@ -17,10 +17,10 @@ package tech.neidhart.uom.unit.systems;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.quantity.Area;
+import tech.neidhart.uom.quantity.mechanical.Area;
 import tech.neidhart.uom.quantity.Length;
 import tech.neidhart.uom.quantity.Mass;
-import tech.neidhart.uom.quantity.Speed;
+import tech.neidhart.uom.quantity.kinematic.Speed;
 import tech.neidhart.uom.unit.Units;
 
 /**

@@ -17,7 +17,10 @@ package tech.neidhart.uom.unit.systems;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.quantity.*;
+import tech.neidhart.uom.quantity.electromagnetic.ElectricCharge;
+import tech.neidhart.uom.quantity.electromagnetic.ElectricCurrent;
+import tech.neidhart.uom.quantity.electromagnetic.ElectricPotential;
+import tech.neidhart.uom.quantity.electromagnetic.ElectricResistance;
 import tech.neidhart.uom.unit.Units;
 
 /**

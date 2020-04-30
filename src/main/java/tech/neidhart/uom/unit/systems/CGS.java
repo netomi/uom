@@ -18,6 +18,8 @@ package tech.neidhart.uom.unit.systems;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.quantity.*;
+import tech.neidhart.uom.quantity.Energy;
+import tech.neidhart.uom.quantity.mechanical.Force;
 import tech.neidhart.uom.unit.Units;
 
 /**

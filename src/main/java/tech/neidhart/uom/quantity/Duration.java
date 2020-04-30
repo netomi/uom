@@ -22,16 +22,16 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
 import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of distance which is a synonym for length.
+ * A {@link Quantity} representing a measure of time.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Distance">Wikipedia: Distance</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Time">Wikipedia: Time</a>
  *
  * @author Thomas Neidhart
  */
-public interface Distance extends Length {
+public interface Duration extends Time {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Distance}.
+     * Convenience method to create a {@link Quantity} of type {@link Duration}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -39,13 +39,13 @@ public interface Distance extends Length {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Distance} instance for the given value.
+     * @return a new {@link Duration} instance for the given value.
      */
-    static Distance of(double value, Unit<Length> unit) {
-        return Quantities.create(value, unit, Distance.class);
+    static Duration of(double value, Unit<Time> unit) {
+        return Quantities.create(value, unit, Duration.class);
     }
 
-    static Distance ofMeter(double value) {
-        return of(value, SI.METRE);
+    static Duration ofSecond(double value) {
+        return of(value, SI.SECOND);
     }
 }

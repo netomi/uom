@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.neidhart.uom.quantity;
+package tech.neidhart.uom.quantity.mechanical;
 
+import tech.neidhart.uom.*;
+import tech.neidhart.uom.quantity.Quantities;
+import tech.neidhart.uom.unit.systems.SI;
 import tech.neidhart.uom.Quantity;
-import tech.neidhart.uom.QuantityFactory;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
-import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of distance which is a synonym for length.
+ * A {@link Quantity} representing a measure of an area.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Distance">Wikipedia: Distance</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Area">Wikipedia: Area</a>
  *
  * @author Thomas Neidhart
  */
-public interface Distance extends Length {
+public interface Area extends TypedQuantity<Area, Area> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Distance}.
+     * Convenience method to create a {@link Quantity} of type {@link Area}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -39,13 +40,18 @@ public interface Distance extends Length {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Distance} instance for the given value.
+     * @return a new {@link Area} instance for the given value.
      */
-    static Distance of(double value, Unit<Length> unit) {
-        return Quantities.create(value, unit, Distance.class);
+    static Area of(double value, Unit<Area> unit) {
+        return Quantities.create(value, unit, Area.class);
     }
 
-    static Distance ofMeter(double value) {
-        return of(value, SI.METRE);
+    static Area ofSquareMeter(double value) {
+        return of(value, SI.SQUARE_METER);
+    }
+
+    @Override
+    default Unit<Area> getSystemUnit() {
+        return SI.SQUARE_METER.getSystemUnit();
     }
 }

@@ -13,25 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package tech.neidhart.uom.quantity;
+package tech.neidhart.uom.quantity.mechanical;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.QuantityFactory;
+import tech.neidhart.uom.TypedQuantity;
 import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.quantity.Quantities;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
 import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of distance which is a synonym for length.
+ * A {@link Quantity} representing a measure of power.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Distance">Wikipedia: Distance</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Power_(physics)">Wikipedia: Power (Physics)</a>
  *
  * @author Thomas Neidhart
  */
-public interface Distance extends Length {
+public interface Power extends TypedQuantity<Power, Power> {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Distance}.
+     * Convenience method to create a {@link Quantity} of type {@link Power}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -39,13 +41,18 @@ public interface Distance extends Length {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Distance} instance for the given value.
+     * @return a new {@link Power} instance for the given value.
      */
-    static Distance of(double value, Unit<Length> unit) {
-        return Quantities.create(value, unit, Distance.class);
+    static Power of(double value, Unit<Power> unit) {
+        return Quantities.create(value, unit, Power.class);
     }
 
-    static Distance ofMeter(double value) {
-        return of(value, SI.METRE);
+    static Power ofWatt(double value) {
+        return of(value, SI.WATT);
+    }
+
+    @Override
+    default Unit<Power> getSystemUnit() {
+        return SI.WATT.getSystemUnit();
     }
 }

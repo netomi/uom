@@ -19,6 +19,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.quantity.kinematic.Speed;
 import tech.neidhart.uom.unit.systems.SI;
 
 import java.math.BigDecimal;

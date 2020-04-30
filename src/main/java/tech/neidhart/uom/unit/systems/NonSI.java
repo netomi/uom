@@ -18,6 +18,9 @@ package tech.neidhart.uom.unit.systems;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.quantity.*;
+import tech.neidhart.uom.quantity.kinematic.Speed;
+import tech.neidhart.uom.quantity.mechanical.Area;
+import tech.neidhart.uom.quantity.thermodynamic.Temperature;
 import tech.neidhart.uom.unit.Units;
 
 /**
