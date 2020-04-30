@@ -17,10 +17,7 @@ package tech.neidhart.uom.unit.systems;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricCharge;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricCurrent;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricPotential;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricResistance;
+import tech.neidhart.uom.quantity.electromagnetic.*;
 import tech.neidhart.uom.unit.Units;
 
 /**
@@ -37,10 +34,11 @@ public final class EMU extends CGS {
 
     // electrical units.
 
-    public static final Unit<ElectricCharge>     ABCOULOMB = addUnit("abC", ElectricCharge.class);
-    public static final Unit<ElectricCurrent>    ABAMPERE  = addUnit("abA", ElectricCurrent.class);
-    public static final Unit<ElectricPotential>  ABVOLT    = addUnit("abV", ElectricPotential.class);
-    public static final Unit<ElectricResistance> ABOHM     = addUnit("abΩ", ElectricResistance.class);
+    public static final Unit<ElectricCharge>      ABCOULOMB = addUnit("abC", ElectricCharge.class);
+    public static final Unit<ElectricCurrent>     ABAMPERE  = addUnit("abA", ElectricCurrent.class);
+    public static final Unit<ElectricPotential>   ABVOLT    = addUnit("abV", ElectricPotential.class);
+    public static final Unit<ElectricResistance>  ABOHM     = addUnit("abΩ", ElectricResistance.class);
+    public static final Unit<ElectricCapacitance> ABFARAD   = addUnit("abF", ElectricCapacitance.class);
 
     // private helper methods.
 

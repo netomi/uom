@@ -17,10 +17,7 @@ package tech.neidhart.uom.unit.systems;
 
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricCharge;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricCurrent;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricPotential;
-import tech.neidhart.uom.quantity.electromagnetic.ElectricResistance;
+import tech.neidhart.uom.quantity.electromagnetic.*;
 import tech.neidhart.uom.unit.Units;
 
 /**
@@ -37,10 +34,11 @@ public final class Gaussian extends CGS {
 
     // electrical units.
 
-    public static final Unit<ElectricCharge>     FRANKLIN            = addUnit("Fr",    ElectricCharge.class);
-    public static final Unit<ElectricCurrent>    FRANKLIN_PER_SECOND = addUnit("Fr/s",  ElectricCurrent.class);
-    public static final Unit<ElectricPotential>  STATVOLT            = addUnit("statV", ElectricPotential.class);
-    public static final Unit<ElectricResistance> STATOHM             = addUnit("statΩ", ElectricResistance.class);
+    public static final Unit<ElectricCharge>      FRANKLIN            = addUnit("Fr",    ElectricCharge.class);
+    public static final Unit<ElectricCurrent>     FRANKLIN_PER_SECOND = addUnit("Fr/s",  ElectricCurrent.class);
+    public static final Unit<ElectricPotential>   STATVOLT            = addUnit("statV", ElectricPotential.class);
+    public static final Unit<ElectricResistance>  STATOHM             = addUnit("statΩ", ElectricResistance.class);
+    public static final Unit<ElectricCapacitance> STATFARAD           = addUnit("statF", ElectricCapacitance.class);
 
     // private helper methods.
 

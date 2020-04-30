@@ -18,6 +18,7 @@ package tech.neidhart.uom.util;
 import tech.neidhart.uom.IncommensurableException;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.unit.Units;
 
 /**
  * A utility to perform type / dimension checks between entities like {@link Quantity} and {@link Unit}.
@@ -62,7 +63,16 @@ public final class TypeUtil {
      * @throws IncommensurableException if the two objects are not compatible.
      */
     public static void requireCommensurable(Quantity<?> quantity, Unit<?> unit) {
-        if (!quantity.isCompatible(unit)) {
+        Units.UnitSystem system = Units.getUnitSystem();
+
+        // When using SI system of units, we enable full commensurable checks,
+        // otherwise we resort to a simple dimension check.
+
+        boolean compatible = system == Units.UnitSystem.SI ?
+                quantity.isCompatible(unit) :
+                quantity.getUnit().isCompatible(unit);
+
+        if (!compatible) {
             throw new IncommensurableException(ERROR_UNIT_QUANTITY_DIMENSION_MISMATCH,
                                                unit.getSymbol(),
                                                unit.getName(),
