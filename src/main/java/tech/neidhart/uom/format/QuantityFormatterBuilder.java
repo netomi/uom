@@ -41,9 +41,9 @@ public final class QuantityFormatterBuilder {
 
     public QuantityFormatterBuilder appendValue(NumberFormat format) {
         formatters.add((quantity, appendable) -> {
-            if (quantity instanceof DoubleQuantity<?>) {
+            if (quantity instanceof DoubleQuantity<?, ?>) {
                 appendable.append(format.format(quantity.doubleValue()));
-            } else if (quantity instanceof DecimalQuantity<?>) {
+            } else if (quantity instanceof DecimalQuantity<?, ?>) {
                 appendable.append(format.format(quantity.decimalValue()));
             } else {
                 throw new UnsupportedOperationException("unsupported quantity class: " + quantity.getClass());
@@ -67,6 +67,7 @@ public final class QuantityFormatterBuilder {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public QuantityFormatter toFormatter() {
         return new QuantityFormatter(formatters.toArray(new InternalFormatter[0]));
     }

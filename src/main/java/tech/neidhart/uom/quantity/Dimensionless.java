@@ -31,7 +31,7 @@ import tech.neidhart.uom.unit.Units;
  *
  * @author Thomas Neidhart
  */
-public interface Dimensionless extends TypedQuantity<Dimensionless> {
+public interface Dimensionless extends TypedQuantity<Dimensionless, Dimensionless> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Dimensionless}.

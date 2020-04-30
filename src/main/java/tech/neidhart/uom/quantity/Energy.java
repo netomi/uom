@@ -28,7 +28,7 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface Energy extends TypedQuantity<Energy> {
+public interface Energy extends TypedQuantity<Energy, Energy> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Energy}.

@@ -15,23 +15,23 @@
  */
 package tech.neidhart.uom.quantity;
 
-import tech.neidhart.uom.*;
-import tech.neidhart.uom.unit.systems.SI;
 import tech.neidhart.uom.Quantity;
+import tech.neidhart.uom.QuantityFactory;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.quantity.impl.DoubleQuantity;
+import tech.neidhart.uom.unit.systems.SI;
 
 /**
- * A {@link Quantity} representing a measure of time.
+ * A {@link Quantity} representing a measure of distance.
  *
- * @see <a href="https://en.wikipedia.org/wiki/Time">Wikipedia: Time</a>
+ * @see <a href="https://en.wikipedia.org/wiki/Length">Wikipedia: Length</a>
  *
  * @author Thomas Neidhart
  */
-public interface Time extends TypedQuantity<Time, Time> {
+public interface Distance extends Length {
 
     /**
-     * Convenience method to create a {@link Quantity} of type {@link Time}.
+     * Convenience method to create a {@link Quantity} of type {@link Distance}.
      * <p>
      * The registered {@link QuantityFactory} in the class {@link Quantities}
      * is used to generate the concrete implementation, by default a quantity
@@ -39,23 +39,26 @@ public interface Time extends TypedQuantity<Time, Time> {
      *
      * @param value the quantity value, expressed in the given unit.
      * @param unit  the unit corresponding to the value.
-     * @return a new {@link Time} instance for the given value.
+     * @return a new {@link Distance} instance for the given value.
      */
-    static Time of(double value, Unit<Time> unit) {
-        return Quantities.create(value, unit, Time.class);
+    static Distance of(double value, Unit<Length> unit) {
+        return Quantities.create(value, unit, Distance.class);
     }
 
-    static Time ofSecond(double value) {
-        return of(value, SI.SECOND);
+    static Distance ofMeter(double value) {
+        return of(value, SI.METRE);
     }
 
-    @Override
-    default Unit<Time> getSystemUnit() {
-        return SI.SECOND.getSystemUnit();
-    }
+//    @Override
+//    default Unit<Length> getSystemUnit() {
+//        return SI.METRE.getSystemUnit();
+//    }
 
-    @Override
-    default Frequency reciprocal() {
-        return one().divide(this, Frequency.class);
-    }
+//    default Area multiply(Distance multiplicand) {
+//        return multiply(multiplicand, Area.class);
+//    }
+//
+//    default Speed divide(Time divisor) {
+//        return divide(divisor, Speed.class);
+//    }
 }

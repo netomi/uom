@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricCharge extends TypedQuantity<ElectricCharge> {
+public interface ElectricCharge extends TypedQuantity<ElectricCharge, ElectricCharge> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricCharge}.

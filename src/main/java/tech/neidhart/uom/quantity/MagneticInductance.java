@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface MagneticInductance extends TypedQuantity<MagneticInductance> {
+public interface MagneticInductance extends TypedQuantity<MagneticInductance, MagneticInductance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link MagneticInductance}.

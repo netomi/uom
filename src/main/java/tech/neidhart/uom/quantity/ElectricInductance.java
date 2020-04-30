@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricInductance extends TypedQuantity<ElectricInductance> {
+public interface ElectricInductance extends TypedQuantity<ElectricInductance, ElectricInductance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricInductance}.

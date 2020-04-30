@@ -22,20 +22,20 @@ import tech.neidhart.uom.util.TypeUtil;
 
 import java.util.Objects;
 
-class ProxyDoubleQuantity<Q extends Quantity<Q>> extends AbstractDoubleQuantity<Q> {
+class ProxyDoubleQuantity<P extends Q, Q extends Quantity<Q>> extends AbstractDoubleQuantity<P, Q> {
 
-    private final Class<Q> quantityClass;
+    private final Class<P> quantityClass;
 
-    public static <Q extends Quantity<Q>> DoubleQuantityFactory<Q> factory(Class<Q> quantityClass) {
+    public static <P extends Q, Q extends Quantity<Q>> DoubleQuantityFactory<P, Q> factory(Class<P> quantityClass) {
         return (value, unit) -> {
-            ProxyDoubleQuantity<Q> proxyImpl = new ProxyDoubleQuantity<>(value, unit, quantityClass);
-            Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DoubleQuantity.class);
+            ProxyDoubleQuantity<P, Q> proxyImpl = new ProxyDoubleQuantity<>(value, unit, quantityClass);
+            P proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DoubleQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };
     }
 
-    ProxyDoubleQuantity(double value, Unit<Q> unit, Class<Q> quantityClass) {
+    ProxyDoubleQuantity(double value, Unit<Q> unit, Class<P> quantityClass) {
         super(value, unit);
 
         Objects.requireNonNull(quantityClass);
@@ -43,7 +43,12 @@ class ProxyDoubleQuantity<Q extends Quantity<Q>> extends AbstractDoubleQuantity<
     }
 
     @Override
-    public Q with(double value, Unit<Q> unit) {
+    protected Class<?> getQuantityClass() {
+        return quantityClass;
+    }
+
+    @Override
+    public P with(double value, Unit<Q> unit) {
         return factory(quantityClass).create(value, unit);
     }
 }

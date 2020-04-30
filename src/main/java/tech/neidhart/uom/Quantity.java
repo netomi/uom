@@ -15,12 +15,9 @@
  */
 package tech.neidhart.uom;
 
-import tech.neidhart.uom.quantity.Quantities;
-import tech.neidhart.uom.util.TypeUtil;
 import tech.neidhart.uom.unit.Units;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 /**
  * Represents a physical quantity expressed in a specific unit of measurement.
@@ -367,32 +364,16 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
     Quantity<Q> zero();
 
     /**
-     * Performs a cast of this quantity to the specified quantity.
+     * Returns this {@link Quantity} as the specified typed quantity class.
      * <p>
      * It is verified if the quantity expressed in its unit is compatible
      * with the specified quantity type. If they are incompatible, an
      * {@link IncommensurableException} is thrown.
      *
-     * @param quantityClass the quantity class to which this quantity should be cast.
+     * @param quantityType the quantity type to which this quantity should be cast.
      * @param <R> the quantity type
      * @return this quantity cast as the requested quantity type.
      * @throws IncommensurableException if this quantity is not compatible with the requested quantity type.
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    default <R extends Quantity<R>> R asQuantity(Class<R> quantityClass) {
-        Objects.requireNonNull(quantityClass);
-
-        if (quantityClass.isAssignableFrom(this.getClass())) {
-            return (R) this;
-        } else {
-            try {
-                Quantity<R> quantity = Quantities.create(doubleValue(), (Unit) getUnit(), quantityClass);
-                TypeUtil.requireCommensurable(quantity, getUnit());
-                return (R) quantity;
-            } catch (UnsupportedOperationException ex) {
-                throw new IncommensurableException("Incompatible quantity class: " + quantityClass.getSimpleName() +
-                                                   " has not overridden its getSystemUnit() method.");
-            }
-        }
-    }
+    <R extends S, S extends Quantity<S>> R asQuantity(Class<R> quantityType);
 }

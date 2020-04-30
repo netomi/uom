@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Force extends TypedQuantity<Force> {
+public interface Force extends TypedQuantity<Force, Force> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Force}.

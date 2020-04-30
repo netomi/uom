@@ -25,17 +25,16 @@ import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit test for the {@link Length} quantity.
+ * Unit test for the {@link Distance} quantity.
  */
-public class LengthTest extends AbstractTypedQuantityTest<Length, Length> {
+public class DistanceTest extends AbstractTypedQuantityTest<Distance, Length> {
 
     @Override
-    protected Class<Length> getQuantityClass() {
-        return Length.class;
+    protected Class<Distance> getQuantityClass() {
+        return Distance.class;
     }
 
     @Override
@@ -44,13 +43,18 @@ public class LengthTest extends AbstractTypedQuantityTest<Length, Length> {
     }
 
     @Override
-    protected BiFunction<Double, Unit<Length>, Length> getFactoryMethod() {
-        return Length::of;
+    protected BiFunction<Double, Unit<Length>, Distance> getFactoryMethod() {
+        return Distance::of;
     }
 
     @Override
-    protected Function<Double, Length> getFactoryMethodForSystemUnit() {
-        return Length::ofMeter;
+    protected Function<Double, Distance> getFactoryMethodForSystemUnit() {
+        return Distance::ofMeter;
+    }
+
+    @Override
+    protected boolean isExtendedQuantity() {
+        return true;
     }
 
     @ParameterizedTest
@@ -65,7 +69,9 @@ public class LengthTest extends AbstractTypedQuantityTest<Length, Length> {
         assertEquals(200, result.doubleValue(), 1e-6);
         assertEquals(SI.METRE, result.getUnit());
 
-        Length l = result.asQuantity(Length.class);
-        assertSame(result, l);
+        Distance l = result.asQuantity(Distance.class);
+        assertNotSame(result, l);
+        assertEquals(200, l.doubleValue(), 1e-6);
+        assertEquals(SI.METRE, l.getUnit());
     }
 }

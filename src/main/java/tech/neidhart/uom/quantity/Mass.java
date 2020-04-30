@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Mass extends TypedQuantity<Mass> {
+public interface Mass extends TypedQuantity<Mass, Mass> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Mass}.

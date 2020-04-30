@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link ElectricCurrent} quantity.
  */
-public class ElectricCurrentTest extends AbstractTypedQuantityTest<ElectricCurrent> {
+public class ElectricCurrentTest extends AbstractTypedQuantityTest<ElectricCurrent, ElectricCurrent> {
 
     @Override
     protected Class<ElectricCurrent> getQuantityClass() {

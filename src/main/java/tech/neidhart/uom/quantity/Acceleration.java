@@ -29,7 +29,7 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface Acceleration extends TypedQuantity<Acceleration> {
+public interface Acceleration extends TypedQuantity<Acceleration, Acceleration> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Acceleration}.

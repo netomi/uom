@@ -21,6 +21,7 @@ import tech.neidhart.uom.unit.Units;
 import tech.neidhart.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
+import java.util.Objects;
 
 import static tech.neidhart.uom.quantity.impl.GenericDoubleQuantity.ONE;
 
@@ -30,9 +31,9 @@ import static tech.neidhart.uom.quantity.impl.GenericDoubleQuantity.ONE;
  *
  * @author Thomas Neidhart
  */
-abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
-        implements DoubleQuantity<Q>,
-                   TypedQuantity<Q> {
+abstract class AbstractDoubleQuantity<P extends Q, Q extends Quantity<Q>>
+    implements DoubleQuantity<P, Q>,
+               TypedQuantity<P, Q> {
 
     protected final double  value;
     protected final Unit<Q> unit;
@@ -107,19 +108,19 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
     }
 
     @Override
-    public Q add(Quantity<Q> addend) {
+    public P add(Quantity<Q> addend) {
         Quantity<Q> scaledQuantity = addend.to(unit);
         return with(value + scaledQuantity.doubleValue(), unit);
     }
 
     @Override
-    public Q subtract(Quantity<Q> subtrahend) {
+    public P subtract(Quantity<Q> subtrahend) {
         Quantity<Q> scaledQuantity = subtrahend.to(unit);
         return with(value - scaledQuantity.doubleValue(), unit);
     }
 
     @Override
-    public Q negate() {
+    public P negate() {
         return with(-value, unit);
     }
 
@@ -193,9 +194,9 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Q to(Unit<Q> toUnit) {
+    public P to(Unit<Q> toUnit) {
         if (getUnit().equals(toUnit)) {
-            return (Q) this;
+            return (P) this;
         }
         TypeUtil.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
@@ -204,11 +205,11 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
 
     @Override
     @SuppressWarnings("unchecked")
-    public Q toSystemUnit() {
+    public P toSystemUnit() {
         if (unit.isSystemUnit()) {
             Unit<Q> namedUnit = Units.getNamedUnitIfPresent(unit);
             return namedUnit == unit ?
-                    (Q) this :
+                    (P) this :
                     with(value, namedUnit);
         }
 
@@ -220,6 +221,42 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>>
         return quantity.getUnit().isSystemUnit() ?
                 quantity.doubleValue() :
                 quantity.getUnit().getSystemConverter().convert(quantity.doubleValue());
+    }
+
+    protected Class<?> getQuantityClass() {
+        return null;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public <R extends S, S extends Quantity<S>> R asQuantity(Class<R> quantityType) {
+        Objects.requireNonNull(quantityType);
+
+        Class<?> quantityClass = getQuantityClass();
+        if (quantityClass != null &&
+            quantityType.isAssignableFrom(quantityClass)) {
+            return (R) this;
+        } else {
+            try {
+                Unit<Q> systemUnit          = getSystemUnit();
+                Unit<S> requestedSystemUnit = (Unit<S>) Quantities.Type.systemUnitFor(quantityType, (Unit) unit);
+
+                double quantityValue = this.value;
+                Unit<S> quantityUnit = (Unit<S>) this.unit;
+
+                if (!systemUnit.equals(requestedSystemUnit)) {
+                    TypeUtil.requireCommensurable(systemUnit, requestedSystemUnit);
+
+                    quantityValue = quantityUnit.getConverterToAny(requestedSystemUnit).convert(quantityValue);
+                    quantityUnit  = requestedSystemUnit;
+                }
+
+                R quantity = Quantities.create(quantityValue, quantityUnit, quantityType);
+                return (R) quantity;
+            } catch (UnsupportedOperationException ex) {
+                throw new IncommensurableException("Incompatible quantity class: " + quantityType.getSimpleName() +
+                                                   " has not overridden its getSystemUnit() method.");
+            }
+        }
     }
 
     private Quantity<?> genericDoubleQuantity(double value, Unit<?> unit) {

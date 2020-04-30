@@ -28,7 +28,7 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface Area extends TypedQuantity<Area> {
+public interface Area extends TypedQuantity<Area, Area> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Area}.

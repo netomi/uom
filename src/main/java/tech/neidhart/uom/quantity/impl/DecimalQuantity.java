@@ -28,7 +28,7 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
+public interface DecimalQuantity<P extends Q, Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <Q extends Quantity<Q>> GenericDecimalQuantityFactory<Q> factory() {
         return GenericDecimalQuantity.factory();
@@ -45,7 +45,7 @@ public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * specified quantity class.
      * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
      */
-    static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(Class<Q> quantityClass) {
+    static <P extends Q, Q extends Quantity<Q>> DecimalQuantityFactory<P, Q> factory(Class<P> quantityClass) {
         if (!Quantity.class.isAssignableFrom(quantityClass)) {
             throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
         }
@@ -65,7 +65,7 @@ public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * specified quantity class.
      * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
      */
-    static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(MathContext mc, Class<Q> quantityClass) {
+    static <P extends Q, Q extends Quantity<Q>> DecimalQuantityFactory<P, Q> factory(MathContext mc, Class<P> quantityClass) {
         if (!Quantity.class.isAssignableFrom(quantityClass)) {
             throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
         }
@@ -83,9 +83,9 @@ public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
     Q toSystemUnit(MathContext mc);
 
-    default Q with(BigDecimal value, Unit<Q> unit) {
+    default P with(BigDecimal value, Unit<Q> unit) {
         return with(value, getMathContext(), unit);
     }
 
-    Q with(BigDecimal value, MathContext mc, Unit<Q> unit);
+    P with(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

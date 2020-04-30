@@ -28,7 +28,7 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface Speed extends TypedQuantity<Speed> {
+public interface Speed extends TypedQuantity<Speed, Speed> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Speed}.

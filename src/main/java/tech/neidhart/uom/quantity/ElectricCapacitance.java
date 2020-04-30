@@ -28,7 +28,7 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricCapacitance extends TypedQuantity<ElectricCapacitance> {
+public interface ElectricCapacitance extends TypedQuantity<ElectricCapacitance, ElectricCapacitance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricCapacitance}.

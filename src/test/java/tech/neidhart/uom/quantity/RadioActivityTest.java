@@ -15,16 +15,22 @@
  */
 package tech.neidhart.uom.quantity;
 
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
 import tech.neidhart.uom.unit.systems.SI;
 
+import java.math.BigDecimal;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit test for the {@link RadioActivity} quantity.
  */
-public class RadioActivityTest extends AbstractTypedQuantityTest<RadioActivity> {
+public class RadioActivityTest extends AbstractTypedQuantityTest<RadioActivity, RadioActivity> {
 
     @Override
     protected Class<RadioActivity> getQuantityClass() {
@@ -44,5 +50,24 @@ public class RadioActivityTest extends AbstractTypedQuantityTest<RadioActivity> 
     @Override
     protected Function<Double, RadioActivity> getFactoryMethodForSystemUnit() {
         return RadioActivity::ofBecquerel;
+    }
+
+    @ParameterizedTest
+    @ValueSource(classes = { Double.class, BigDecimal.class })
+    public void asQuantity(Class<Number> numberClass) {
+        Speed s  = createQuantity(10, SI.METER_PER_SECOND, Speed.class, numberClass);
+        Length l = createQuantity(100, SI.METRE, Length.class, numberClass);
+
+        // the resulting quantity has a unit of 1 / s.
+        Quantity<?> result = s.divide(l);
+
+        assertEquals(0.1, result.doubleValue(), 1e-6);
+        assertEquals(SI.HERTZ, result.getUnit());
+
+        // RadioActivity has the same dimension, so we can cast it
+        // to this quantity type if needed.
+        RadioActivity r = result.asQuantity(RadioActivity.class);
+        assertEquals(0.1, r.doubleValue(), 1e-6);
+        assertEquals(SI.BECQUEREL, r.getUnit());
     }
 }

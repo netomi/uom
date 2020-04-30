@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricCurrent extends TypedQuantity<ElectricCurrent> {
+public interface ElectricCurrent extends TypedQuantity<ElectricCurrent, ElectricCurrent> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricCurrent}.

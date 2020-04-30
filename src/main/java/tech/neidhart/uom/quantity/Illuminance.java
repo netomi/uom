@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Illuminance extends TypedQuantity<Illuminance> {
+public interface Illuminance extends TypedQuantity<Illuminance, Illuminance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Illuminance}.

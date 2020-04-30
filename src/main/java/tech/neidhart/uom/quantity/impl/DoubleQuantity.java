@@ -25,7 +25,7 @@ import tech.neidhart.uom.Unit;
  *
  * @author Thomas Neidhart
  */
-public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
+public interface DoubleQuantity<P extends Q, Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <Q extends Quantity<Q>> GenericDoubleQuantityFactory<Q> factory() {
         return GenericDoubleQuantity.factory();
@@ -42,7 +42,7 @@ public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * specified quantity class.
      * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
      */
-    static <Q extends Quantity<Q>> DoubleQuantityFactory<Q> factory(Class<Q> quantityClass) {
+    static <P extends Q, Q extends Quantity<Q>> DoubleQuantityFactory<P, Q> factory(Class<P> quantityClass) {
         if (!Quantity.class.isAssignableFrom(quantityClass)) {
             throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
         }
@@ -50,5 +50,5 @@ public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
         return ProxyDoubleQuantity.factory(quantityClass);
     }
 
-    Q with(double value, Unit<Q> unit);
+    P with(double value, Unit<Q> unit);
 }

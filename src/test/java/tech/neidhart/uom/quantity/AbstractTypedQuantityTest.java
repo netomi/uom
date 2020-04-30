@@ -38,11 +38,11 @@ import static org.junit.jupiter.api.Assertions.*;
  *
  * @param <Q> the quantity type
  */
-public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
+public abstract class AbstractTypedQuantityTest<P extends Q, Q extends Quantity<Q>> {
 
     private static final double eps = 1e-6;
 
-    protected abstract Class<Q> getQuantityClass();
+    protected abstract Class<P> getQuantityClass();
 
     protected abstract Unit<Q> getSystemUnit();
 
@@ -50,11 +50,15 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         return Units.ONE.divide(getSystemUnit());
     }
 
-    protected abstract BiFunction<Double, Unit<Q>, Q> getFactoryMethod();
+    protected abstract BiFunction<Double, Unit<Q>, P> getFactoryMethod();
 
-    protected abstract Function<Double, Q> getFactoryMethodForSystemUnit();
+    protected abstract Function<Double, P> getFactoryMethodForSystemUnit();
 
-    protected Q createQuantity(double value, Class<Number> numberClass) {
+    protected boolean isExtendedQuantity() {
+        return false;
+    }
+
+    protected P createQuantity(double value, Class<Number> numberClass) {
         if (Double.class.equals(numberClass)) {
             return Quantities.create(value, getSystemUnit(), getQuantityClass());
         } else if (BigDecimal.class.equals(numberClass)) {
@@ -63,11 +67,11 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         throw new AssertionError("unexpected number class " + numberClass);
     }
 
-    protected Q createQuantity(double value) {
+    protected P createQuantity(double value) {
         return Quantities.create(value, getSystemUnit(), getQuantityClass());
     }
 
-    protected Q createQuantity(double value, Unit<Q> unit, Class<Number> numberClass) {
+    protected P createQuantity(double value, Unit<Q> unit, Class<Number> numberClass) {
         if (Double.class.equals(numberClass)) {
             return Quantities.create(value, unit, getQuantityClass());
         } else if (BigDecimal.class.equals(numberClass)) {
@@ -76,7 +80,19 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
         throw new AssertionError("unexpected number class " + numberClass);
     }
 
-    protected Q createQuantity(double value, Unit<Q> unit) {
+    protected <R extends S, S extends Quantity<S>> R createQuantity(double        value,
+                                                                    Unit<S>       unit,
+                                                                    Class<R>      quantityType,
+                                                                    Class<Number> numberClass) {
+        if (Double.class.equals(numberClass)) {
+            return Quantities.create(value, unit, quantityType);
+        } else if (BigDecimal.class.equals(numberClass)) {
+            return Quantities.create(BigDecimal.valueOf(value), unit, quantityType);
+        }
+        throw new AssertionError("unexpected number class " + numberClass);
+    }
+
+    protected P createQuantity(double value, Unit<Q> unit) {
         return Quantities.create(value, unit, getQuantityClass());
     }
 
@@ -97,10 +113,15 @@ public abstract class AbstractTypedQuantityTest<Q extends Quantity<Q>> {
 
         assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
         assertSame(getSystemUnit(), quantity.getUnit());
+    }
 
-        // Test if quantity is properly registered in class Quantities.
-        quantity = Quantities.create(100, getSystemUnit());
-        assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
+    @Test
+    public void inferredQuantityCreation() {
+        if (!isExtendedQuantity()) {
+            // Test if quantity is properly registered in class Quantities.
+            Q quantity = Quantities.create(100, getSystemUnit());
+            assertTrue(getQuantityClass().isAssignableFrom(quantity.getClass()));
+        }
     }
 
     @Test

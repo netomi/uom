@@ -29,7 +29,7 @@ import tech.neidhart.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Power extends TypedQuantity<Power> {
+public interface Power extends TypedQuantity<Power, Power> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Power}.

@@ -29,7 +29,7 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface Length extends TypedQuantity<Length> {
+public interface Length extends TypedQuantity<Length, Length> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Length}.

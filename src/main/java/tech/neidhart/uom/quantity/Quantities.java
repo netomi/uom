@@ -44,7 +44,7 @@ public final class Quantities {
 
     private static volatile QuantityFormatter DEFAULT_FORMATTER = QuantityFormat.defaultFormatter();
 
-    private static final Map<Class<? extends Quantity<?>>, QuantityFactory<?>> quantityFactories;
+    private static final Map<Class<? extends Quantity<?>>, QuantityFactory<?, ?>> quantityFactories;
 
     private static final Map<Unit<?>, Class<? extends Quantity<?>>> unitToQuantityMap;
 
@@ -71,8 +71,8 @@ public final class Quantities {
     /**
      * Register another {@link QuantityFactory} for a specified quantity type.
      */
-    public static <Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
-                                                                       QuantityFactory<Q> factory) {
+    public static <P extends Q, Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
+                                                                                    QuantityFactory<P, Q> factory) {
         quantityFactories.put(quantityClass, factory);
     }
 
@@ -95,8 +95,8 @@ public final class Quantities {
     }
 
     @SuppressWarnings("unchecked")
-    private static <Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<Q> quantityType) {
-        return (QuantityFactory<Q>)
+    private static <P extends Q, Q extends Quantity<Q>> QuantityFactory<P, Q> getQuantityFactory(Class<P> quantityType) {
+        return (QuantityFactory<P, Q>)
                 quantityFactories.computeIfAbsent(quantityType, key -> {
                     if (!Quantity.class.isAssignableFrom(quantityType)) {
                         throw new IllegalArgumentException(quantityType + " is not a Quantity.");
@@ -117,7 +117,7 @@ public final class Quantities {
     }
 
     @SuppressWarnings("unchecked")
-    public static <Q extends Quantity<Q>> Class<Q> getQuantityType(Unit<?> unit) {
+    public static <Q extends Quantity<?>> Class<Q> getQuantityType(Unit<?> unit) {
         return (Class<Q>) unitToQuantityMap.get(unit.getSystemUnit());
     }
 
@@ -138,9 +138,9 @@ public final class Quantities {
      *
      * @throws IllegalArgumentException if the specified class does not implement the {@link Quantity} interface.
      */
-    public static <Q extends Quantity<Q>> Q create(double   value,
-                                                   Unit<Q>  unit,
-                                                   Class<Q> quantityClass) {
+    public static <P extends Q, Q extends Quantity<Q>> P create(double   value,
+                                                                Unit<Q>  unit,
+                                                                Class<P> quantityClass) {
         return getQuantityFactory(quantityClass).create(value, unit);
     }
 
@@ -159,9 +159,9 @@ public final class Quantities {
         }
     }
 
-    public static <Q extends Quantity<Q>> Q create(BigDecimal value,
-                                                   Unit<Q>    unit,
-                                                   Class<Q>   quantityClass) {
+    public static <P extends Q, Q extends Quantity<Q>> P create(BigDecimal value,
+                                                                Unit<Q>    unit,
+                                                                Class<P>   quantityClass) {
         return getQuantityFactory(quantityClass).create(value, unit);
     }
 
@@ -182,10 +182,10 @@ public final class Quantities {
         }
     }
 
-    public static <Q extends Quantity<Q>> Q create(BigDecimal  value,
-                                                   MathContext mc,
-                                                   Unit<Q>     unit,
-                                                   Class<Q>    quantityClass) {
+    public static <P extends Q, Q extends Quantity<Q>> P create(BigDecimal  value,
+                                                                MathContext mc,
+                                                                Unit<Q>     unit,
+                                                                Class<P>    quantityClass) {
         return getQuantityFactory(quantityClass).create(value, mc, unit);
     }
 
@@ -245,19 +245,19 @@ public final class Quantities {
         }
     }
 
-    static class CombinedQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
+    static class CombinedQuantityFactory<P extends Q, Q extends Quantity<Q>> implements QuantityFactory<P, Q> {
 
-        private final DoubleQuantityFactory<Q> doubleQuantityFactory;
-        private final DecimalQuantityFactory<Q> decimalQuantityFactory;
+        private final DoubleQuantityFactory<P, Q> doubleQuantityFactory;
+        private final DecimalQuantityFactory<P, Q> decimalQuantityFactory;
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        static <Q extends Quantity<Q>> CombinedQuantityFactory of(DoubleQuantityFactory<Q>  doubleFactory,
-                                                                  DecimalQuantityFactory<Q> decimalFactory) {
+        static <P extends Q, Q extends Quantity<Q>> CombinedQuantityFactory of(DoubleQuantityFactory<P, Q>  doubleFactory,
+                                                                  DecimalQuantityFactory<P, Q> decimalFactory) {
             return new CombinedQuantityFactory(doubleFactory, decimalFactory);
         }
 
-        private CombinedQuantityFactory(DoubleQuantityFactory<Q>  doubleQuantityFactory,
-                                        DecimalQuantityFactory<Q> decimalQuantityFactory) {
+        private CombinedQuantityFactory(DoubleQuantityFactory<P, Q>  doubleQuantityFactory,
+                                        DecimalQuantityFactory<P, Q> decimalQuantityFactory) {
             Objects.requireNonNull(doubleQuantityFactory);
             Objects.requireNonNull(decimalQuantityFactory);
 
@@ -266,17 +266,17 @@ public final class Quantities {
         }
 
         @Override
-        public Q create(double value, Unit<Q> unit) {
+        public P create(double value, Unit<Q> unit) {
             return doubleQuantityFactory.create(value, unit);
         }
 
         @Override
-        public Q create(BigDecimal value, Unit<Q> unit) {
+        public P create(BigDecimal value, Unit<Q> unit) {
             return decimalQuantityFactory.create(value, unit);
         }
 
         @Override
-        public Q create(BigDecimal value, MathContext mc, Unit<Q> unit) {
+        public P create(BigDecimal value, MathContext mc, Unit<Q> unit) {
             return decimalQuantityFactory.create(value, mc, unit);
         }
     }
@@ -346,7 +346,7 @@ public final class Quantities {
             return systemUnit.getDimension();
         }
 
-        public static <Q extends Quantity<Q>> Unit<?> systemUnitFor(Class<Q> quantityType, Unit<Q> defaultUnit) {
+        public static <P extends Q, Q extends Quantity<Q>> Unit<?> systemUnitFor(Class<P> quantityType, Unit<Q> defaultUnit) {
             if (!Quantity.class.isAssignableFrom(quantityType)) {
                 throw new IllegalArgumentException(quantityType + " is not a Quantity.");
             }

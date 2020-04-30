@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Acceleration} quantity.
  */
-public class AccelerationTest extends AbstractTypedQuantityTest<Acceleration> {
+public class AccelerationTest extends AbstractTypedQuantityTest<Acceleration, Acceleration> {
 
     @Override
     protected Class<Acceleration> getQuantityClass() {

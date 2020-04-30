@@ -23,7 +23,7 @@ package tech.neidhart.uom;
  *
  * @author Thomas Neidhart
  */
-public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
+public interface TypedQuantity<P extends Q, Q extends Quantity<Q>> extends Quantity<Q> {
 
     /**
      * Returns a new {@link TypedQuantity} with its value expressed in the
@@ -34,7 +34,7 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * @throws IncommensurableException if the specified {@link Unit} is not compatible with
      * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    Q to(Unit<Q> unit);
+    P to(Unit<Q> unit);
 
     /**
      * Returns a new {@link Quantity} with its value expressed in the
@@ -46,8 +46,8 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     @SuppressWarnings({"rawtypes", "unchecked"})
-    default Q toAny(Unit unit) {
-        return (Q) to(unit);
+    default P toAny(Unit unit) {
+        return (P) to(unit);
     }
 
     /**
@@ -57,7 +57,7 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      *
      * @return a new {@link TypedQuantity} with this value expressed in the corresponding system unit.
      */
-    Q toSystemUnit();
+    P toSystemUnit();
 
     /**
      * Returns a new {@link TypedQuantity} that is the result of adding the given quantity
@@ -69,7 +69,7 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * @throws IncommensurableException if the specified {@link TypedQuantity} is not compatible with
      * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    Q add(Quantity<Q> addend);
+    P add(Quantity<Q> addend);
 
     /**
      * Returns a new {@link TypedQuantity} that is the result of adding the given quantity
@@ -85,8 +85,8 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * not compatible with this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     @SuppressWarnings("unchecked")
-    default Q add(Quantity<Q> addend, Unit<Q> unit) {
-        return (Q) this.to(unit).add(addend.to(unit));
+    default P add(Quantity<Q> addend, Unit<Q> unit) {
+        return (P) this.to(unit).add(addend.to(unit));
     }
 
     /**
@@ -99,7 +99,7 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * @throws IncommensurableException if the specified {@link TypedQuantity} is not compatible with
      * this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
-    Q subtract(Quantity<Q> subtrahend);
+    P subtract(Quantity<Q> subtrahend);
 
     /**
      * Returns a new {@link TypedQuantity} that is the result of subtracting the given quantity
@@ -115,8 +115,8 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      * not compatible with this quantity, i.e. their {@link #getSystemUnit()}'s do not match.
      */
     @SuppressWarnings("unchecked")
-    default Q subtract(Quantity<Q> subtrahend, Unit<Q> unit) {
-        return (Q) this.to(unit).subtract(subtrahend.to(unit));
+    default P subtract(Quantity<Q> subtrahend, Unit<Q> unit) {
+        return (P) this.to(unit).subtract(subtrahend.to(unit));
     }
 
     /**
@@ -124,5 +124,5 @@ public interface TypedQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
      *
      * @return a new {@link TypedQuantity} whose value is {@code -this}.
      */
-    Q negate();
+    P negate();
 }

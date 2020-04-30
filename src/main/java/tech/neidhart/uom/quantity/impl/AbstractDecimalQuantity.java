@@ -15,16 +15,14 @@
  */
 package tech.neidhart.uom.quantity.impl;
 
-import tech.neidhart.uom.Quantity;
-import tech.neidhart.uom.TypedQuantity;
-import tech.neidhart.uom.Unit;
-import tech.neidhart.uom.UnitConverter;
+import tech.neidhart.uom.*;
 import tech.neidhart.uom.quantity.Quantities;
 import tech.neidhart.uom.unit.Units;
 import tech.neidhart.uom.util.TypeUtil;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.util.Objects;
 
 /**
  *
@@ -32,9 +30,9 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
-        implements DecimalQuantity<Q>,
-                   TypedQuantity<Q> {
+abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
+    implements DecimalQuantity<P, Q>,
+               TypedQuantity<P, Q> {
 
     protected final BigDecimal  value;
     protected final MathContext mc;
@@ -115,19 +113,19 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
     }
 
     @Override
-    public Q add(Quantity<Q> addend) {
+    public P add(Quantity<Q> addend) {
         Quantity<Q> scaledQuantity = addend.to(unit);
         return with(value.add(scaledQuantity.decimalValue(), mc), unit);
     }
 
     @Override
-    public Q subtract(Quantity<Q> subtrahend) {
+    public P subtract(Quantity<Q> subtrahend) {
         Quantity<Q> scaledQuantity = subtrahend.to(unit);
         return with(value.subtract(scaledQuantity.decimalValue(), mc), unit);
     }
 
     @Override
-    public Q negate() {
+    public P negate() {
         return with(value.negate(mc), unit);
     }
 
@@ -202,15 +200,15 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
     }
 
     @Override
-    public Q to(Unit<Q> toUnit) {
+    public P to(Unit<Q> toUnit) {
         return to(toUnit, mc);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Q to(Unit<Q> toUnit, MathContext toMc) {
+    public P to(Unit<Q> toUnit, MathContext toMc) {
         if (getUnit().equals(toUnit)) {
-            return (Q) this;
+            return (P) this;
         }
         TypeUtil.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
@@ -218,17 +216,17 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
     }
 
     @Override
-    public Q toSystemUnit() {
+    public P toSystemUnit() {
         return toSystemUnit(mc);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public Q toSystemUnit(MathContext toMc) {
+    public P toSystemUnit(MathContext toMc) {
         if (unit.isSystemUnit()) {
             Unit<Q> namedUnit = Units.getNamedUnitIfPresent(unit);
             return namedUnit == unit ?
-                    (Q) this :
+                    (P) this :
                     with(value, namedUnit);
         }
 
@@ -240,6 +238,42 @@ abstract class AbstractDecimalQuantity<Q extends Quantity<Q>>
         return quantity.getUnit().isSystemUnit() ?
                 quantity.decimalValue() :
                 quantity.getUnit().getSystemConverter().convert(quantity.decimalValue(), mc);
+    }
+
+    protected Class<?> getQuantityClass() {
+        return null;
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public <R extends S, S extends Quantity<S>> R asQuantity(Class<R> quantityType) {
+        Objects.requireNonNull(quantityType);
+
+        Class<?> quantityClass = getQuantityClass();
+        if (quantityClass != null &&
+            quantityType.isAssignableFrom(quantityClass)) {
+            return (R) this;
+        } else {
+            try {
+                Unit<Q> systemUnit          = getSystemUnit();
+                Unit<S> requestedSystemUnit = (Unit<S>) Quantities.Type.systemUnitFor(quantityType, (Unit) unit);
+
+                BigDecimal quantityValue = this.value;
+                Unit<S>    quantityUnit  = (Unit<S>) this.unit;
+
+                if (!systemUnit.equals(requestedSystemUnit)) {
+                    TypeUtil.requireCommensurable(systemUnit, requestedSystemUnit);
+
+                    quantityValue = quantityUnit.getConverterToAny(requestedSystemUnit).convert(quantityValue, mc);
+                    quantityUnit  = requestedSystemUnit;
+                }
+
+                R quantity = Quantities.create(quantityValue, mc, quantityUnit, quantityType);
+                return (R) quantity;
+            } catch (UnsupportedOperationException ex) {
+                throw new IncommensurableException("Incompatible quantity class: " + quantityType.getSimpleName() +
+                                                   " has not overridden its getSystemUnit() method.");
+            }
+        }
     }
 
     protected Quantity<?> genericDecimalQuantity(BigDecimal value, Unit<?> unit) {

@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Frequency} quantity.
  */
-public class FrequencyTest extends AbstractTypedQuantityTest<Frequency> {
+public class FrequencyTest extends AbstractTypedQuantityTest<Frequency, Frequency> {
 
     @Override
     protected Class<Frequency> getQuantityClass() {

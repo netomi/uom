@@ -24,29 +24,29 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Objects;
 
-class ProxyDecimalQuantity<Q extends Quantity<Q>> extends AbstractDecimalQuantity<Q> {
+class ProxyDecimalQuantity<P extends Q, Q extends Quantity<Q>> extends AbstractDecimalQuantity<P, Q> {
 
-    private final Class<Q> quantityClass;
+    private final Class<P> quantityClass;
 
-    public static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(Class<Q> quantityClass) {
+    public static <P extends Q, Q extends Quantity<Q>> DecimalQuantityFactory<P, Q> factory(Class<P> quantityClass) {
         return (value, mc, unit) -> {
-            ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
-            Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
+            ProxyDecimalQuantity<P, Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
+            P proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };
     }
 
-    public static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(MathContext mc, Class<Q> quantityClass) {
+    public static <P extends Q, Q extends Quantity<Q>> DecimalQuantityFactory<P, Q> factory(MathContext mc, Class<P> quantityClass) {
         return (value, ignored, unit) -> {
-            ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
-            Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
+            ProxyDecimalQuantity<P, Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
+            P proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };
     }
 
-    ProxyDecimalQuantity(BigDecimal value, MathContext mc, Unit<Q> unit, Class<Q> quantityClass) {
+    ProxyDecimalQuantity(BigDecimal value, MathContext mc, Unit<Q> unit, Class<P> quantityClass) {
         super(value, mc, unit);
 
         Objects.requireNonNull(quantityClass);
@@ -54,7 +54,12 @@ class ProxyDecimalQuantity<Q extends Quantity<Q>> extends AbstractDecimalQuantit
     }
 
     @Override
-    public Q with(BigDecimal value, MathContext mc, Unit<Q> unit) {
+    protected Class<?> getQuantityClass() {
+        return quantityClass;
+    }
+
+    @Override
+    public P with(BigDecimal value, MathContext mc, Unit<Q> unit) {
         return factory(quantityClass).create(value, mc, unit);
     }
 }

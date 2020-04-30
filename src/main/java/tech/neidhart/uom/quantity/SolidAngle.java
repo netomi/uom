@@ -28,7 +28,7 @@ import tech.neidhart.uom.quantity.impl.DoubleQuantity;
  *
  * @author Thomas Neidhart
  */
-public interface SolidAngle extends TypedQuantity<SolidAngle> {
+public interface SolidAngle extends TypedQuantity<SolidAngle, SolidAngle> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link SolidAngle}.

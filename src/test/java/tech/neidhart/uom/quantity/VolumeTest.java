@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Volume} quantity.
  */
-public class VolumeTest extends AbstractTypedQuantityTest<Volume> {
+public class VolumeTest extends AbstractTypedQuantityTest<Volume, Volume> {
 
     @Override
     protected Class<Volume> getQuantityClass() {
