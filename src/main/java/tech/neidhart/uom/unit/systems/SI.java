@@ -28,6 +28,7 @@ import tech.neidhart.uom.quantity.mechanical.Force;
 import tech.neidhart.uom.quantity.mechanical.Power;
 import tech.neidhart.uom.quantity.mechanical.Volume;
 import tech.neidhart.uom.quantity.molar.AmountOfSubstance;
+import tech.neidhart.uom.quantity.molar.CatalyticActivity;
 import tech.neidhart.uom.quantity.nuclear.RadioActivity;
 import tech.neidhart.uom.quantity.photometric.Illuminance;
 import tech.neidhart.uom.quantity.photometric.LuminousFlux;
@@ -94,6 +95,8 @@ public final class SI extends AbstractSystemOfUnits {
     // units related to the magnetic field.
     public static final Unit<MagneticFlux>       WEBER = addUnit("Wb", MagneticFlux.class);
     public static final Unit<MagneticInductance> TESLA = addUnit("T",  MagneticInductance.class);
+
+    public static final Unit<CatalyticActivity> KATAL = addUnit("kat", CatalyticActivity.class);
 
     // derived units
     public static final Unit<Length> KM        = addUnit("km", Length.class);

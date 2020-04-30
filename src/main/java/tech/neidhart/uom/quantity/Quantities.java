@@ -27,6 +27,7 @@ import tech.neidhart.uom.quantity.mechanical.Force;
 import tech.neidhart.uom.quantity.mechanical.Power;
 import tech.neidhart.uom.quantity.mechanical.Volume;
 import tech.neidhart.uom.quantity.molar.AmountOfSubstance;
+import tech.neidhart.uom.quantity.molar.CatalyticActivity;
 import tech.neidhart.uom.quantity.nuclear.RadioActivity;
 import tech.neidhart.uom.quantity.photometric.Illuminance;
 import tech.neidhart.uom.quantity.photometric.LuminousFlux;
@@ -303,6 +304,7 @@ public final class Quantities {
         AMOUNT_OF_SUBSTANCE(AmountOfSubstance.class),
         ANGLE(Angle.class),
         AREA(Area.class),
+        CATALYTIC_ACTIVITY(CatalyticActivity.class),
         DIMENSIONLESS(Dimensionless.class),
         ELECTRIC_CAPACITANCE(ElectricCapacitance.class),
         ELECTRIC_CHARGE(ElectricCharge.class),

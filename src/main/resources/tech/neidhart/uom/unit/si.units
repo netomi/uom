@@ -37,6 +37,9 @@ H:henry     V s / A
 Wb:weber    ohm C
 T:tesla     weber / m^2
 
+# molar units.
+kat:katal   mol / s
+
 # derived or commonly used prefixed units
 km:kilometer         1e3 m
 km²:square_kilometer km^2
