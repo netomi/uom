@@ -29,6 +29,8 @@ import tech.neidhart.uom.quantity.mechanical.Power;
 import tech.neidhart.uom.quantity.mechanical.Volume;
 import tech.neidhart.uom.quantity.molar.AmountOfSubstance;
 import tech.neidhart.uom.quantity.molar.CatalyticActivity;
+import tech.neidhart.uom.quantity.nuclear.RadiationDoseAbsorbed;
+import tech.neidhart.uom.quantity.nuclear.RadiationDoseEquivalent;
 import tech.neidhart.uom.quantity.nuclear.RadioActivity;
 import tech.neidhart.uom.quantity.photometric.Illuminance;
 import tech.neidhart.uom.quantity.photometric.LuminousFlux;
@@ -78,11 +80,14 @@ public final class SI extends AbstractSystemOfUnits {
     public static final Unit<Energy>       JOULE  = addUnit("J",  Energy.class);
     public static final Unit<Power>        WATT   = addUnit("W",  Power.class);
 
-    public static final Unit<RadioActivity> BECQUEREL = addUnit("Bq", RadioActivity.class);
+    // nuclear units.
+    public static final Unit<RadioActivity>           BECQUEREL = addUnit("Bq", RadioActivity.class);
+    public static final Unit<RadiationDoseAbsorbed>   GRAY      = addUnit("Gy", RadiationDoseAbsorbed.class);
+    public static final Unit<RadiationDoseEquivalent> SIEVERT   = addUnit("Sv", RadiationDoseEquivalent.class);
 
+    // photometric units.
     public static final Unit<LuminousFlux> LUMEN  = addUnit("lm", LuminousFlux.class);
     public static final Unit<Illuminance>  LUX    = addUnit("lux", Illuminance.class);
-
 
     // electric units.
     public static final Unit<ElectricCharge>      COULOMB = addUnit("C", ElectricCharge.class);

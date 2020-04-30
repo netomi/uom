@@ -83,6 +83,8 @@ public interface DecimalQuantity<P extends Q, Q extends Quantity<Q>> extends Qua
 
     Q toSystemUnit(MathContext mc);
 
+    Class<?> getQuantityClass();
+
     default P with(BigDecimal value, Unit<Q> unit) {
         return with(value, getMathContext(), unit);
     }

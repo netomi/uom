@@ -223,7 +223,7 @@ abstract class AbstractDoubleQuantity<P extends Q, Q extends Quantity<Q>>
                 quantity.getUnit().getSystemConverter().convert(quantity.doubleValue());
     }
 
-    protected Class<?> getQuantityClass() {
+    public Class<?> getQuantityClass() {
         return null;
     }
 

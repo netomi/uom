@@ -18,7 +18,11 @@ package tech.neidhart.uom.util;
 import tech.neidhart.uom.IncommensurableException;
 import tech.neidhart.uom.Quantity;
 import tech.neidhart.uom.Unit;
+import tech.neidhart.uom.quantity.impl.DecimalQuantity;
+import tech.neidhart.uom.quantity.impl.DoubleQuantity;
 import tech.neidhart.uom.unit.Units;
+
+import java.lang.reflect.Proxy;
 
 /**
  * A utility to perform type / dimension checks between entities like {@link Quantity} and {@link Unit}.
@@ -83,15 +87,23 @@ public final class TypeUtil {
     }
 
     public static Class<?> getQuantityClass(Quantity<?> quantity) {
-        Class<?>[] interfaces = quantity.getClass().getInterfaces();
+        Class<?> quantityClass = quantity.getClass();
 
-        for (Class<?> itf : interfaces) {
-            if (Quantity.class.isAssignableFrom(itf)) {
-                return itf;
+        if (Proxy.isProxyClass(quantityClass)) {
+            Class<?>[] interfaces = quantityClass.getInterfaces();
+
+            for (Class<?> itf : interfaces) {
+                if (Quantity.class.isAssignableFrom(itf)) {
+                    return itf;
+                }
             }
+        } else if (quantity instanceof DoubleQuantity<?, ?>) {
+            quantityClass = ((DoubleQuantity<?, ?>) quantity).getQuantityClass();
+        } else if (quantity instanceof DecimalQuantity<?, ?>) {
+            quantityClass = ((DecimalQuantity<?, ?>) quantity).getQuantityClass();
         }
 
         // did not find a quantity interface, return the class itself.
-        return quantity.getClass();
+        return quantityClass != null ? quantityClass : quantity.getClass();
     }
 }

@@ -50,5 +50,7 @@ public interface DoubleQuantity<P extends Q, Q extends Quantity<Q>> extends Quan
         return ProxyDoubleQuantity.factory(quantityClass);
     }
 
+    Class<?> getQuantityClass();
+
     P with(double value, Unit<Q> unit);
 }

@@ -43,7 +43,7 @@ class ProxyDoubleQuantity<P extends Q, Q extends Quantity<Q>> extends AbstractDo
     }
 
     @Override
-    protected Class<?> getQuantityClass() {
+    public Class<?> getQuantityClass() {
         return quantityClass;
     }
 

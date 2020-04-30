@@ -240,7 +240,7 @@ abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
                 quantity.getUnit().getSystemConverter().convert(quantity.decimalValue(), mc);
     }
 
-    protected Class<?> getQuantityClass() {
+    public Class<?> getQuantityClass() {
         return null;
     }
 

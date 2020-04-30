@@ -22,6 +22,10 @@ Pa:pascal   N / m^2
 J:joule     N m
 W:watt      J / s
 
+w_r:radiation_type_weighting_factor  ~  # an alternate dimensionless factor to distinguish gray from sievert
+Gy:gray     J / kg
+Sv:sievert  J w_r / kg
+
 lm:lumen    cd sr
 lux:lux     lumen / m^2
 

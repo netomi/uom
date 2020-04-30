@@ -28,6 +28,8 @@ import tech.neidhart.uom.quantity.mechanical.Power;
 import tech.neidhart.uom.quantity.mechanical.Volume;
 import tech.neidhart.uom.quantity.molar.AmountOfSubstance;
 import tech.neidhart.uom.quantity.molar.CatalyticActivity;
+import tech.neidhart.uom.quantity.nuclear.RadiationDoseAbsorbed;
+import tech.neidhart.uom.quantity.nuclear.RadiationDoseEquivalent;
 import tech.neidhart.uom.quantity.nuclear.RadioActivity;
 import tech.neidhart.uom.quantity.photometric.Illuminance;
 import tech.neidhart.uom.quantity.photometric.LuminousFlux;
@@ -325,6 +327,8 @@ public final class Quantities {
         MASS(Mass.class),
         POWER(Power.class),
         PRESSURE(Pressure.class),
+        RADIATION_DOSE_ABSORBED(RadiationDoseAbsorbed.class),
+        RADIATION_DOSE_EQUIVALENT(RadiationDoseEquivalent.class),
         RADIOACTIVITY(RadioActivity.class),
         SOLID_ANGLE(SolidAngle.class),
         SPEED(Speed.class),

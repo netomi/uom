@@ -28,7 +28,7 @@ public final class Proxies {
     private Proxies() {}
 
     @SuppressWarnings("unchecked")
-    public static <T> T delegatingProxy(Object delegate, Class<T> iface, Class<?>... otherIfaces) {
+    public static <T> T delegatingProxy(final Object delegate, Class<T> iface, Class<?>... otherIfaces) {
         Class<?>[] ifaces =
                 Stream.concat(Stream.of(iface), Stream.of(otherIfaces)).distinct().toArray(Class<?>[]::new);
 

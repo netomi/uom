@@ -122,8 +122,9 @@ class UnitDefinitionParser {
         Unit<?> currentUnit = Units.ONE;
         boolean multiply    = true;
         boolean alternate   = false;
+        boolean finished    = false;
 
-        while (st.hasMoreTokens()) {
+        while (st.hasMoreTokens() && !finished) {
             String token = st.nextToken(DELIMITERS_FORMULA);
 
             Unit<?> nextUnit;
@@ -134,16 +135,8 @@ class UnitDefinitionParser {
                 continue;
 
             case COMMENT:
-            case CLOSE_BRACKET:
-                if (symbol != null) {
-                    currentUnit = currentUnit.withSymbol(symbol);
-                }
-
-                if (name != null) {
-                    currentUnit = currentUnit.withName(name);
-                }
-
-                return currentUnit;
+                finished = true;
+                continue;
 
             case DIVIDE:
                 multiply = false;
@@ -156,10 +149,14 @@ class UnitDefinitionParser {
                         currentUnit.divide(nextUnit);
                 continue;
 
+            case CLOSE_BRACKET:
+                return currentUnit;
+
             case ASSIGNMENT:
                 UnitConverter converter = parseFunction(st);
                 currentUnit = currentUnit.transform(converter);
-                return currentUnit.withSymbol(symbol).withName(name);
+                finished = true;
+                continue;
 
             case BASE_UNIT_ID:
                 String dimensionSymbol = st.nextToken();
