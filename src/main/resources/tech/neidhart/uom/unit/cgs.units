@@ -10,6 +10,8 @@ statV:statvolt    dyne cm / statampere s
 statΩ:statohm     statvolt / statampere
 statmho:statmho   1 / statohm
 statF:statfarad   statcoulomb / statvolt
+statWb:statweber  statvolt s
+statT:stattesla   statweber / cm^2
 
 # emu specific units.
 abA:abampere      10 A
@@ -18,6 +20,8 @@ abV:abvolt        dyne cm / abampere s
 abΩ:abohm         abvolt / abampere
 abmho:abmho       1 / abohm
 abF:abfarad       abcoulomb / abvolt
+Gs:gauss          abvolt s / cm^2
+Mx:maxwell        gauss cm^2
 
 # gaussian specific units.
 Fr:franklin              statcoulomb

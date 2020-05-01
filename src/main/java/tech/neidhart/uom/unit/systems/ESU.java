@@ -34,11 +34,14 @@ public final class ESU extends CGS {
 
     // electrical units.
 
-    public static final Unit<ElectricCharge>      STATCOULOMB = addUnit("statC", ElectricCharge.class);
-    public static final Unit<ElectricCurrent>     STATAMPERE  = addUnit("statA", ElectricCurrent.class);
-    public static final Unit<ElectricPotential>   STATVOLT    = addUnit("statV", ElectricPotential.class);
-    public static final Unit<ElectricResistance>  STATOHM     = addUnit("statΩ", ElectricResistance.class);
-    public static final Unit<ElectricCapacitance> STATFARAD   = addUnit("statF", ElectricCapacitance.class);
+    public static final Unit<ElectricCharge>      STATCOULOMB = addUnit("statC",  ElectricCharge.class);
+    public static final Unit<ElectricCurrent>     STATAMPERE  = addUnit("statA",  ElectricCurrent.class);
+    public static final Unit<ElectricPotential>   STATVOLT    = addUnit("statV",  ElectricPotential.class);
+    public static final Unit<ElectricResistance>  STATOHM     = addUnit("statΩ",  ElectricResistance.class);
+    public static final Unit<ElectricCapacitance> STATFARAD   = addUnit("statF",  ElectricCapacitance.class);
+
+    public static final Unit<MagneticFlux>        STATWEBER   = addUnit("statWb", MagneticFlux.class);
+    public static final Unit<MagneticInductance>  STATTESLA   = addUnit("statT",  MagneticInductance.class);
 
     // private helper methods.
 

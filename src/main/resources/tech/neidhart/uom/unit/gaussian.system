@@ -20,5 +20,12 @@ statC:statcoulomb dyne^1|2 cm
 statA:statampere  statcoulomb / s
 A:ampere          1|10 statampere c / (cm/s)
 
+Gs:gauss          statcoulomb / cm^2
+Mx:maxwell        gauss cm^2
+Wb:weber          1e8 maxwell
+
+statV:statvolt    dyne cm / statampere s
+statWb:statweber  statvolt s c
+
 # include common unit definitions.
 @include common.units

@@ -40,6 +40,9 @@ public final class EMU extends CGS {
     public static final Unit<ElectricResistance>  ABOHM     = addUnit("abΩ", ElectricResistance.class);
     public static final Unit<ElectricCapacitance> ABFARAD   = addUnit("abF", ElectricCapacitance.class);
 
+    public static final Unit<MagneticFlux>        MAXWELL   = addUnit("Mx",  MagneticFlux.class);
+    public static final Unit<MagneticInductance>  GAUSS     = addUnit("Gs",  MagneticInductance.class);
+
     // private helper methods.
 
     private static <Q extends Quantity<Q>> Unit<Q> addUnit(String symbol, Class<Q> quantityClass) {

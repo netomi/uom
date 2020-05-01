@@ -40,6 +40,9 @@ public final class Gaussian extends CGS {
     public static final Unit<ElectricResistance>  STATOHM             = addUnit("statΩ", ElectricResistance.class);
     public static final Unit<ElectricCapacitance> STATFARAD           = addUnit("statF", ElectricCapacitance.class);
 
+    public static final Unit<MagneticFlux>        MAXWELL             = addUnit("Mx",    MagneticFlux.class);
+    public static final Unit<MagneticInductance>  GAUSS               = addUnit("Gs",    MagneticInductance.class);
+
     // private helper methods.
 
     private static <Q extends Quantity<Q>> Unit<Q> addUnit(String symbol, Class<Q> quantityClass) {
