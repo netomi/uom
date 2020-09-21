@@ -15,7 +15,7 @@ plugins {
 
 apply plugin: 'com.bmuschko.nexus'
 
-group            = 'tech.neidhart'
+group            = 'com.github.netomi'
 archivesBaseName = 'uom'
 version          = '0.1-SNAPSHOT'
 
@@ -46,7 +46,7 @@ test {
 
 test {
     jacoco {
-        excludes += ['tech/neidhart/uom/util/ConcurrentReferenceHashMap**']
+        excludes += ['com/github/netomi/uom/util/ConcurrentReferenceHashMap**']
     }
 }
 
@@ -89,7 +89,7 @@ modifyPom {
             developer {
                 id    = 'netomi'
                 name  = 'Thomas Neidhart'
-                email = 'thomas@neidhart.tech'
+                email = 'thomas@gmail.com'
             }
         }
     }
