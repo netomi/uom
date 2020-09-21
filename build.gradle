@@ -1,19 +1,11 @@
-buildscript {
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
-    }
-}
-
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
     id 'jacoco'
     id 'com.github.kt3k.coveralls' version '2.8.4'
+    id 'biz.aQute.bnd.builder' version '5.1.2'
 }
-
-apply plugin: 'com.bmuschko.nexus'
 
 group            = 'com.github.netomi'
 archivesBaseName = 'uom'
@@ -21,6 +13,23 @@ version          = '0.1-SNAPSHOT'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+jar {
+    manifest {
+        attributes('-exportcontents': 'com.github.netomi.uom.*')
+    }
+}
+
+javadoc {
+    if(JavaVersion.current().isJava9Compatible()) {
+        options.addBooleanOption('html5', true)
+    }
+}
 
 sourceSets {
     main {
@@ -63,52 +72,73 @@ jacocoTestReport {
     }
 }
 
-modifyPom {
-    project {
-        name          = 'Units of Measurements'
-        description   = 'A library to represent quantities and perform conversions between' +
-                        'units of measurements with double or arbitray precision.'
-        url           = 'https://github.com/netomi/uom'
-        inceptionYear = '2020'
+// publishing configuration
 
-        scm {
-            url                 = 'https://github.com/netomi/uom'
-            connection          = 'scm:https://github.com/netomi/uom.git'
-            developerConnection = 'scm:git@github.com:netomi/uom.git'
-        }
+def isReleaseVersion = !version.endsWith("SNAPSHOT")
+def SONATYPE_USERNAME = project.hasProperty('sonatypeUsername') ? project.property('sonatypeUsername') : System.getenv('SONATYPE_USERNAME')
+def SONATYPE_PASSWORD = project.hasProperty('sonatypePassword') ? project.property('sonatypePassword') : System.getenv('SONATYPE_PASSWORD')
 
-        licenses {
-            license {
-                name         = 'The Apache Software License, Version 2.0'
-                url          = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                distribution = 'repo'
+publishing {
+    publications {
+        maven(MavenPublication) {
+            from components.java
+
+            pom {
+                name          = 'Units of Measurements'
+                description   = 'A library to represent quantities and perform conversions between' +
+                                'units of measurements with double or arbitray precision.'
+                url           = 'https://github.com/netomi/uom'
+                inceptionYear = '2020'
+
+                scm {
+                    url                 = 'https://github.com/netomi/uom'
+                    connection          = 'scm:https://github.com/netomi/uom.git'
+                    developerConnection = 'scm:git@github.com:netomi/uom.git'
+                }
+
+                licenses {
+                    license {
+                        name         = 'The Apache Software License, Version 2.0'
+                        url          = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                        distribution = 'repo'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id    = 'netomi'
+                        name  = 'Thomas Neidhart'
+                        email = 'thomas@gmail.com'
+                    }
+                }
             }
         }
+    }
 
-        developers {
-            developer {
-                id    = 'netomi'
-                name  = 'Thomas Neidhart'
-                email = 'thomas@gmail.com'
+    repositories {
+        def releaseUrl  = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+        def snapshotUrl = "https://oss.sonatype.org/content/repositories/snapshots"
+
+        maven {
+            url = isReleaseVersion ? releaseUrl : snapshotUrl
+
+            credentials {
+                username = SONATYPE_USERNAME
+                password = SONATYPE_PASSWORD
             }
         }
     }
 }
 
-extraArchive {
-    sources = true
-    tests   = false
-    javadoc = true
-}
-
-nexus {
-    sign = true
-    repositoryUrl         = 'http://localhost:8081/nexus/content/repositories/internal/'
-    snapshotRepositoryUrl = 'http://localhost:8081/nexus/content/repositories/internal-snapshots/'
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
+    sign publishing.publications.maven
+    sign configurations.archives
 }
 
 repositories {
     mavenCentral()
+    jcenter()
 }
 
 dependencies {
