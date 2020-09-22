@@ -21,7 +21,7 @@ import com.github.netomi.uom.quantity.Quantities;
 import com.github.netomi.uom.unit.UnitElement;
 import com.github.netomi.uom.unit.Units;
 import com.github.netomi.uom.util.ConcurrentReferenceHashMap;
-import com.github.netomi.uom.util.TypeUtil;
+import com.github.netomi.uom.util.Preconditions;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -143,7 +143,7 @@ public abstract class Unit<Q extends Quantity<Q>> {
      */
     public UnitConverter getConverterTo(Unit<Q> unit) throws IncommensurableException {
         return getConverterCache().computeIfAbsent(unit, u -> {
-            TypeUtil.requireCommensurable(this, u);
+            Preconditions.requireCommensurable(this, u);
 
             UnitConverter thisConverter = getSystemConverter();
             UnitConverter thatConverter = u.getSystemConverter().inverse();

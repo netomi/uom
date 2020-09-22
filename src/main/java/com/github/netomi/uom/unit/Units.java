@@ -21,25 +21,20 @@ import com.github.netomi.uom.format.UnitFormatter;
 import com.github.netomi.uom.math.Fraction;
 import com.github.netomi.uom.quantity.Dimensionless;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Properties;
 
 /**
  * @author Thomas Neidhart
  */
 public final class Units {
 
-    private static final String CONFIG_FILE            = "uom.properties";
-    private static final String CONFIG_UNIT_SYSTEM_KEY = "units.system";
-
+    /**
+     * The reference unit system to be used.
+     * For now, only SI is supported and used by default.
+     */
     public enum UnitSystem {
-        SI      ("si.system"),
-        ESU     ("esu.system"),
-        EMU     ("emu.system"),
-        GAUSSIAN("gaussian.system");
+        SI("si.system");
 
         private final String definitionFile;
 
@@ -54,32 +49,15 @@ public final class Units {
 
     private static volatile UnitFormatter DEFAULT_FORMATTER = UnitFormat.symbolAndDimension();
 
-    private static final UnitSystem   unitSystem;
+    private static final UnitSystem   unitSystem   = UnitSystem.SI;
     private static final UnitRegistry unitReqistry = new UnitRegistry();
 
     // Some globally unique units / constants.
     public static final Unit<Dimensionless> ONE = new ProductUnit<>();
 
     static {
-        Properties properties = loadProperties();
-        unitSystem = UnitSystem.valueOf(properties.getProperty(CONFIG_UNIT_SYSTEM_KEY));
-
         Map<String, Unit<?>> units = UnitDefinitionParser.parse(unitSystem.getDefinitionFile(), unitReqistry);
         unitReqistry.addUnits(units);
-    }
-
-    private static Properties loadProperties() {
-        Properties properties = new Properties();
-
-        properties.setProperty(CONFIG_UNIT_SYSTEM_KEY, "SI");
-
-        try (InputStream is = Units.class.getResourceAsStream("/" + CONFIG_FILE)) {
-            if (is != null) {
-                properties.load(is);
-            }
-        } catch (IOException ignored) {}
-
-        return properties;
     }
 
     public static UnitSystem getUnitSystem() {

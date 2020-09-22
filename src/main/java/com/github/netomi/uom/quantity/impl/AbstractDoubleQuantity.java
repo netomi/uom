@@ -18,7 +18,7 @@ package com.github.netomi.uom.quantity.impl;
 import com.github.netomi.uom.*;
 import com.github.netomi.uom.quantity.Quantities;
 import com.github.netomi.uom.unit.Units;
-import com.github.netomi.uom.util.TypeUtil;
+import com.github.netomi.uom.util.Preconditions;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -135,7 +135,7 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>> implements DoubleQu
 
         Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, calculatedSystemUnit);
         if (systemUnit != calculatedSystemUnit) {
-            TypeUtil.requireCommensurable(calculatedSystemUnit, systemUnit);
+            Preconditions.requireCommensurable(calculatedSystemUnit, systemUnit);
             calculatedSystemUnit = systemUnit;
         }
 
@@ -162,7 +162,7 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>> implements DoubleQu
 
         Unit<R> systemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityClass, calculatedSystemUnit);
         if (systemUnit != calculatedSystemUnit) {
-            TypeUtil.requireCommensurable(calculatedSystemUnit, systemUnit);
+            Preconditions.requireCommensurable(calculatedSystemUnit, systemUnit);
             calculatedSystemUnit = systemUnit;
         }
 
@@ -196,7 +196,7 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>> implements DoubleQu
         if (getUnit().equals(toUnit)) {
             return (Q) this;
         }
-        TypeUtil.requireCommensurable(this, toUnit);
+        Preconditions.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
         return with(converter.convert(value), toUnit);
     }
@@ -242,7 +242,7 @@ abstract class AbstractDoubleQuantity<Q extends Quantity<Q>> implements DoubleQu
                 Unit<R> quantityUnit = (Unit<R>) this.unit;
 
                 if (!systemUnit.equals(requestedSystemUnit)) {
-                    TypeUtil.requireCommensurable(systemUnit, requestedSystemUnit);
+                    Preconditions.requireCommensurable(systemUnit, requestedSystemUnit);
 
                     quantityValue = quantityUnit.getConverterToAny(requestedSystemUnit).convert(quantityValue);
                     quantityUnit  = requestedSystemUnit;

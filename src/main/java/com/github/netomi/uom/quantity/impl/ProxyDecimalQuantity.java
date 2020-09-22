@@ -18,7 +18,7 @@ package com.github.netomi.uom.quantity.impl;
 import com.github.netomi.uom.util.Proxies;
 import com.github.netomi.uom.Quantity;
 import com.github.netomi.uom.Unit;
-import com.github.netomi.uom.util.TypeUtil;
+import com.github.netomi.uom.util.Preconditions;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -32,7 +32,7 @@ class ProxyDecimalQuantity<Q extends Quantity<Q>> extends AbstractDecimalQuantit
         return (value, mc, unit) -> {
             ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
             Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
-            TypeUtil.requireCommensurable(proxy, unit);
+            Preconditions.requireCommensurable(proxy, unit);
             return proxy;
         };
     }
@@ -41,7 +41,7 @@ class ProxyDecimalQuantity<Q extends Quantity<Q>> extends AbstractDecimalQuantit
         return (value, ignored, unit) -> {
             ProxyDecimalQuantity<Q> proxyImpl = new ProxyDecimalQuantity<>(value, mc, unit, quantityClass);
             Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DecimalQuantity.class);
-            TypeUtil.requireCommensurable(proxy, unit);
+            Preconditions.requireCommensurable(proxy, unit);
             return proxy;
         };
     }

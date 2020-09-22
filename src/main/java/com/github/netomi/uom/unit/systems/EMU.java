@@ -34,7 +34,7 @@ public final class EMU extends CGS {
 
     // electrical units.
 
-    public static final Unit<ElectricCharge> ABCOULOMB = addUnit("abC", ElectricCharge.class);
+    public static final Unit<ElectricCharge>      ABCOULOMB = addUnit("abC", ElectricCharge.class);
     public static final Unit<ElectricCurrent>     ABAMPERE  = addUnit("abA", ElectricCurrent.class);
     public static final Unit<ElectricPotential>   ABVOLT    = addUnit("abV", ElectricPotential.class);
     public static final Unit<ElectricResistance>  ABOHM     = addUnit("abΩ", ElectricResistance.class);

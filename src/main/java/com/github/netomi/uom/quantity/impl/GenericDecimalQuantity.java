@@ -24,6 +24,7 @@ import java.math.MathContext;
 @SuppressWarnings("rawtypes")
 class GenericDecimalQuantity extends AbstractDecimalQuantity {
 
+    @SuppressWarnings("unchecked")
     public static <Q extends Quantity<Q>> GenericDecimalQuantityFactory<Q> factory() {
         return GenericDecimalQuantity::new;
     }

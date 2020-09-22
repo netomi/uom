@@ -34,7 +34,7 @@ public final class Gaussian extends CGS {
 
     // electrical units.
 
-    public static final Unit<ElectricCharge> FRANKLIN            = addUnit("Fr",    ElectricCharge.class);
+    public static final Unit<ElectricCharge>      FRANKLIN            = addUnit("Fr",    ElectricCharge.class);
     public static final Unit<ElectricCurrent>     FRANKLIN_PER_SECOND = addUnit("Fr/s",  ElectricCurrent.class);
     public static final Unit<ElectricPotential>   STATVOLT            = addUnit("statV", ElectricPotential.class);
     public static final Unit<ElectricResistance>  STATOHM             = addUnit("statΩ", ElectricResistance.class);

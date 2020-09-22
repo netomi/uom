@@ -24,6 +24,7 @@ class GenericDoubleQuantity extends AbstractDoubleQuantity {
 
     static final Quantity<?> ONE = new GenericDoubleQuantity(1.0, Units.ONE);
 
+    @SuppressWarnings("unchecked")
     public static <Q extends Quantity<Q>> GenericDoubleQuantityFactory<Q> factory() {
         return GenericDoubleQuantity::new;
     }

@@ -56,6 +56,7 @@ public final class UnitFormatterBuilder {
         return this;
     }
 
+    @SuppressWarnings("unchecked")
     public UnitFormatter toFormatter() {
         return new UnitFormatter(formatters.toArray(new InternalFormatter[0]));
     }

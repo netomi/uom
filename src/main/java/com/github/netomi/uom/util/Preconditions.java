@@ -15,21 +15,20 @@
  */
 package com.github.netomi.uom.util;
 
+import com.github.netomi.uom.IncommensurableException;
+import com.github.netomi.uom.Quantity;
 import com.github.netomi.uom.Unit;
 import com.github.netomi.uom.quantity.impl.DecimalQuantity;
 import com.github.netomi.uom.quantity.impl.DoubleQuantity;
-import com.github.netomi.uom.IncommensurableException;
-import com.github.netomi.uom.Quantity;
-import com.github.netomi.uom.unit.Units;
 
 import java.lang.reflect.Proxy;
 
 /**
- * A utility to perform type / dimension checks between entities like {@link Quantity} and {@link Unit}.
+ * Some utilities to perform type / dimension checks between entities like {@link Quantity} and {@link Unit}.
  *
  * @author Thomas Neidhart
  */
-public final class TypeUtil {
+public final class Preconditions {
 
     /** Error message for units whose dimensions does not match. */
     private static final String ERROR_UNIT_DIMENSION_MISMATCH = "Dimension mismatch for units {0} and {1}: {2} != {3}.";
@@ -38,7 +37,7 @@ public final class TypeUtil {
     private static final String ERROR_UNIT_QUANTITY_DIMENSION_MISMATCH = "Incompatible system units: trying to use unit {0}/{1}'{'{2}'}' for quantity of type {3}'{'{4}'}'.";
 
     // hide constructor
-    private TypeUtil() {}
+    private Preconditions() {}
 
     /**
      * Checks if the two provided {@link Unit}'s are compatible. If not,
@@ -67,16 +66,7 @@ public final class TypeUtil {
      * @throws IncommensurableException if the two objects are not compatible.
      */
     public static void requireCommensurable(Quantity<?> quantity, Unit<?> unit) {
-        Units.UnitSystem system = Units.getUnitSystem();
-
-        // When using SI system of units, we enable full commensurable checks,
-        // otherwise we resort to a simple dimension check.
-
-        boolean compatible = system == Units.UnitSystem.SI ?
-                quantity.isCompatible(unit) :
-                quantity.getUnit().isCompatible(unit);
-
-        if (!compatible) {
+        if (!quantity.isCompatible(unit)) {
             throw new IncommensurableException(ERROR_UNIT_QUANTITY_DIMENSION_MISMATCH,
                                                unit.getSymbol(),
                                                unit.getName(),
