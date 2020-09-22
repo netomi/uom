@@ -2,6 +2,7 @@
 
 [![Build Status](https://api.travis-ci.org/netomi/uom.svg?branch=master)](https://travis-ci.org/netomi/uom)
 [![Coverage Status](https://coveralls.io/repos/github/netomi/uom/badge.svg?branch=master&service=github)](https://coveralls.io/github/netomi/uom?branch=master)
+[![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.netomi.sudoku/sudoku-solver.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/github/netomi/uom/)
 [![License](http://img.shields.io/:license-apache-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0.html)
 
 My personal take on a _units of measurement_ library for java.
