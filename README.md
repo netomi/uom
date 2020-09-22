@@ -11,15 +11,15 @@ The design goal of the library is to include:
 
 * fully typed quantities:
   ```java
-  Length l1 = Length.of(1, SI.METER);
+  Length l1 = Length.of(1, SI.METRE);
   Length l2 = Length.ofMeter(2);          // convenience factory method for SI unit 
   ```
 * transparent support for double and arbitrary decimal precision quantities (using BigDecimal):
   ```java
-  Length doubleLength  = Quantities.createQuantity(1, SI.METER, Length.class);
-  Length decimalLength = Quantities.createQuantity(BigDecimal.ONE, Imperial.YARD, Length.class);
+  Length l1 = Quantities.create(1, SI.METRE);
+  Length l2 = Quantities.create(BigDecimal.ONE, Intl.YARD);
   
-  Length l3 = l1.add(l2);
+  Length l3 = l1.add(l2);   // quantities with different precision can be used together
   ```
 * support for generic quantities:
   ```java
