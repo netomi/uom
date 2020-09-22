@@ -74,7 +74,7 @@ jacocoTestReport {
 
 // publishing configuration
 
-def isReleaseVersion = !version.endsWith("SNAPSHOT")
+def isReleaseVersion  = !version.endsWith("SNAPSHOT")
 def SONATYPE_USERNAME = project.hasProperty('sonatypeUsername') ? project.property('sonatypeUsername') : System.getenv('SONATYPE_USERNAME')
 def SONATYPE_PASSWORD = project.hasProperty('sonatypePassword') ? project.property('sonatypePassword') : System.getenv('SONATYPE_PASSWORD')
 
@@ -133,7 +133,10 @@ publishing {
 signing {
     required { isReleaseVersion && gradle.taskGraph.hasTask("publish") }
     sign publishing.publications.maven
-    sign configurations.archives
+}
+
+tasks.withType(Sign) {
+    onlyIf { isReleaseVersion }
 }
 
 repositories {
