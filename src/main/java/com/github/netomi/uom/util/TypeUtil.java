@@ -97,10 +97,10 @@ public final class TypeUtil {
                     return itf;
                 }
             }
-        } else if (quantity instanceof DoubleQuantity<?, ?>) {
-            quantityClass = ((DoubleQuantity<?, ?>) quantity).getQuantityClass();
-        } else if (quantity instanceof DecimalQuantity<?, ?>) {
-            quantityClass = ((DecimalQuantity<?, ?>) quantity).getQuantityClass();
+        } else if (quantity instanceof DoubleQuantity<?>) {
+            quantityClass = ((DoubleQuantity<?>) quantity).getQuantityClass();
+        } else if (quantity instanceof DecimalQuantity<?>) {
+            quantityClass = ((DecimalQuantity<?>) quantity).getQuantityClass();
         }
 
         // did not find a quantity interface, return the class itself.

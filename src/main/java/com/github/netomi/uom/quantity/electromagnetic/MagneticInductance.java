@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface MagneticInductance extends TypedQuantity<MagneticInductance, MagneticInductance> {
+public interface MagneticInductance extends TypedQuantity<MagneticInductance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link MagneticInductance}.

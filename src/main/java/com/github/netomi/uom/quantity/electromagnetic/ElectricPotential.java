@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricPotential extends TypedQuantity<ElectricPotential, ElectricPotential> {
+public interface ElectricPotential extends TypedQuantity<ElectricPotential> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricPotential}.

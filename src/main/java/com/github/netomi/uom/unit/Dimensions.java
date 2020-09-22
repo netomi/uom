@@ -91,7 +91,7 @@ public final class Dimensions {
     }
 
     static Dimension getPhysicalBaseDimension(char symbol) {
-        return physicalBaseDimensions.get(PhysicalDimension.Base.of(symbol));
+        return getPhysicalBaseDimension(PhysicalDimension.Base.of(symbol));
     }
 
     /**

@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link LuminousIntensity} quantity.
  */
-public class LuminousIntensityTest extends AbstractTypedQuantityTest<LuminousIntensity, LuminousIntensity> {
+public class LuminousIntensityTest extends AbstractTypedQuantityTest<LuminousIntensity> {
 
     @Override
     protected Class<LuminousIntensity> getQuantityClass() {

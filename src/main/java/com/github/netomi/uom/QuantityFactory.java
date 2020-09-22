@@ -25,10 +25,10 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-public interface QuantityFactory<P extends Q, Q extends Quantity<Q>> {
-    P create(double value, Unit<Q> unit);
+public interface QuantityFactory<Q extends Quantity<Q>> {
+    Q create(double value, Unit<Q> unit);
 
-    P create(BigDecimal value, Unit<Q> unit);
+    Q create(BigDecimal value, Unit<Q> unit);
 
-    P create(BigDecimal value, MathContext mc, Unit<Q> unit);
+    Q create(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

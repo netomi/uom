@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface AmountOfSubstance extends TypedQuantity<AmountOfSubstance, AmountOfSubstance> {
+public interface AmountOfSubstance extends TypedQuantity<AmountOfSubstance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link AmountOfSubstance}.

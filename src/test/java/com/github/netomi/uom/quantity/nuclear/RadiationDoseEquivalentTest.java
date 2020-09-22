@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link RadiationDoseEquivalent} quantity.
  */
-public class RadiationDoseEquivalentTest extends AbstractTypedQuantityTest<RadiationDoseEquivalent, RadiationDoseEquivalent> {
+public class RadiationDoseEquivalentTest extends AbstractTypedQuantityTest<RadiationDoseEquivalent> {
 
     @Override
     protected Class<RadiationDoseEquivalent> getQuantityClass() {

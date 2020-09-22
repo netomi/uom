@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link SolidAngle} quantity.
  */
-public class SolidAngleTest extends AbstractTypedQuantityTest<SolidAngle, SolidAngle> {
+public class SolidAngleTest extends AbstractTypedQuantityTest<SolidAngle> {
 
     @Override
     protected Class<SolidAngle> getQuantityClass() {

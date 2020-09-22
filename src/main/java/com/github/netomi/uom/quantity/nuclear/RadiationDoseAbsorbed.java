@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface RadiationDoseAbsorbed extends TypedQuantity<RadiationDoseAbsorbed, RadiationDoseAbsorbed> {
+public interface RadiationDoseAbsorbed extends TypedQuantity<RadiationDoseAbsorbed> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link RadiationDoseAbsorbed}.

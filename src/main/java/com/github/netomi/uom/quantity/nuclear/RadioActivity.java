@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface RadioActivity extends TypedQuantity<RadioActivity, RadioActivity> {
+public interface RadioActivity extends TypedQuantity<RadioActivity> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link RadioActivity}.

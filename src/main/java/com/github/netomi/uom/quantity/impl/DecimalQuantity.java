@@ -28,7 +28,7 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-public interface DecimalQuantity<P extends Q, Q extends Quantity<Q>> extends Quantity<Q> {
+public interface DecimalQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <Q extends Quantity<Q>> GenericDecimalQuantityFactory<Q> factory() {
         return GenericDecimalQuantity.factory();
@@ -45,7 +45,7 @@ public interface DecimalQuantity<P extends Q, Q extends Quantity<Q>> extends Qua
      * specified quantity class.
      * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
      */
-    static <P extends Q, Q extends Quantity<Q>> DecimalQuantityFactory<P, Q> factory(Class<P> quantityClass) {
+    static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(Class<Q> quantityClass) {
         if (!Quantity.class.isAssignableFrom(quantityClass)) {
             throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
         }
@@ -65,7 +65,7 @@ public interface DecimalQuantity<P extends Q, Q extends Quantity<Q>> extends Qua
      * specified quantity class.
      * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
      */
-    static <P extends Q, Q extends Quantity<Q>> DecimalQuantityFactory<P, Q> factory(MathContext mc, Class<P> quantityClass) {
+    static <Q extends Quantity<Q>> DecimalQuantityFactory<Q> factory(MathContext mc, Class<Q> quantityClass) {
         if (!Quantity.class.isAssignableFrom(quantityClass)) {
             throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
         }
@@ -85,9 +85,9 @@ public interface DecimalQuantity<P extends Q, Q extends Quantity<Q>> extends Qua
 
     Class<?> getQuantityClass();
 
-    default P with(BigDecimal value, Unit<Q> unit) {
+    default Q with(BigDecimal value, Unit<Q> unit) {
         return with(value, getMathContext(), unit);
     }
 
-    P with(BigDecimal value, MathContext mc, Unit<Q> unit);
+    Q with(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link CatalyticActivity} quantity.
  */
-public class CatalyticActivityTest extends AbstractTypedQuantityTest<CatalyticActivity, CatalyticActivity> {
+public class CatalyticActivityTest extends AbstractTypedQuantityTest<CatalyticActivity> {
 
     @Override
     protected Class<CatalyticActivity> getQuantityClass() {

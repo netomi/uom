@@ -29,7 +29,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Energy extends TypedQuantity<Energy, Energy> {
+public interface Energy extends TypedQuantity<Energy> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Energy}.

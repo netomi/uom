@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Illuminance extends TypedQuantity<Illuminance, Illuminance> {
+public interface Illuminance extends TypedQuantity<Illuminance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Illuminance}.

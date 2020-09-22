@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Temperature extends TypedQuantity<Temperature, Temperature> {
+public interface Temperature extends TypedQuantity<Temperature> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Temperature}.

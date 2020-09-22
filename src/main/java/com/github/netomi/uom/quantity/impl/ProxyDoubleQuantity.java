@@ -22,20 +22,20 @@ import com.github.netomi.uom.util.TypeUtil;
 
 import java.util.Objects;
 
-class ProxyDoubleQuantity<P extends Q, Q extends Quantity<Q>> extends AbstractDoubleQuantity<P, Q> {
+class ProxyDoubleQuantity<Q extends Quantity<Q>> extends AbstractDoubleQuantity<Q> {
 
-    private final Class<P> quantityClass;
+    private final Class<Q> quantityClass;
 
-    public static <P extends Q, Q extends Quantity<Q>> DoubleQuantityFactory<P, Q> factory(Class<P> quantityClass) {
+    public static <Q extends Quantity<Q>> DoubleQuantityFactory<Q> factory(Class<Q> quantityClass) {
         return (value, unit) -> {
-            ProxyDoubleQuantity<P, Q> proxyImpl = new ProxyDoubleQuantity<>(value, unit, quantityClass);
-            P proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DoubleQuantity.class);
+            ProxyDoubleQuantity<Q> proxyImpl = new ProxyDoubleQuantity<>(value, unit, quantityClass);
+            Q proxy = Proxies.delegatingProxy(proxyImpl, quantityClass, DoubleQuantity.class);
             TypeUtil.requireCommensurable(proxy, unit);
             return proxy;
         };
     }
 
-    ProxyDoubleQuantity(double value, Unit<Q> unit, Class<P> quantityClass) {
+    ProxyDoubleQuantity(double value, Unit<Q> unit, Class<Q> quantityClass) {
         super(value, unit);
 
         Objects.requireNonNull(quantityClass);
@@ -48,7 +48,7 @@ class ProxyDoubleQuantity<P extends Q, Q extends Quantity<Q>> extends AbstractDo
     }
 
     @Override
-    public P with(double value, Unit<Q> unit) {
+    public Q with(double value, Unit<Q> unit) {
         return factory(quantityClass).create(value, unit);
     }
 }

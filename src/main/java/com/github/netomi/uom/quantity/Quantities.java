@@ -61,7 +61,7 @@ public final class Quantities {
 
     private static volatile QuantityFormatter DEFAULT_FORMATTER = QuantityFormat.defaultFormatter();
 
-    private static final Map<Class<? extends Quantity<?>>, QuantityFactory<?, ?>> quantityFactories;
+    private static final Map<Class<? extends Quantity<?>>, QuantityFactory<?>> quantityFactories;
 
     private static final Map<Unit<?>, Class<? extends Quantity<?>>> unitToQuantityMap;
 
@@ -88,8 +88,8 @@ public final class Quantities {
     /**
      * Register another {@link QuantityFactory} for a specified quantity type.
      */
-    public static <P extends Q, Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
-                                                                                    QuantityFactory<P, Q> factory) {
+    public static <Q extends Quantity<Q>> void registerQuantityFactory(Class<Q>           quantityClass,
+                                                                       QuantityFactory<Q> factory) {
         quantityFactories.put(quantityClass, factory);
     }
 
@@ -112,8 +112,8 @@ public final class Quantities {
     }
 
     @SuppressWarnings("unchecked")
-    private static <P extends Q, Q extends Quantity<Q>> QuantityFactory<P, Q> getQuantityFactory(Class<P> quantityType) {
-        return (QuantityFactory<P, Q>)
+    private static <Q extends Quantity<Q>> QuantityFactory<Q> getQuantityFactory(Class<Q> quantityType) {
+        return (QuantityFactory<Q>)
                 quantityFactories.computeIfAbsent(quantityType, key -> {
                     if (!Quantity.class.isAssignableFrom(quantityType)) {
                         throw new IllegalArgumentException(quantityType + " is not a Quantity.");
@@ -155,9 +155,9 @@ public final class Quantities {
      *
      * @throws IllegalArgumentException if the specified class does not implement the {@link Quantity} interface.
      */
-    public static <P extends Q, Q extends Quantity<Q>> P create(double   value,
-                                                                Unit<Q>  unit,
-                                                                Class<P> quantityClass) {
+    public static <Q extends Quantity<Q>> Q create(double   value,
+                                                   Unit<Q>  unit,
+                                                   Class<Q> quantityClass) {
         return getQuantityFactory(quantityClass).create(value, unit);
     }
 
@@ -176,9 +176,9 @@ public final class Quantities {
         }
     }
 
-    public static <P extends Q, Q extends Quantity<Q>> P create(BigDecimal value,
-                                                                Unit<Q>    unit,
-                                                                Class<P>   quantityClass) {
+    public static <Q extends Quantity<Q>> Q create(BigDecimal value,
+                                                   Unit<Q>    unit,
+                                                   Class<Q>   quantityClass) {
         return getQuantityFactory(quantityClass).create(value, unit);
     }
 
@@ -199,10 +199,10 @@ public final class Quantities {
         }
     }
 
-    public static <P extends Q, Q extends Quantity<Q>> P create(BigDecimal  value,
-                                                                MathContext mc,
-                                                                Unit<Q>     unit,
-                                                                Class<P>    quantityClass) {
+    public static <Q extends Quantity<Q>> Q create(BigDecimal  value,
+                                                   MathContext mc,
+                                                   Unit<Q>     unit,
+                                                   Class<Q>    quantityClass) {
         return getQuantityFactory(quantityClass).create(value, mc, unit);
     }
 
@@ -262,19 +262,19 @@ public final class Quantities {
         }
     }
 
-    static class CombinedQuantityFactory<P extends Q, Q extends Quantity<Q>> implements QuantityFactory<P, Q> {
+    static class CombinedQuantityFactory<Q extends Quantity<Q>> implements QuantityFactory<Q> {
 
-        private final DoubleQuantityFactory<P, Q> doubleQuantityFactory;
-        private final DecimalQuantityFactory<P, Q> decimalQuantityFactory;
+        private final DoubleQuantityFactory<Q> doubleQuantityFactory;
+        private final DecimalQuantityFactory<Q> decimalQuantityFactory;
 
         @SuppressWarnings({"unchecked", "rawtypes"})
-        static <P extends Q, Q extends Quantity<Q>> CombinedQuantityFactory of(DoubleQuantityFactory<P, Q>  doubleFactory,
-                                                                  DecimalQuantityFactory<P, Q> decimalFactory) {
+        static <Q extends Quantity<Q>> CombinedQuantityFactory of(DoubleQuantityFactory<Q>  doubleFactory,
+                                                                  DecimalQuantityFactory<Q> decimalFactory) {
             return new CombinedQuantityFactory(doubleFactory, decimalFactory);
         }
 
-        private CombinedQuantityFactory(DoubleQuantityFactory<P, Q>  doubleQuantityFactory,
-                                        DecimalQuantityFactory<P, Q> decimalQuantityFactory) {
+        private CombinedQuantityFactory(DoubleQuantityFactory<Q>  doubleQuantityFactory,
+                                        DecimalQuantityFactory<Q> decimalQuantityFactory) {
             Objects.requireNonNull(doubleQuantityFactory);
             Objects.requireNonNull(decimalQuantityFactory);
 
@@ -283,17 +283,17 @@ public final class Quantities {
         }
 
         @Override
-        public P create(double value, Unit<Q> unit) {
+        public Q create(double value, Unit<Q> unit) {
             return doubleQuantityFactory.create(value, unit);
         }
 
         @Override
-        public P create(BigDecimal value, Unit<Q> unit) {
+        public Q create(BigDecimal value, Unit<Q> unit) {
             return decimalQuantityFactory.create(value, unit);
         }
 
         @Override
-        public P create(BigDecimal value, MathContext mc, Unit<Q> unit) {
+        public Q create(BigDecimal value, MathContext mc, Unit<Q> unit) {
             return decimalQuantityFactory.create(value, mc, unit);
         }
     }

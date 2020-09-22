@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Acceleration extends TypedQuantity<Acceleration, Acceleration> {
+public interface Acceleration extends TypedQuantity<Acceleration> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Acceleration}.

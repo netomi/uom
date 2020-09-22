@@ -30,9 +30,7 @@ import java.util.Objects;
  *
  * @author Thomas Neidhart
  */
-abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
-    implements DecimalQuantity<P, Q>,
-        TypedQuantity<P, Q> {
+abstract class AbstractDecimalQuantity<Q extends Quantity<Q>> implements DecimalQuantity<Q>, TypedQuantity<Q> {
 
     protected final BigDecimal  value;
     protected final MathContext mc;
@@ -113,19 +111,19 @@ abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
     }
 
     @Override
-    public P add(Quantity<Q> addend) {
+    public Q add(Quantity<Q> addend) {
         Quantity<Q> scaledQuantity = addend.to(unit);
         return with(value.add(scaledQuantity.decimalValue(), mc), unit);
     }
 
     @Override
-    public P subtract(Quantity<Q> subtrahend) {
+    public Q subtract(Quantity<Q> subtrahend) {
         Quantity<Q> scaledQuantity = subtrahend.to(unit);
         return with(value.subtract(scaledQuantity.decimalValue(), mc), unit);
     }
 
     @Override
-    public P negate() {
+    public Q negate() {
         return with(value.negate(mc), unit);
     }
 
@@ -200,15 +198,15 @@ abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
     }
 
     @Override
-    public P to(Unit<Q> toUnit) {
+    public Q to(Unit<Q> toUnit) {
         return to(toUnit, mc);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public P to(Unit<Q> toUnit, MathContext toMc) {
+    public Q to(Unit<Q> toUnit, MathContext toMc) {
         if (getUnit().equals(toUnit)) {
-            return (P) this;
+            return (Q) this;
         }
         TypeUtil.requireCommensurable(this, toUnit);
         UnitConverter converter = unit.getConverterTo(toUnit);
@@ -216,17 +214,17 @@ abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
     }
 
     @Override
-    public P toSystemUnit() {
+    public Q toSystemUnit() {
         return toSystemUnit(mc);
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public P toSystemUnit(MathContext toMc) {
+    public Q toSystemUnit(MathContext toMc) {
         if (unit.isSystemUnit()) {
             Unit<Q> namedUnit = Units.getNamedUnitIfPresent(unit);
             return namedUnit == unit ?
-                    (P) this :
+                    (Q) this :
                     with(value, namedUnit);
         }
 
@@ -245,7 +243,7 @@ abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
     }
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public <R extends S, S extends Quantity<S>> R asQuantity(Class<R> quantityType) {
+    public <R extends Quantity<R>> R asQuantity(Class<R> quantityType) {
         Objects.requireNonNull(quantityType);
 
         Class<?> quantityClass = getQuantityClass();
@@ -255,10 +253,10 @@ abstract class AbstractDecimalQuantity<P extends Q, Q extends Quantity<Q>>
         } else {
             try {
                 Unit<Q> systemUnit          = getSystemUnit();
-                Unit<S> requestedSystemUnit = (Unit<S>) Quantities.Type.systemUnitFor(quantityType, (Unit) unit);
+                Unit<R> requestedSystemUnit = (Unit<R>) Quantities.Type.systemUnitFor(quantityType, (Unit) unit);
 
                 BigDecimal quantityValue = this.value;
-                Unit<S>    quantityUnit  = (Unit<S>) this.unit;
+                Unit<R>    quantityUnit  = (Unit<R>) this.unit;
 
                 if (!systemUnit.equals(requestedSystemUnit)) {
                     TypeUtil.requireCommensurable(systemUnit, requestedSystemUnit);

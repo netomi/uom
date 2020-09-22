@@ -32,7 +32,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Speed extends TypedQuantity<Speed, Speed> {
+public interface Speed extends TypedQuantity<Speed> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Speed}.

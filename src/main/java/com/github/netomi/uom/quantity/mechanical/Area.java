@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Area extends TypedQuantity<Area, Area> {
+public interface Area extends TypedQuantity<Area> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Area}.

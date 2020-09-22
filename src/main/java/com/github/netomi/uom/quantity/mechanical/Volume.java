@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Volume extends TypedQuantity<Volume, Volume> {
+public interface Volume extends TypedQuantity<Volume> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Volume}.

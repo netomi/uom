@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Pressure} quantity.
  */
-public class PressureTest extends AbstractTypedQuantityTest<Pressure, Pressure> {
+public class PressureTest extends AbstractTypedQuantityTest<Pressure> {
 
     @Override
     protected Class<Pressure> getQuantityClass() {

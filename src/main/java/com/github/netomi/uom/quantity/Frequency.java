@@ -29,7 +29,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Frequency extends TypedQuantity<Frequency, Frequency> {
+public interface Frequency extends TypedQuantity<Frequency> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Frequency}.

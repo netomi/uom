@@ -30,7 +30,7 @@ import com.github.netomi.uom.QuantityFactory;
  *
  * @author Thomas Neidhart
  */
-public interface Force extends TypedQuantity<Force, Force> {
+public interface Force extends TypedQuantity<Force> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Force}.

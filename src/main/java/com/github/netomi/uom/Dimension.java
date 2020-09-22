@@ -130,14 +130,14 @@ public abstract class Dimension {
 
     /**
      * Any concrete implementation of a {@link Dimension} must properly implement
-     * {@link #hashCode()}.
+     * {@link Object#hashCode()}.
      */
     @Override
     public abstract int hashCode();
 
     /**
      * Any concrete implementation of a {@link Dimension} must properly implement
-     * {@link #equals(Object)}.
+     * {@link Object#equals(Object)}.
      */
     @Override
     public abstract boolean equals(Object o);

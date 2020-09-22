@@ -29,7 +29,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Angle extends TypedQuantity<Angle, Angle> {
+public interface Angle extends TypedQuantity<Angle> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Angle}.

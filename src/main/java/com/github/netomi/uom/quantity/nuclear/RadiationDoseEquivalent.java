@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface RadiationDoseEquivalent extends TypedQuantity<RadiationDoseEquivalent, RadiationDoseEquivalent> {
+public interface RadiationDoseEquivalent extends TypedQuantity<RadiationDoseEquivalent> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link RadiationDoseEquivalent}.

@@ -25,7 +25,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link MagneticFlux} quantity.
  */
-public class MagneticFluxText extends AbstractTypedQuantityTest<MagneticFlux, MagneticFlux> {
+public class MagneticFluxText extends AbstractTypedQuantityTest<MagneticFlux> {
 
     @Override
     protected Class<MagneticFlux> getQuantityClass() {

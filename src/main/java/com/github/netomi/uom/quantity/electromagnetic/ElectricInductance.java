@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricInductance extends TypedQuantity<ElectricInductance, ElectricInductance> {
+public interface ElectricInductance extends TypedQuantity<ElectricInductance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricInductance}.

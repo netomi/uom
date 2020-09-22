@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface MagneticFlux extends TypedQuantity<MagneticFlux, MagneticFlux> {
+public interface MagneticFlux extends TypedQuantity<MagneticFlux> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link MagneticFlux}.

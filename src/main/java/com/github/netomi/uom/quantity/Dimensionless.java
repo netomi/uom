@@ -31,7 +31,7 @@ import com.github.netomi.uom.unit.Units;
  *
  * @author Thomas Neidhart
  */
-public interface Dimensionless extends TypedQuantity<Dimensionless, Dimensionless> {
+public interface Dimensionless extends TypedQuantity<Dimensionless> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Dimensionless}.

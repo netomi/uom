@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Power extends TypedQuantity<Power, Power> {
+public interface Power extends TypedQuantity<Power> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Power}.

@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricCapacitance extends TypedQuantity<ElectricCapacitance, ElectricCapacitance> {
+public interface ElectricCapacitance extends TypedQuantity<ElectricCapacitance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricCapacitance}.

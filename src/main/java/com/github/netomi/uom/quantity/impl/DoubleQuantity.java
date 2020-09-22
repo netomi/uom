@@ -25,7 +25,7 @@ import com.github.netomi.uom.Unit;
  *
  * @author Thomas Neidhart
  */
-public interface DoubleQuantity<P extends Q, Q extends Quantity<Q>> extends Quantity<Q> {
+public interface DoubleQuantity<Q extends Quantity<Q>> extends Quantity<Q> {
 
     static <Q extends Quantity<Q>> GenericDoubleQuantityFactory<Q> factory() {
         return GenericDoubleQuantity.factory();
@@ -42,7 +42,7 @@ public interface DoubleQuantity<P extends Q, Q extends Quantity<Q>> extends Quan
      * specified quantity class.
      * @throws IllegalArgumentException if the specified class is not a {@link Quantity}.
      */
-    static <P extends Q, Q extends Quantity<Q>> DoubleQuantityFactory<P, Q> factory(Class<P> quantityClass) {
+    static <Q extends Quantity<Q>> DoubleQuantityFactory<Q> factory(Class<Q> quantityClass) {
         if (!Quantity.class.isAssignableFrom(quantityClass)) {
             throw new IllegalArgumentException(quantityClass + " is not a Quantity.");
         }
@@ -52,5 +52,5 @@ public interface DoubleQuantity<P extends Q, Q extends Quantity<Q>> extends Quan
 
     Class<?> getQuantityClass();
 
-    P with(double value, Unit<Q> unit);
+    Q with(double value, Unit<Q> unit);
 }

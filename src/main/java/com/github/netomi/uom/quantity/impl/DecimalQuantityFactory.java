@@ -30,19 +30,19 @@ import java.math.MathContext;
  *
  * @author Thomas Neidhart
  */
-public interface DecimalQuantityFactory<P extends Q, Q extends Quantity<Q>> extends QuantityFactory<P, Q> {
+public interface DecimalQuantityFactory<Q extends Quantity<Q>> extends QuantityFactory<Q> {
 
     MathContext DEFAULT_MATH_CONTEXT = MathContext.DECIMAL128;
 
     @Override
-    default P create(double value, Unit<Q> unit) {
+    default Q create(double value, Unit<Q> unit) {
         return create(BigDecimal.valueOf(value), unit);
     }
 
     @Override
-    default P create(BigDecimal value, Unit<Q> unit) {
+    default Q create(BigDecimal value, Unit<Q> unit) {
         return create(value, DEFAULT_MATH_CONTEXT, unit);
     }
 
-    P create(BigDecimal value, MathContext mc, Unit<Q> unit);
+    Q create(BigDecimal value, MathContext mc, Unit<Q> unit);
 }

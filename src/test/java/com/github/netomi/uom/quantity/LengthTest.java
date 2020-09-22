@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 /**
  * Unit test for the {@link Length} quantity.
  */
-public class LengthTest extends AbstractTypedQuantityTest<Length, Length> {
+public class LengthTest extends AbstractTypedQuantityTest<Length> {
 
     @Override
     protected Class<Length> getQuantityClass() {

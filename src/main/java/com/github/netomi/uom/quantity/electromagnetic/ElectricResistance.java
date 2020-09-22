@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface ElectricResistance extends TypedQuantity<ElectricResistance, ElectricResistance> {
+public interface ElectricResistance extends TypedQuantity<ElectricResistance> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link ElectricResistance}.

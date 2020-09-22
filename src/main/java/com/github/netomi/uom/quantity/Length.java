@@ -31,7 +31,7 @@ import com.github.netomi.uom.quantity.mechanical.Area;
  *
  * @author Thomas Neidhart
  */
-public interface Length extends TypedQuantity<Length, Length> {
+public interface Length extends TypedQuantity<Length> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Length}.

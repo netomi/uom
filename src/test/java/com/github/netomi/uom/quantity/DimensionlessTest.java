@@ -24,7 +24,7 @@ import java.util.function.Function;
 /**
  * Unit test for the {@link Dimensionless} quantity.
  */
-public class DimensionlessTest extends AbstractTypedQuantityTest<Dimensionless, Dimensionless> {
+public class DimensionlessTest extends AbstractTypedQuantityTest<Dimensionless> {
 
     @Override
     protected Class<Dimensionless> getQuantityClass() {

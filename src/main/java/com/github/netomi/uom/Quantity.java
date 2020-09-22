@@ -375,5 +375,5 @@ public interface Quantity<Q extends Quantity<Q>> extends Comparable<Quantity<Q>>
      * @return this quantity cast as the requested quantity type.
      * @throws IncommensurableException if this quantity is not compatible with the requested quantity type.
      */
-    <R extends S, S extends Quantity<S>> R asQuantity(Class<R> quantityType);
+    <R extends Quantity<R>> R asQuantity(Class<R> quantityType);
 }

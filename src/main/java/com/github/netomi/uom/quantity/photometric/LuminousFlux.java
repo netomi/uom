@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface LuminousFlux extends TypedQuantity<LuminousFlux, LuminousFlux> {
+public interface LuminousFlux extends TypedQuantity<LuminousFlux> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link LuminousFlux}.

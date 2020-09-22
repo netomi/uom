@@ -51,8 +51,8 @@ class ProductUnit<Q extends Quantity<Q>> extends Unit<Q> {
 
     private final UnitElementWrapper     unitElements;
     private final String                 cachedSymbol;
-    private final Dimension cachedDimension;
-    private final UnitConverter cachedSystemConverter;
+    private final Dimension              cachedDimension;
+    private final UnitConverter          cachedSystemConverter;
     private final Map<Unit<?>, Fraction> cachedBaseUnitMap;
     private       Unit<Q>                cachedSystemUnit;
 

@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * Unit test for the {@link RadioActivity} quantity.
  */
-public class RadioActivityTest extends AbstractTypedQuantityTest<RadioActivity, RadioActivity> {
+public class RadioActivityTest extends AbstractTypedQuantityTest<RadioActivity> {
 
     @Override
     protected Class<RadioActivity> getQuantityClass() {

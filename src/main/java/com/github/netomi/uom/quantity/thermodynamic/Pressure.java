@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Pressure extends TypedQuantity<Pressure, Pressure> {
+public interface Pressure extends TypedQuantity<Pressure> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Pressure}.

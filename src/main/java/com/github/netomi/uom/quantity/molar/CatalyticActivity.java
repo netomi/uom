@@ -30,7 +30,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface CatalyticActivity extends TypedQuantity<CatalyticActivity, CatalyticActivity> {
+public interface CatalyticActivity extends TypedQuantity<CatalyticActivity> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link CatalyticActivity}.

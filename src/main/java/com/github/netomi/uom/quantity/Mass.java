@@ -29,7 +29,7 @@ import com.github.netomi.uom.unit.systems.SI;
  *
  * @author Thomas Neidhart
  */
-public interface Mass extends TypedQuantity<Mass, Mass> {
+public interface Mass extends TypedQuantity<Mass> {
 
     /**
      * Convenience method to create a {@link Quantity} of type {@link Mass}.
