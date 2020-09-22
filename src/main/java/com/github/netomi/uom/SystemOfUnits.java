@@ -33,4 +33,12 @@ public interface SystemOfUnits {
      * @return an iterable of all units contained in this container.
      */
     Iterable<Unit<?>> getUnits();
+
+    /**
+     * Returns an {@link Iterable} containing all the units of this container for
+     * a specific quantity.
+     *
+     * @return an iterable of all units contained in this container for a given {@link Quantity}.
+     */
+    <Q extends Quantity<Q>> Iterable<Unit<?>> getUnitsForQuantity(Class<Q> quantityClass);
 }

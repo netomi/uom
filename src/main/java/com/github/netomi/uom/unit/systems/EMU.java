@@ -27,9 +27,11 @@ public final class EMU extends CGS {
     // hide constructor.
     private EMU() {
         super("EMU-CGS");
+
+        // add all system units from parent CGS system of units.
+        unitsPerQuantity.putAll(CGS.INSTANCE.unitsPerQuantity);
     }
 
-    // TODO: add units from CGS parent.
     public static final EMU INSTANCE = new EMU();
 
     // electrical units.

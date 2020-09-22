@@ -31,16 +31,33 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits {
     private final String              name;
     private final Collection<Unit<?>> units;
 
+    protected final Map<Class<?>, Collection<Unit<?>>> unitsPerQuantity;
+
     protected AbstractSystemOfUnits(String name) {
         this.name  = name;
         this.units = new ArrayList<>();
+
+        this.unitsPerQuantity = new HashMap<>();
     }
 
     @SuppressWarnings("unchecked")
     protected <Q extends Quantity<Q>> Unit<Q> addUnitForQuantity(Unit<?> unit, Class<Q> quantityClass) {
         Objects.requireNonNull(unit);
-        this.units.add(unit);
+        units.add(unit);
+
+        Collection<Unit<?>> currentUnits = unitsPerQuantity.get(quantityClass);
+        if (currentUnits == null) {
+            currentUnits = new ArrayList<>();
+            unitsPerQuantity.put(quantityClass, currentUnits);
+        }
+        currentUnits.add(unit);
+
         return (Unit<Q>) unit;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 
     @Override
@@ -49,7 +66,7 @@ public abstract class AbstractSystemOfUnits implements SystemOfUnits {
     }
 
     @Override
-    public String getName() {
-        return name;
+    public <Q extends Quantity<Q>> Iterable<Unit<?>> getUnitsForQuantity(Class<Q> quantityClass) {
+        return Collections.unmodifiableCollection(unitsPerQuantity.getOrDefault(quantityClass, Collections.emptyList()));
     }
 }

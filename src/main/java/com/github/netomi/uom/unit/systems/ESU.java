@@ -27,9 +27,11 @@ public final class ESU extends CGS {
     // hide constructor.
     private ESU() {
         super("ESU-CGS");
+
+        // add all system units from parent CGS system of units.
+        unitsPerQuantity.putAll(CGS.INSTANCE.unitsPerQuantity);
     }
 
-    // TODO: add units from CGS parent.
     public static final ESU INSTANCE = new ESU();
 
     // electrical units.

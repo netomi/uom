@@ -27,9 +27,11 @@ public final class Gaussian extends CGS {
     // hide constructor.
     private Gaussian() {
         super("Gaussian-CGS");
+
+        // add all system units from parent CGS system of units.
+        unitsPerQuantity.putAll(CGS.INSTANCE.unitsPerQuantity);
     }
 
-    // TODO: add units from CGS parent.
     public static final Gaussian INSTANCE = new Gaussian();
 
     // electrical units.
