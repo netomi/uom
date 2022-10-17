@@ -2,14 +2,12 @@
 buildscript {
     repositories {
         flatDir { dirs 'gradle/plugins' }
-        maven {
-            url 'http://storage.googleapis.com/r8-releases/raw'
-        }
+        google()
     }
     dependencies {
         // override the shadow plugin with a version that uses R8.
         classpath ':shadow:'
-        classpath 'com.android.tools:r8:2.0.61'
+        classpath 'com.android.tools:r8:3.3.75'
     }
 }
 
@@ -33,6 +31,8 @@ shadowJar {
 
     relocate 'com.google.common', 'org.netomi.uom.util.shadow.guava'
     relocate 'org.hibernate.validator.internal', 'org.netomi.uom.util.shadow.hibernate'
+
+    useR8()
     minimize()
 }
 
@@ -67,8 +67,8 @@ repositories {
 }
 
 dependencies {
-    compile('com.google.guava:guava:28.2-jre')
-    compile('org.hibernate.validator:hibernate-validator:6.1.3.Final')
+    implementation('com.google.guava:guava:28.2-jre')
+    implementation('org.hibernate.validator:hibernate-validator:6.1.3.Final')
 
     testImplementation('org.junit.jupiter:junit-jupiter:5.6.1')
     testImplementation('com.google.guava:guava-testlib:28.2-jre')
