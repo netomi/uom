@@ -1,5 +1,10 @@
 # Units of Measurement
 
+> **Deprecated.** This project is no longer maintained. It continues as
+> [TinyGearsOrg/uom](https://github.com/TinyGearsOrg/uom), published on Maven Central as `org.tinygears:uom`.
+> The new library is a fresh implementation with typed quantities, a JSR-385 implementation and a different API,
+> so it is not a drop-in replacement.
+
 [![Build Status](https://api.travis-ci.org/netomi/uom.svg?branch=master)](https://travis-ci.org/netomi/uom)
 [![Coverage Status](https://coveralls.io/repos/github/netomi/uom/badge.svg?branch=master&service=github)](https://coveralls.io/github/netomi/uom?branch=master)
 [![Sonatype Nexus (Snapshots)](https://img.shields.io/nexus/s/https/oss.sonatype.org/com.github.netomi/uom.svg)](https://oss.sonatype.org/content/repositories/snapshots/com/github/netomi/uom/)
